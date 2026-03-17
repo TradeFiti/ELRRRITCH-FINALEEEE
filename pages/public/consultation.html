@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request a Consultation — Eltrich Prime</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    /* ============================================
+       CONSULTATION PAGE
+       ============================================ */
+
+    body {
+      background: var(--bg-primary);
+      overflow-x: hidden;
+    }
+
+    /* --- NAVBAR (same as landing) --- */
+    .lp-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250, 248, 245, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .lp-navbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 72px;
+    }
+    .lp-logo {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+    .lp-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+    .lp-nav-links a {
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: color var(--transition-fast);
+    }
+    .lp-nav-links a:hover {
+      color: var(--text-primary);
+    }
+    .lp-nav-cta {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 24px;
+      background: var(--accent);
+      color: #fff !important;
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm) !important;
+      font-weight: 600 !important;
+      transition: background var(--transition-fast), transform var(--transition-fast);
+    }
+    .lp-nav-cta:hover {
+      background: var(--accent-hover);
+      color: #fff !important;
+      transform: translateY(-1px);
+    }
+    .lp-hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+    .lp-hamburger svg { display: block; }
+
+    /* --- Mobile nav overlay --- */
+    .lp-mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: rgba(250, 248, 245, 0.98);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+    .lp-mobile-nav.active { display: flex; }
+    .lp-mobile-nav a {
+      font-family: var(--font-serif);
+      font-size: var(--text-xl);
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .lp-mobile-nav-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    /* --- SECTION LABELS --- */
+    .cp-section-label {
+      font-family: var(--font-sans);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    /* --- PAGE CONTENT --- */
+    .cp-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 40px 100px;
+    }
+    .cp-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .cp-heading {
+      font-family: var(--font-serif);
+      font-size: var(--text-4xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .cp-subtitle {
+      font-size: var(--text-md);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* --- LAYOUT: Form + Sidebar --- */
+    .cp-layout {
+      display: grid;
+      grid-template-columns: 560px 1fr;
+      gap: 48px;
+      justify-content: center;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* --- FORM CARD --- */
+    .cp-form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      box-shadow: var(--shadow-sm);
+    }
+    .cp-form-card .input-group {
+      margin-bottom: 24px;
+    }
+    .cp-form-card .input-label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .cp-phone-group {
+      display: flex;
+      gap: 0;
+    }
+    .cp-phone-prefix {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-right: none;
+      border-radius: var(--radius-md) 0 0 var(--radius-md);
+      font-size: var(--text-base);
+      font-family: var(--font-sans);
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .cp-phone-input {
+      flex: 1;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0 !important;
+    }
+
+    /* --- Radio Group --- */
+    .cp-radio-group {
+      display: flex;
+      gap: 24px;
+      margin-top: 4px;
+    }
+    .cp-radio-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+    .cp-radio-label input[type="radio"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .cp-radio-label input[type="radio"]:checked {
+      border-color: var(--accent);
+    }
+    .cp-radio-label input[type="radio"]:checked::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* --- Submit Button --- */
+    .cp-submit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px 28px;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: var(--text-md);
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      margin-top: 8px;
+    }
+    .cp-submit:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(212, 149, 42, 0.25);
+    }
+
+    /* --- SIDEBAR INFO CARD --- */
+    .cp-info-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-xl);
+      padding: 36px 32px;
+      position: sticky;
+      top: 104px;
+    }
+    .cp-info-title {
+      font-family: var(--font-serif);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 28px;
+    }
+    .cp-info-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .cp-info-step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .cp-info-step-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-family: var(--font-serif);
+      font-size: var(--text-base);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .cp-info-step-title {
+      font-family: var(--font-sans);
+      font-size: var(--text-md);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .cp-info-step-desc {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .cp-info-contact {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-light);
+    }
+    .cp-info-contact-label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .cp-info-contact-value {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .cp-info-contact-value a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* --- FOOTER (same as landing) --- */
+    .lp-footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+    }
+    .lp-footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 64px 40px 40px;
+    }
+    .lp-footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .lp-footer-brand .lp-logo {
+      font-size: 22px;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .lp-footer-tagline {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 280px;
+    }
+    .lp-footer-social {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .lp-footer-social a {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+    }
+    .lp-footer-social a:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+    .lp-footer-col-title {
+      font-family: var(--font-sans);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    .lp-footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .lp-footer-links a {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+    .lp-footer-links a:hover { color: var(--accent); }
+    .lp-footer-bottom {
+      border-top: 1px solid var(--border-light);
+      padding-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .lp-footer-copy {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    /* ============================================
+       DUAL-PANEL WRAPPER
+       ============================================ */
+    .cp-dual-panel {
+      display: flex;
+      gap: 32px;
+      padding: 24px;
+      min-height: 100vh;
+      align-items: flex-start;
+    }
+    .cp-panel-desktop {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .cp-panel-desktop-inner {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      min-height: 900px;
+    }
+    .cp-panel-mobile {
+      flex-shrink: 0;
+      width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: sticky;
+      top: 24px;
+    }
+
+    /* --- Phone-frame overrides --- */
+    .phone-screen .lp-navbar-inner {
+      padding: 0 16px;
+      height: 56px;
+    }
+    .phone-screen .lp-logo {
+      font-size: 18px;
+    }
+    .phone-screen .lp-nav-links {
+      display: none;
+    }
+    .phone-screen .lp-hamburger {
+      display: block;
+    }
+    .phone-screen .cp-content {
+      padding: 36px 20px 48px;
+    }
+    .phone-screen .cp-heading {
+      font-size: var(--text-2xl);
+    }
+    .phone-screen .cp-subtitle {
+      font-size: var(--text-base);
+    }
+    .phone-screen .cp-header {
+      margin-bottom: 28px;
+    }
+    .phone-screen .cp-layout {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .phone-screen .cp-form-card {
+      padding: 24px 20px;
+      border-radius: var(--radius-lg);
+    }
+    .phone-screen .cp-radio-group {
+      flex-direction: column;
+      gap: 14px;
+    }
+    .phone-screen .cp-info-card {
+      position: static;
+      padding: 24px 20px;
+      border-radius: var(--radius-lg);
+    }
+    .phone-screen .cp-info-title {
+      font-size: var(--text-lg);
+      margin-bottom: 20px;
+    }
+    .phone-screen .lp-footer-inner {
+      padding: 32px 20px 24px;
+    }
+    .phone-screen .lp-footer-top {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+    .phone-screen .lp-footer-bottom {
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+    }
+
+    /* --- Back Link --- */
+    .cp-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 32px;
+      transition: color var(--transition-fast);
+    }
+    .cp-back:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================
+     DUAL PANEL LAYOUT
+     ============================================ -->
+<div class="cp-dual-panel">
+
+  <!-- ======== DESKTOP PANEL ======== -->
+  <div class="cp-panel-desktop">
+    <div class="panel-label">Desktop — Consultation</div>
+    <div class="cp-panel-desktop-inner">
+
+      <!-- NAVBAR -->
+      <nav class="lp-navbar">
+        <div class="lp-navbar-inner">
+          <a href="landing.html" class="lp-logo">Eltrich Prime</a>
+          <ul class="lp-nav-links">
+            <li><a href="landing.html#philosophy">About</a></li>
+            <li><a href="landing.html#services">Services</a></li>
+            <li><a href="landing.html#approach">Investment Approach</a></li>
+            <li><a href="landing.html#contact">Contact</a></li>
+            <li><a href="../../pages/auth/login.html" class="lp-nav-cta">Client Portal</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- MAIN CONTENT -->
+      <div class="cp-content">
+        <a href="landing.html" class="cp-back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back to Home
+        </a>
+
+        <div class="cp-header">
+          <div class="cp-section-label">Get In Touch</div>
+          <h1 class="cp-heading">Request a Consultation</h1>
+          <p class="cp-subtitle">Our team will reach out to schedule a meeting at your convenience.</p>
+        </div>
+
+        <div class="cp-layout">
+          <!-- FORM -->
+          <div class="cp-form-card">
+            <form onsubmit="event.preventDefault(); alert('Thank you. Your consultation request has been submitted.');">
+              <div class="input-group">
+                <label class="input-label" for="fullName">Full Name</label>
+                <input type="text" id="fullName" class="input" placeholder="e.g. James Kamau" required>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label" for="email">Email Address</label>
+                <input type="email" id="email" class="input" placeholder="e.g. james@example.com" required>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label" for="phone">Phone Number</label>
+                <div class="cp-phone-group">
+                  <span class="cp-phone-prefix">+254</span>
+                  <input type="tel" id="phone" class="input cp-phone-input" placeholder="712 345 678" required>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label">Preferred Contact Method</label>
+                <div class="cp-radio-group">
+                  <label class="cp-radio-label">
+                    <input type="radio" name="contactMethod" value="email" checked>
+                    Email
+                  </label>
+                  <label class="cp-radio-label">
+                    <input type="radio" name="contactMethod" value="phone">
+                    Phone
+                  </label>
+                  <label class="cp-radio-label">
+                    <input type="radio" name="contactMethod" value="whatsapp">
+                    WhatsApp
+                  </label>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label" for="message">Message</label>
+                <textarea id="message" class="textarea" placeholder="Tell us briefly about your investment goals or any questions you have..." rows="5"></textarea>
+              </div>
+
+              <button type="submit" class="cp-submit">
+                Submit Request
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10m-4-4 4 4-4 4"/></svg>
+              </button>
+            </form>
+          </div>
+
+          <!-- SIDEBAR INFO -->
+          <div>
+            <div class="cp-info-card">
+              <h3 class="cp-info-title">What to Expect</h3>
+              <div class="cp-info-steps">
+                <div class="cp-info-step">
+                  <div class="cp-info-step-num">1</div>
+                  <div>
+                    <div class="cp-info-step-title">Submit Your Request</div>
+                    <div class="cp-info-step-desc">Fill out the form with your details and we will receive your enquiry securely.</div>
+                  </div>
+                </div>
+                <div class="cp-info-step">
+                  <div class="cp-info-step-num">2</div>
+                  <div>
+                    <div class="cp-info-step-title">Team Contacts You</div>
+                    <div class="cp-info-step-desc">A member of our advisory team will reach out within 24 hours via your preferred method.</div>
+                  </div>
+                </div>
+                <div class="cp-info-step">
+                  <div class="cp-info-step-num">3</div>
+                  <div>
+                    <div class="cp-info-step-title">Schedule a Meeting</div>
+                    <div class="cp-info-step-desc">We will arrange a confidential consultation at a time and place that suits you.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cp-info-contact">
+                <div class="cp-info-contact-label">Direct Contact</div>
+                <div class="cp-info-contact-value">
+                  <a href="mailto:advisory@eltrichprime.com">advisory@eltrichprime.com</a><br>
+                  +254 700 000 000
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="lp-footer">
+        <div class="lp-footer-inner">
+          <div class="lp-footer-top">
+            <div class="lp-footer-brand">
+              <a href="landing.html" class="lp-logo">Eltrich Prime</a>
+              <p class="lp-footer-tagline">A private family office serving qualified investors with discretion, integrity, and excellence.</p>
+              <div class="lp-footer-social">
+                <a href="#" aria-label="LinkedIn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+                <a href="#" aria-label="Twitter">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+                </a>
+                <a href="#" aria-label="Email">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </a>
+              </div>
+            </div>
+            <div class="lp-footer-col">
+              <div class="lp-footer-col-title">Platform</div>
+              <ul class="lp-footer-links">
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Investments</a></li>
+                <li><a href="#">Wallet</a></li>
+              </ul>
+            </div>
+            <div class="lp-footer-col">
+              <div class="lp-footer-col-title">Company</div>
+              <ul class="lp-footer-links">
+                <li><a href="#">About</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Contact</a></li>
+              </ul>
+            </div>
+            <div class="lp-footer-col">
+              <div class="lp-footer-col-title">Legal</div>
+              <ul class="lp-footer-links">
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="lp-footer-bottom">
+            <div class="lp-footer-copy">&copy; 2026 Eltrich Prime. All rights reserved.</div>
+          </div>
+        </div>
+      </footer>
+
+    </div><!-- /panel-desktop-inner -->
+  </div><!-- /panel-desktop -->
+
+  <!-- ======== MOBILE PANEL ======== -->
+  <div class="cp-panel-mobile">
+    <div class="panel-label">Mobile — 375 x 812</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+
+        <!-- Mobile Navbar -->
+        <nav class="lp-navbar" style="position:sticky; top:0; z-index:20;">
+          <div class="lp-navbar-inner">
+            <a href="landing.html" class="lp-logo">Eltrich Prime</a>
+            <button class="lp-hamburger" onclick="document.getElementById('mobileNav').classList.toggle('active')" aria-label="Menu">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+          </div>
+        </nav>
+
+        <!-- Mobile Nav Overlay -->
+        <div class="lp-mobile-nav" id="mobileNav">
+          <button class="lp-mobile-nav-close" onclick="document.getElementById('mobileNav').classList.remove('active')" aria-label="Close">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <a href="landing.html">Home</a>
+          <a href="landing.html#philosophy">About</a>
+          <a href="landing.html#services">Services</a>
+          <a href="landing.html#contact">Contact</a>
+          <a href="../../pages/auth/login.html" class="lp-nav-cta" style="font-size:var(--text-md);border-radius:var(--radius-full);padding:14px 32px;">Client Portal</a>
+        </div>
+
+        <!-- Mobile Content -->
+        <div class="cp-content">
+          <a href="landing.html" class="cp-back">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back
+          </a>
+
+          <div class="cp-header">
+            <div class="cp-section-label">Get In Touch</div>
+            <h1 class="cp-heading">Request a Consultation</h1>
+            <p class="cp-subtitle">Our team will reach out to schedule a meeting.</p>
+          </div>
+
+          <div class="cp-layout">
+            <!-- Form -->
+            <div class="cp-form-card">
+              <form onsubmit="event.preventDefault(); alert('Thank you. Your consultation request has been submitted.');">
+                <div class="input-group">
+                  <label class="input-label" for="mFullName">Full Name</label>
+                  <input type="text" id="mFullName" class="input" placeholder="e.g. James Kamau" required>
+                </div>
+                <div class="input-group">
+                  <label class="input-label" for="mEmail">Email Address</label>
+                  <input type="email" id="mEmail" class="input" placeholder="e.g. james@example.com" required>
+                </div>
+                <div class="input-group">
+                  <label class="input-label" for="mPhone">Phone Number</label>
+                  <div class="cp-phone-group">
+                    <span class="cp-phone-prefix">+254</span>
+                    <input type="tel" id="mPhone" class="input cp-phone-input" placeholder="712 345 678" required>
+                  </div>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Preferred Contact Method</label>
+                  <div class="cp-radio-group">
+                    <label class="cp-radio-label">
+                      <input type="radio" name="mContactMethod" value="email" checked>
+                      Email
+                    </label>
+                    <label class="cp-radio-label">
+                      <input type="radio" name="mContactMethod" value="phone">
+                      Phone
+                    </label>
+                    <label class="cp-radio-label">
+                      <input type="radio" name="mContactMethod" value="whatsapp">
+                      WhatsApp
+                    </label>
+                  </div>
+                </div>
+                <div class="input-group">
+                  <label class="input-label" for="mMessage">Message</label>
+                  <textarea id="mMessage" class="textarea" placeholder="Tell us about your investment goals..." rows="4"></textarea>
+                </div>
+                <button type="submit" class="cp-submit">
+                  Submit Request
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10m-4-4 4 4-4 4"/></svg>
+                </button>
+              </form>
+            </div>
+
+            <!-- Info Card -->
+            <div class="cp-info-card">
+              <h3 class="cp-info-title">What to Expect</h3>
+              <div class="cp-info-steps">
+                <div class="cp-info-step">
+                  <div class="cp-info-step-num">1</div>
+                  <div>
+                    <div class="cp-info-step-title">Submit Your Request</div>
+                    <div class="cp-info-step-desc">Fill out the form and we will receive your enquiry.</div>
+                  </div>
+                </div>
+                <div class="cp-info-step">
+                  <div class="cp-info-step-num">2</div>
+                  <div>
+                    <div class="cp-info-step-title">Team Contacts You</div>
+                    <div class="cp-info-step-desc">We will reach out within 24 hours.</div>
+                  </div>
+                </div>
+                <div class="cp-info-step">
+                  <div class="cp-info-step-num">3</div>
+                  <div>
+                    <div class="cp-info-step-title">Schedule a Meeting</div>
+                    <div class="cp-info-step-desc">A confidential consultation at your convenience.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Footer -->
+        <footer class="lp-footer">
+          <div class="lp-footer-inner">
+            <div class="lp-footer-top">
+              <div class="lp-footer-brand">
+                <a href="landing.html" class="lp-logo">Eltrich Prime</a>
+                <p class="lp-footer-tagline">A private family office for qualified investors.</p>
+              </div>
+              <div class="lp-footer-col">
+                <div class="lp-footer-col-title">Company</div>
+                <ul class="lp-footer-links">
+                  <li><a href="#">About</a></li>
+                  <li><a href="#">Careers</a></li>
+                  <li><a href="#">Contact</a></li>
+                </ul>
+              </div>
+              <div class="lp-footer-col">
+                <div class="lp-footer-col-title">Legal</div>
+                <ul class="lp-footer-links">
+                  <li><a href="#">Privacy Policy</a></li>
+                  <li><a href="#">Terms of Service</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="lp-footer-bottom">
+              <div class="lp-footer-copy">&copy; 2026 Eltrich Prime. All rights reserved.</div>
+            </div>
+          </div>
+        </footer>
+
+      </div><!-- /phone-screen -->
+      <div class="phone-home-indicator"></div>
+    </div><!-- /phone-frame -->
+  </div><!-- /panel-mobile -->
+
+</div><!-- /dual-panel -->
+
+</body>
+</html>

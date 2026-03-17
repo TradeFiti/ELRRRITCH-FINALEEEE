@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Management — Eltrich Prime Admin</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    .product-admin-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow var(--transition-normal);
+    }
+    .product-admin-card:hover { box-shadow: var(--shadow-md); }
+    .product-admin-header {
+      padding: 20px 24px 16px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .product-admin-name {
+      font-family: var(--font-serif);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .product-admin-body {
+      padding: 0 24px 20px;
+    }
+    .product-admin-details {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .product-detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .product-detail-label {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .product-detail-value {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .product-admin-actions {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      gap: 8px;
+    }
+    .product-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    /* Form sheet */
+    .product-form-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-top: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .product-form-title {
+      font-family: var(--font-serif);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-grid .full-width {
+      grid-column: 1 / -1;
+    }
+    /* Mobile */
+    .mobile .product-admin-details { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .mobile .form-grid { grid-template-columns: 1fr; }
+    .mobile .product-admin-actions { flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+<div class="dual-panel">
+
+  <!-- ===== DESKTOP PANEL ===== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop — Admin View</div>
+    <div class="panel-desktop-inner">
+      <div class="desktop-content">
+
+        <!-- Sidebar -->
+        <aside class="desktop-sidebar">
+          <div class="nav-logo">
+            <div class="nav-logo-text">Eltrich Prime</div>
+            <div class="nav-logo-subtitle">Private Family Office</div>
+          </div>
+          <div class="nav-section-label">Admin Panel</div>
+          <a href="dashboard.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+          <a href="users.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Users
+          </a>
+          <a href="kyc-review.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            KYC Review
+          </a>
+          <a href="transactions.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Transactions
+          </a>
+          <a href="investments.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Investments
+          </a>
+          <a href="products.html" class="nav-item nav-item--active">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Products
+          </a>
+          <a href="bank-accounts.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Bank Accounts
+          </a>
+          <a href="conversions.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            Conversions
+          </a>
+          <a href="consultations.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Consultations
+          </a>
+          <a href="notifications.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            Notifications
+          </a>
+          <a href="support.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Support
+          </a>
+
+          <div style="margin-top: auto; padding: 16px 24px; border-top: 1px solid var(--border);">
+            <a href="../investor/dashboard.html" class="nav-item" style="padding: 8px 0; font-size: var(--text-sm);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+              Switch to User View
+            </a>
+          </div>
+
+          <div class="nav-user">
+            <div class="avatar avatar-sm avatar-initials" style="font-size: 12px;">B</div>
+            <div>
+              <div class="nav-user-name">Bileonaire</div>
+              <div class="nav-user-email">Admin</div>
+            </div>
+            <button class="theme-toggle" data-theme-toggle style="margin-left: auto;" aria-label="Toggle theme"></button>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="desktop-main">
+          <div class="page-header">
+            <div class="breadcrumb">
+              <a href="dashboard.html">Admin</a>
+              <span class="breadcrumb-sep">/</span>
+              <span>Products</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <h1 class="page-title">Product Management</h1>
+                <p class="page-subtitle">Manage investment products and funds</p>
+              </div>
+              <button class="btn btn-primary btn-md" data-sheet-trigger="create-product">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Create Product
+              </button>
+            </div>
+          </div>
+
+          <!-- Product Cards -->
+
+          <!-- Capital Growth Fund -->
+          <div class="product-admin-card">
+            <div class="product-admin-header">
+              <div>
+                <div class="product-admin-name">Capital Growth Fund</div>
+                <div class="product-badges">
+                  <span class="badge badge-active">Active</span>
+                  <span class="badge badge-risk-medium">Medium Risk</span>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 600; color: var(--text-primary);">$57.02</div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted);">per unit</div>
+              </div>
+            </div>
+            <div class="product-admin-body">
+              <div class="product-admin-details">
+                <div class="product-detail-item">
+                  <div class="product-detail-label">Currency</div>
+                  <div class="product-detail-value">USD</div>
+                </div>
+                <div class="product-detail-item">
+                  <div class="product-detail-label">Investors</div>
+                  <div class="product-detail-value">47</div>
+                </div>
+                <div class="product-detail-item">
+                  <div class="product-detail-label">Total AUM</div>
+                  <div class="product-detail-value">$2.68M</div>
+                </div>
+                <div class="product-detail-item">
+                  <div class="product-detail-label">YTD Return</div>
+                  <div class="product-detail-value" style="color: var(--success);">+8.4%</div>
+                </div>
+              </div>
+            </div>
+            <div class="product-admin-actions">
+              <button class="btn btn-secondary btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit
+              </button>
+              <button class="btn btn-ghost btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                Pause
+              </button>
+              <button class="btn btn-ghost btn-sm" style="color: var(--text-muted);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+                Archive
+              </button>
+            </div>
+          </div>
+
+          <!-- Fixed Income Fund -->
+          <div class="product-admin-card">
+            <div class="product-admin-header">
+              <div>
+                <div class="product-admin-name">Fixed Income Fund</div>
+                <div class="product-badges">
+                  <span class="badge badge-active">Active</span>
+                  <span class="badge badge-risk-low">Low Risk</span>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 600; color: var(--text-primary);">KES 1,082</div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted);">per unit</div>
+              </div>
+            </div>
+            <div class="product-admin-body">
+              <div class="product-admin-details">
+                <div class="product-detail-item">
+                  <div class="product-detail-label">Currency</div>
+                  <div class="product-detail-value">KES</div>
+                </div>
+                <div class="product-detail-item">
+                  <div class="product-detail-label">Investors</div>
+                  <div class="product-detail-value">32</div>
+                </div>
+                <div class="product-detail-item">
+                  <div class="product-detail-label">Total AUM</div>
+                  <div class="product-detail-value">KES 34.6M</div>
+                </div>
+                <div class="product-detail-item">
+                  <div class="product-detail-label">YTD Return</div>
+                  <div class="product-detail-value" style="color: var(--success);">+5.2%</div>
+                </div>
+              </div>
+            </div>
+            <div class="product-admin-actions">
+              <button class="btn btn-secondary btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit
+              </button>
+              <button class="btn btn-ghost btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                Pause
+              </button>
+              <button class="btn btn-ghost btn-sm" style="color: var(--text-muted);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+                Archive
+              </button>
+            </div>
+          </div>
+
+          <!-- Frontier Markets Fund -->
+          <div class="product-admin-card">
+            <div class="product-admin-header">
+              <div>
+                <div class="product-admin-name">Frontier Markets Fund</div>
+                <div class="product-badges">
+                  <span class="badge badge-active">Active</span>
+                  <span class="badge badge-risk-high">High Risk</span>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 600; color: var(--text-primary);">$125.00</div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted);">per unit</div>
+              </div>
+            </div>
+            <div class="product-admin-body">
+              <div class="product-admin-details">
+                <div class="product-detail-item">
+                  <div class="product-detail-label">Currency</div>
+                  <div class="product-detail-value">USD</div>
+                </div>
+                <div class="product-detail-item">
+                  <div class="product-detail-label">Investors</div>
+                  <div class="product-detail-value">8</div>
+                </div>
+                <div class="product-detail-item">
+                  <div class="product-detail-label">Total AUM</div>
+                  <div class="product-detail-value">$1.0M</div>
+                </div>
+                <div class="product-detail-item">
+                  <div class="product-detail-label">YTD Return</div>
+                  <div class="product-detail-value" style="color: var(--danger);">-2.1%</div>
+                </div>
+              </div>
+            </div>
+            <div class="product-admin-actions">
+              <button class="btn btn-secondary btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit
+              </button>
+              <button class="btn btn-ghost btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                Pause
+              </button>
+              <button class="btn btn-ghost btn-sm" style="color: var(--text-muted);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+                Archive
+              </button>
+            </div>
+          </div>
+
+          <!-- Real Estate Fund (Paused) -->
+          <div class="product-admin-card" style="border-color: var(--warning);">
+            <div class="product-admin-header">
+              <div>
+                <div class="product-admin-name">Real Estate Fund</div>
+                <div class="product-badges">
+                  <span class="badge badge-pending">Paused</span>
+                  <span class="badge badge-risk-medium">Medium Risk</span>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-family: var(--font-serif); font-size: var(--text-xl); font-weight: 600; color: var(--text-primary);">KES 5,000</div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted);">per unit</div>
+              </div>
+            </div>
+            <div class="product-admin-body">
+              <div class="product-admin-details">
+                <div class="product-detail-item">
+                  <div class="product-detail-label">Currency</div>
+                  <div class="product-detail-value">KES</div>
+                </div>
+                <div class="product-detail-item">
+                  <div class="product-detail-label">Investors</div>
+                  <div class="product-detail-value">15</div>
+                </div>
+                <div class="product-detail-item">
+                  <div class="product-detail-label">Total AUM</div>
+                  <div class="product-detail-value">KES 75M</div>
+                </div>
+                <div class="product-detail-item">
+                  <div class="product-detail-label">YTD Return</div>
+                  <div class="product-detail-value" style="color: var(--text-muted);">+3.7%</div>
+                </div>
+              </div>
+            </div>
+            <div class="product-admin-actions">
+              <button class="btn btn-secondary btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit
+              </button>
+              <button class="btn btn-primary btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Resume
+              </button>
+              <button class="btn btn-ghost btn-sm" style="color: var(--text-muted);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+                Archive
+              </button>
+            </div>
+          </div>
+
+          <!-- Create/Edit Form Section -->
+          <div class="product-form-section" id="product-form" style="display: none;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+              <div class="product-form-title">Create New Product</div>
+              <button class="btn btn-ghost btn-sm" onclick="document.getElementById('product-form').style.display='none'">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div class="form-grid">
+              <div class="input-group">
+                <label class="input-label">Product Name</label>
+                <input type="text" class="input" placeholder="e.g. Emerging Markets Fund">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Category</label>
+                <select class="select">
+                  <option>Equity Fund</option>
+                  <option>Fixed Income</option>
+                  <option>Real Estate</option>
+                  <option>Mixed</option>
+                  <option>Alternative</option>
+                </select>
+              </div>
+              <div class="input-group full-width">
+                <label class="input-label">Description</label>
+                <textarea class="textarea" placeholder="Describe the investment product..."></textarea>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Risk Classification</label>
+                <select class="select">
+                  <option>Low Risk</option>
+                  <option>Medium Risk</option>
+                  <option>High Risk</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Currency</label>
+                <select class="select">
+                  <option>USD</option>
+                  <option>KES</option>
+                  <option>GBP</option>
+                  <option>EUR</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Unit Price</label>
+                <input type="number" class="input" placeholder="0.00" step="0.01">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Minimum Investment</label>
+                <input type="number" class="input" placeholder="0.00" step="0.01">
+              </div>
+              <div class="input-group">
+                <label class="input-label">NAV (Net Asset Value)</label>
+                <input type="number" class="input" placeholder="0.00" step="0.01">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Inception Date</label>
+                <input type="date" class="input">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Volatility (%)</label>
+                <input type="number" class="input" placeholder="e.g. 12.5" step="0.1">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Status</label>
+                <select class="select">
+                  <option>Active</option>
+                  <option>Paused</option>
+                  <option>Draft</option>
+                  <option>Archived</option>
+                </select>
+              </div>
+              <div class="input-group full-width">
+                <label class="input-label">Asset Breakdown</label>
+                <textarea class="textarea" placeholder="e.g. Equities 60%, Bonds 30%, Cash 10%..." style="min-height: 70px;"></textarea>
+              </div>
+              <div class="input-group full-width">
+                <label class="input-label">Principal Risks</label>
+                <textarea class="textarea" placeholder="Describe key risk factors..." style="min-height: 70px;"></textarea>
+              </div>
+              <div class="full-width" style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px;">
+                <button class="btn btn-secondary btn-md" onclick="document.getElementById('product-form').style.display='none'">Cancel</button>
+                <button class="btn btn-primary btn-md">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Save Product
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </main>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE PANEL ===== -->
+  <div class="panel-mobile">
+    <div class="panel-label">Mobile — Admin View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="mobile desktop-content">
+          <main class="desktop-main" style="padding: 16px; padding-bottom: 80px;">
+
+            <div class="page-header" style="margin-bottom: 20px;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h1 class="page-title" style="font-size: var(--text-xl);">Products</h1>
+                <button class="btn btn-primary btn-sm" style="font-size: 12px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Create
+                </button>
+              </div>
+            </div>
+
+            <!-- Product Cards Mobile -->
+            <div class="product-admin-card" style="margin-bottom: 12px;">
+              <div class="product-admin-header" style="padding: 16px 16px 12px;">
+                <div>
+                  <div class="product-admin-name" style="font-size: var(--text-base);">Capital Growth Fund</div>
+                  <div class="product-badges" style="margin-top: 6px;">
+                    <span class="badge badge-active" style="font-size: 9px;">Active</span>
+                    <span class="badge badge-risk-medium" style="font-size: 9px;">Medium</span>
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-family: var(--font-serif); font-size: var(--text-lg); font-weight: 600;">$57.02</div>
+                  <div style="font-size: 10px; color: var(--text-muted);">per unit</div>
+                </div>
+              </div>
+              <div class="product-admin-body" style="padding: 0 16px 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: var(--text-sm);">
+                  <span style="color: var(--text-muted);">47 investors</span>
+                  <span style="color: var(--text-muted);">USD</span>
+                </div>
+              </div>
+              <div class="product-admin-actions" style="padding: 12px 16px; gap: 6px;">
+                <button class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 6px 12px;">Edit</button>
+                <button class="btn btn-ghost btn-sm" style="font-size: 11px; padding: 6px 12px;">Pause</button>
+              </div>
+            </div>
+
+            <div class="product-admin-card" style="margin-bottom: 12px;">
+              <div class="product-admin-header" style="padding: 16px 16px 12px;">
+                <div>
+                  <div class="product-admin-name" style="font-size: var(--text-base);">Fixed Income Fund</div>
+                  <div class="product-badges" style="margin-top: 6px;">
+                    <span class="badge badge-active" style="font-size: 9px;">Active</span>
+                    <span class="badge badge-risk-low" style="font-size: 9px;">Low</span>
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-family: var(--font-serif); font-size: var(--text-lg); font-weight: 600;">KES 1,082</div>
+                  <div style="font-size: 10px; color: var(--text-muted);">per unit</div>
+                </div>
+              </div>
+              <div class="product-admin-body" style="padding: 0 16px 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: var(--text-sm);">
+                  <span style="color: var(--text-muted);">32 investors</span>
+                  <span style="color: var(--text-muted);">KES</span>
+                </div>
+              </div>
+              <div class="product-admin-actions" style="padding: 12px 16px; gap: 6px;">
+                <button class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 6px 12px;">Edit</button>
+                <button class="btn btn-ghost btn-sm" style="font-size: 11px; padding: 6px 12px;">Pause</button>
+              </div>
+            </div>
+
+            <div class="product-admin-card" style="margin-bottom: 12px;">
+              <div class="product-admin-header" style="padding: 16px 16px 12px;">
+                <div>
+                  <div class="product-admin-name" style="font-size: var(--text-base);">Frontier Markets Fund</div>
+                  <div class="product-badges" style="margin-top: 6px;">
+                    <span class="badge badge-active" style="font-size: 9px;">Active</span>
+                    <span class="badge badge-risk-high" style="font-size: 9px;">High</span>
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-family: var(--font-serif); font-size: var(--text-lg); font-weight: 600;">$125.00</div>
+                  <div style="font-size: 10px; color: var(--text-muted);">per unit</div>
+                </div>
+              </div>
+              <div class="product-admin-body" style="padding: 0 16px 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: var(--text-sm);">
+                  <span style="color: var(--text-muted);">8 investors</span>
+                  <span style="color: var(--text-muted);">USD</span>
+                </div>
+              </div>
+              <div class="product-admin-actions" style="padding: 12px 16px; gap: 6px;">
+                <button class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 6px 12px;">Edit</button>
+                <button class="btn btn-ghost btn-sm" style="font-size: 11px; padding: 6px 12px;">Pause</button>
+              </div>
+            </div>
+
+            <div class="product-admin-card" style="margin-bottom: 12px; border-color: var(--warning);">
+              <div class="product-admin-header" style="padding: 16px 16px 12px;">
+                <div>
+                  <div class="product-admin-name" style="font-size: var(--text-base);">Real Estate Fund</div>
+                  <div class="product-badges" style="margin-top: 6px;">
+                    <span class="badge badge-pending" style="font-size: 9px;">Paused</span>
+                    <span class="badge badge-risk-medium" style="font-size: 9px;">Medium</span>
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-family: var(--font-serif); font-size: var(--text-lg); font-weight: 600;">KES 5,000</div>
+                  <div style="font-size: 10px; color: var(--text-muted);">per unit</div>
+                </div>
+              </div>
+              <div class="product-admin-body" style="padding: 0 16px 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: var(--text-sm);">
+                  <span style="color: var(--text-muted);">15 investors</span>
+                  <span style="color: var(--text-muted);">KES</span>
+                </div>
+              </div>
+              <div class="product-admin-actions" style="padding: 12px 16px; gap: 6px;">
+                <button class="btn btn-secondary btn-sm" style="font-size: 11px; padding: 6px 12px;">Edit</button>
+                <button class="btn btn-primary btn-sm" style="font-size: 11px; padding: 6px 12px;">Resume</button>
+              </div>
+            </div>
+
+          </main>
+        </div>
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom sheet for Create Product -->
+<div class="sheet-overlay" data-sheet="create-product">
+  <div class="sheet-content" style="max-width: 640px;">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Create New Product</div>
+    <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: 24px;">Fill in the details to create a new investment product.</p>
+    <div class="form-grid">
+      <div class="input-group">
+        <label class="input-label">Product Name</label>
+        <input type="text" class="input" placeholder="e.g. Emerging Markets Fund">
+      </div>
+      <div class="input-group">
+        <label class="input-label">Category</label>
+        <select class="select">
+          <option>Equity Fund</option>
+          <option>Fixed Income</option>
+          <option>Real Estate</option>
+          <option>Mixed</option>
+          <option>Alternative</option>
+        </select>
+      </div>
+      <div class="input-group full-width">
+        <label class="input-label">Description</label>
+        <textarea class="textarea" placeholder="Describe the investment product..."></textarea>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Risk Classification</label>
+        <select class="select">
+          <option>Low Risk</option>
+          <option>Medium Risk</option>
+          <option>High Risk</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Currency</label>
+        <select class="select">
+          <option>USD</option>
+          <option>KES</option>
+          <option>GBP</option>
+          <option>EUR</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Unit Price</label>
+        <input type="number" class="input" placeholder="0.00" step="0.01">
+      </div>
+      <div class="input-group">
+        <label class="input-label">Minimum Investment</label>
+        <input type="number" class="input" placeholder="0.00" step="0.01">
+      </div>
+      <div class="input-group">
+        <label class="input-label">NAV</label>
+        <input type="number" class="input" placeholder="0.00" step="0.01">
+      </div>
+      <div class="input-group">
+        <label class="input-label">Inception Date</label>
+        <input type="date" class="input">
+      </div>
+      <div class="input-group">
+        <label class="input-label">Volatility (%)</label>
+        <input type="number" class="input" placeholder="e.g. 12.5" step="0.1">
+      </div>
+      <div class="input-group">
+        <label class="input-label">Status</label>
+        <select class="select">
+          <option>Active</option>
+          <option>Paused</option>
+          <option>Draft</option>
+        </select>
+      </div>
+      <div class="input-group full-width">
+        <label class="input-label">Asset Breakdown</label>
+        <textarea class="textarea" placeholder="e.g. Equities 60%, Bonds 30%, Cash 10%..." style="min-height: 60px;"></textarea>
+      </div>
+      <div class="input-group full-width">
+        <label class="input-label">Principal Risks</label>
+        <textarea class="textarea" placeholder="Describe key risk factors..." style="min-height: 60px;"></textarea>
+      </div>
+      <div class="full-width" style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px;">
+        <button class="btn btn-secondary btn-md" data-sheet-close>Cancel</button>
+        <button class="btn btn-primary btn-md">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Save Product
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../../system/interactions.js"></script>
+</body>
+</html>

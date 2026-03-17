@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultation Requests — Eltrich Prime Admin</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    .consultation-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow var(--transition-normal);
+      cursor: pointer;
+    }
+    .consultation-card:hover { box-shadow: var(--shadow-md); }
+    .consultation-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), var(--shadow-md);
+    }
+    .consultation-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .consultation-user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .consultation-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: var(--text-base);
+    }
+    .consultation-contact {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .consultation-contact a {
+      color: var(--text-secondary);
+    }
+    .consultation-contact a:hover {
+      color: var(--accent);
+    }
+    .consultation-message {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-top: 12px;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .consultation-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    .consultation-assigned {
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+    }
+    /* Detail Panel */
+    .detail-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      position: sticky;
+      top: 0;
+      box-shadow: var(--shadow-sm);
+    }
+    .detail-panel-title {
+      font-family: var(--font-serif);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .detail-panel-contact {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .detail-panel-message {
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 16px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+    }
+    .notes-history {
+      margin-top: 16px;
+    }
+    .note-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .note-item:last-child { border-bottom: none; }
+    .note-author {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .note-time {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    .note-text {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .two-col-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+      align-items: start;
+    }
+    /* Mobile overrides */
+    .mobile .two-col-layout { grid-template-columns: 1fr; }
+    .mobile .detail-panel { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="dual-panel">
+
+  <!-- ===== DESKTOP PANEL ===== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop — Admin View</div>
+    <div class="panel-desktop-inner">
+      <div class="desktop-content">
+
+        <!-- Sidebar -->
+        <aside class="desktop-sidebar">
+          <div class="nav-logo">
+            <div class="nav-logo-text">Eltrich Prime</div>
+            <div class="nav-logo-subtitle">Private Family Office</div>
+          </div>
+          <div class="nav-section-label">Admin Panel</div>
+          <a href="dashboard.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+          <a href="users.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Users
+          </a>
+          <a href="kyc-review.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            KYC Review
+          </a>
+          <a href="transactions.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Transactions
+          </a>
+          <a href="investments.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Investments
+          </a>
+          <a href="products.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Products
+          </a>
+          <a href="bank-accounts.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Bank Accounts
+          </a>
+          <a href="conversions.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            Conversions
+          </a>
+          <a href="consultations.html" class="nav-item nav-item--active">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Consultations
+          </a>
+          <a href="notifications.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            Notifications
+          </a>
+          <a href="support.html" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Support
+          </a>
+
+          <div style="margin-top: auto; padding: 16px 24px; border-top: 1px solid var(--border);">
+            <a href="../investor/dashboard.html" class="nav-item" style="padding: 8px 0; font-size: var(--text-sm);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+              Switch to User View
+            </a>
+          </div>
+
+          <div class="nav-user">
+            <div class="avatar avatar-sm avatar-initials" style="font-size: 12px;">B</div>
+            <div>
+              <div class="nav-user-name">Bileonaire</div>
+              <div class="nav-user-email">Admin</div>
+            </div>
+            <button class="theme-toggle" data-theme-toggle style="margin-left: auto;" aria-label="Toggle theme"></button>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="desktop-main">
+          <div class="page-header">
+            <div class="breadcrumb">
+              <a href="dashboard.html">Admin</a>
+              <span class="breadcrumb-sep">/</span>
+              <span>Consultations</span>
+            </div>
+            <h1 class="page-title">Consultation Requests</h1>
+            <p class="page-subtitle">Manage and respond to consultation inquiries</p>
+          </div>
+
+          <!-- Filter Chips -->
+          <div class="filter-chips" style="margin-bottom: 24px;">
+            <button class="chip chip--active">All <span style="margin-left: 4px; opacity: 0.6;">11</span></button>
+            <button class="chip">New <span class="notification-badge" style="margin-left: 4px;">3</span></button>
+            <button class="chip">Contacted <span style="margin-left: 4px; opacity: 0.6;">2</span></button>
+            <button class="chip">Scheduled <span style="margin-left: 4px; opacity: 0.6;">1</span></button>
+            <button class="chip">Completed <span style="margin-left: 4px; opacity: 0.6;">5</span></button>
+            <button class="chip">Cancelled</button>
+          </div>
+
+          <!-- Two Column: List + Detail -->
+          <div class="two-col-layout">
+
+            <!-- Request List -->
+            <div>
+
+              <!-- James Mwangi -->
+              <div class="consultation-card selected">
+                <div class="consultation-header">
+                  <div class="consultation-user-info">
+                    <div class="avatar avatar-initials" style="font-size: 14px;">JM</div>
+                    <div>
+                      <div class="consultation-name">James Mwangi</div>
+                      <div class="consultation-contact">
+                        <a href="mailto:james.m@email.com">james.m@email.com</a> &middot; +254 722 111 222
+                      </div>
+                    </div>
+                  </div>
+                  <span class="badge badge-info">New</span>
+                </div>
+                <div class="consultation-message">
+                  "Interested in high-yield investment opportunities for my family trust. Would like to discuss options exceeding KES 10M allocation..."
+                </div>
+                <div class="consultation-footer">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  2 hours ago
+                </div>
+              </div>
+
+              <!-- Alice Njeri -->
+              <div class="consultation-card">
+                <div class="consultation-header">
+                  <div class="consultation-user-info">
+                    <div class="avatar avatar-initials" style="font-size: 14px;">AN</div>
+                    <div>
+                      <div class="consultation-name">Alice Njeri</div>
+                      <div class="consultation-contact">
+                        <a href="mailto:alice.n@email.com">alice.n@email.com</a> &middot; +254 733 222 333
+                      </div>
+                    </div>
+                  </div>
+                  <span class="badge badge-info">New</span>
+                </div>
+                <div class="consultation-message">
+                  "Would like to discuss portfolio management options. Currently have investments with two other firms but looking to consolidate..."
+                </div>
+                <div class="consultation-footer">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  1 day ago
+                </div>
+              </div>
+
+              <!-- Robert Kipchoge -->
+              <div class="consultation-card">
+                <div class="consultation-header">
+                  <div class="consultation-user-info">
+                    <div class="avatar avatar-initials" style="font-size: 14px;">RK</div>
+                    <div>
+                      <div class="consultation-name">Robert Kipchoge</div>
+                      <div class="consultation-contact">
+                        <a href="mailto:robert.k@email.com">robert.k@email.com</a>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="badge badge-pending">Contacted</span>
+                </div>
+                <div class="consultation-message">
+                  "Looking for wealth advisory services for retirement planning. Need comprehensive approach including tax optimization..."
+                </div>
+                <div class="consultation-footer">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  3 days ago
+                  <span class="consultation-assigned" style="margin-left: auto;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Assigned to: John Kamau
+                  </span>
+                </div>
+              </div>
+
+              <!-- Grace Akinyi - Contacted -->
+              <div class="consultation-card">
+                <div class="consultation-header">
+                  <div class="consultation-user-info">
+                    <div class="avatar avatar-initials" style="font-size: 14px;">GA</div>
+                    <div>
+                      <div class="consultation-name">Grace Akinyi</div>
+                      <div class="consultation-contact">
+                        <a href="mailto:grace.a@email.com">grace.a@email.com</a> &middot; +254 711 333 444
+                      </div>
+                    </div>
+                  </div>
+                  <span class="badge badge-pending">Contacted</span>
+                </div>
+                <div class="consultation-message">
+                  "Interested in setting up a family trust with Eltrich Prime. Need guidance on structuring..."
+                </div>
+                <div class="consultation-footer">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  4 days ago
+                  <span class="consultation-assigned" style="margin-left: auto;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Assigned to: Bileonaire
+                  </span>
+                </div>
+              </div>
+
+              <!-- Peter Otieno - New -->
+              <div class="consultation-card">
+                <div class="consultation-header">
+                  <div class="consultation-user-info">
+                    <div class="avatar avatar-initials" style="font-size: 14px;">PO</div>
+                    <div>
+                      <div class="consultation-name">Peter Otieno</div>
+                      <div class="consultation-contact">
+                        <a href="mailto:peter.o@email.com">peter.o@email.com</a> &middot; +254 700 555 666
+                      </div>
+                    </div>
+                  </div>
+                  <span class="badge badge-info">New</span>
+                </div>
+                <div class="consultation-message">
+                  "Seeking advice on diversifying my portfolio into frontier markets and alternative investments..."
+                </div>
+                <div class="consultation-footer">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  5 hours ago
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Detail Panel (James Mwangi selected) -->
+            <div class="detail-panel">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div class="avatar avatar-lg avatar-initials" style="font-size: 20px;">JM</div>
+                <div>
+                  <div class="detail-panel-title">James Mwangi</div>
+                  <div class="detail-panel-contact">
+                    james.m@email.com<br>
+                    +254 722 111 222
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-panel-message">
+                "Interested in high-yield investment opportunities for my family trust. Would like to discuss options exceeding KES 10M allocation. Currently holding government bonds and looking to diversify into managed funds."
+              </div>
+
+              <div class="detail-grid">
+                <div class="input-group" style="margin-bottom: 0;">
+                  <label class="input-label">Status</label>
+                  <select class="select">
+                    <option selected>New</option>
+                    <option>Contacted</option>
+                    <option>Scheduled</option>
+                    <option>Completed</option>
+                    <option>Cancelled</option>
+                  </select>
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                  <label class="input-label">Assign to</label>
+                  <select class="select">
+                    <option value="">Unassigned</option>
+                    <option>Bileonaire</option>
+                    <option>John Kamau</option>
+                    <option>Sarah Odhiambo</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <!-- Notes Section -->
+              <div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                  <span style="font-family: var(--font-serif); font-weight: 600; color: var(--text-primary);">Notes</span>
+                </div>
+
+                <div class="input-group">
+                  <textarea class="textarea" placeholder="Add a note about this consultation..." style="min-height: 80px;"></textarea>
+                </div>
+                <button class="btn btn-primary btn-sm" style="margin-bottom: 16px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Add Note
+                </button>
+
+                <div class="notes-history">
+                  <div class="note-item">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                      <span class="note-author">System</span>
+                      <span class="note-time">2 hours ago</span>
+                    </div>
+                    <div class="note-text">Consultation request received via website contact form.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </main>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MOBILE PANEL ===== -->
+  <div class="panel-mobile">
+    <div class="panel-label">Mobile — Admin View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="mobile desktop-content">
+          <main class="desktop-main" style="padding: 16px; padding-bottom: 80px;">
+
+            <div class="page-header" style="margin-bottom: 16px;">
+              <h1 class="page-title" style="font-size: var(--text-xl);">Consultations</h1>
+            </div>
+
+            <!-- Filter Chips -->
+            <div class="filter-chips" style="margin-bottom: 16px; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px;">
+              <button class="chip chip--active" style="font-size: 12px; padding: 5px 12px; flex-shrink: 0;">All</button>
+              <button class="chip" style="font-size: 12px; padding: 5px 12px; flex-shrink: 0;">New <span class="notification-badge" style="margin-left: 4px; font-size: 9px; min-width: 14px; height: 14px;">3</span></button>
+              <button class="chip" style="font-size: 12px; padding: 5px 12px; flex-shrink: 0;">Contacted</button>
+              <button class="chip" style="font-size: 12px; padding: 5px 12px; flex-shrink: 0;">Scheduled</button>
+              <button class="chip" style="font-size: 12px; padding: 5px 12px; flex-shrink: 0;">Completed</button>
+            </div>
+
+            <!-- Cards -->
+            <div class="consultation-card" style="padding: 16px; margin-bottom: 12px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="avatar avatar-sm avatar-initials" style="font-size: 11px;">JM</div>
+                  <div>
+                    <div class="consultation-name" style="font-size: var(--text-sm);">James Mwangi</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">2h ago</div>
+                  </div>
+                </div>
+                <span class="badge badge-info" style="font-size: 9px;">New</span>
+              </div>
+              <div style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                "Interested in high-yield investment opportunities for my family trust..."
+              </div>
+            </div>
+
+            <div class="consultation-card" style="padding: 16px; margin-bottom: 12px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="avatar avatar-sm avatar-initials" style="font-size: 11px;">AN</div>
+                  <div>
+                    <div class="consultation-name" style="font-size: var(--text-sm);">Alice Njeri</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">1d ago</div>
+                  </div>
+                </div>
+                <span class="badge badge-info" style="font-size: 9px;">New</span>
+              </div>
+              <div style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                "Would like to discuss portfolio management options..."
+              </div>
+            </div>
+
+            <div class="consultation-card" style="padding: 16px; margin-bottom: 12px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="avatar avatar-sm avatar-initials" style="font-size: 11px;">RK</div>
+                  <div>
+                    <div class="consultation-name" style="font-size: var(--text-sm);">Robert Kipchoge</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">3d ago</div>
+                  </div>
+                </div>
+                <span class="badge badge-pending" style="font-size: 9px;">Contacted</span>
+              </div>
+              <div style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: 8px; line-height: 1.4;">
+                Assigned to: John Kamau
+              </div>
+            </div>
+
+            <div class="consultation-card" style="padding: 16px; margin-bottom: 12px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="avatar avatar-sm avatar-initials" style="font-size: 11px;">PO</div>
+                  <div>
+                    <div class="consultation-name" style="font-size: var(--text-sm);">Peter Otieno</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">5h ago</div>
+                  </div>
+                </div>
+                <span class="badge badge-info" style="font-size: 9px;">New</span>
+              </div>
+              <div style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                "Seeking advice on diversifying my portfolio..."
+              </div>
+            </div>
+
+          </main>
+        </div>
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../system/interactions.js"></script>
+</body>
+</html>

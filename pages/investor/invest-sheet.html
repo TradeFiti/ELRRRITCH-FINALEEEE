@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eltrich Prime — Invest in Capital Growth Fund</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 600;
+      font-family: var(--font-sans);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .info-grid-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+    }
+    .info-grid-label {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .info-grid-value {
+      font-family: var(--font-serif);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .asset-bar {
+      display: flex;
+      height: 12px;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .asset-bar-segment { height: 100%; }
+    .asset-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .asset-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    .asset-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .risk-list {
+      list-style: none;
+      padding: 0;
+    }
+    .risk-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-light);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .risk-list li:last-child { border-bottom: none; }
+    .risk-list li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--warning);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+    /* Sheet-specific: amount input */
+    .amount-input-wrap {
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .amount-input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid var(--accent);
+      border-radius: var(--radius-md);
+      font-size: 28px;
+      font-family: var(--font-serif);
+      font-weight: 700;
+      color: var(--text-primary);
+      background: var(--bg-card);
+      outline: none;
+      text-align: center;
+    }
+    .quick-amount-chips {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .quick-amount-chip {
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all var(--transition-fast);
+      font-family: var(--font-sans);
+    }
+    .quick-amount-chip:hover { border-color: var(--border); }
+    .quick-amount-chip--active {
+      background: var(--accent-light);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+    .unit-calc {
+      text-align: center;
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      padding: 12px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+    }
+    .unit-calc strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    /* Desktop sheet overlay positioning */
+    .desktop-sheet-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 50;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      backdrop-filter: blur(2px);
+    }
+    .desktop-sheet-content {
+      background: var(--bg-card);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      padding: 32px;
+      max-height: 80%;
+      overflow-y: auto;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: var(--shadow-xl);
+    }
+  </style>
+</head>
+<body>
+
+<div class="dual-panel">
+
+  <!-- ==================== DESKTOP VIEW ==================== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop View</div>
+    <div class="panel-desktop-inner" style="position:relative;">
+      <div class="desktop-content" style="filter:blur(1px);opacity:0.6;">
+
+        <!-- Sidebar (dimmed background) -->
+        <div class="desktop-sidebar">
+          <div class="nav-logo">
+            <div>
+              <div class="nav-logo-text">Eltrich Prime</div>
+              <div class="nav-logo-subtitle">Private Family Office</div>
+            </div>
+          </div>
+
+          <div class="nav-section-label">Platform</div>
+          <a class="nav-item" href="dashboard.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+          <a class="nav-item nav-item--active" href="invest-products.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Investments
+          </a>
+          <a class="nav-item" href="wallet.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+            Wallet
+          </a>
+        </div>
+
+        <!-- Main Content (dimmed background) -->
+        <div class="desktop-main">
+          <div class="breadcrumb">
+            <a href="invest-products.html">Investments</a>
+            <span class="breadcrumb-sep">/</span>
+            <span style="color:var(--text-primary);font-weight:500;">Capital Growth Fund</span>
+          </div>
+          <div style="margin-bottom:32px;">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;">
+              <div class="page-title" style="margin:0;">Eltrich Capital Growth Fund</div>
+              <span class="badge badge-risk-medium">Medium Risk</span>
+            </div>
+            <p style="font-size:var(--text-base);color:var(--text-secondary);line-height:1.7;max-width:720px;">
+              A diversified equity and growth fund designed for long-term capital appreciation.
+            </p>
+          </div>
+          <div class="info-grid">
+            <div class="info-grid-item">
+              <div class="info-grid-label">Unit Price</div>
+              <div class="info-grid-value">$57.02</div>
+            </div>
+            <div class="info-grid-item">
+              <div class="info-grid-label">Min. Investment</div>
+              <div class="info-grid-value">$50</div>
+            </div>
+            <div class="info-grid-item">
+              <div class="info-grid-label">Currency</div>
+              <div class="info-grid-value">USD</div>
+            </div>
+            <div class="info-grid-item">
+              <div class="info-grid-label">Category</div>
+              <div class="info-grid-value" style="font-size:var(--text-md);">Equity & Growth</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Sheet Overlay -->
+      <div class="desktop-sheet-overlay">
+        <div class="desktop-sheet-content">
+          <div class="sheet-handle"></div>
+          <div class="sheet-title">Invest in Capital Growth Fund</div>
+          <div style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:24px;">Step 1 of 2 — Enter amount</div>
+
+          <!-- Currency Display -->
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);font-weight:500;">Currency:</div>
+            <div style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--bg-secondary);border-radius:var(--radius-full);border:1px solid var(--border);">
+              <span style="font-size:14px;">🇺🇸</span>
+              <span style="font-size:var(--text-sm);font-weight:600;color:var(--text-primary);">USD</span>
+            </div>
+          </div>
+
+          <!-- Amount Input -->
+          <div class="amount-input-wrap">
+            <input type="text" class="amount-input" value="$500" readonly>
+          </div>
+
+          <!-- Quick Amount Chips -->
+          <div class="quick-amount-chips">
+            <button class="quick-amount-chip">$100</button>
+            <button class="quick-amount-chip quick-amount-chip--active">$500</button>
+            <button class="quick-amount-chip">$1,000</button>
+            <button class="quick-amount-chip">$5,000</button>
+          </div>
+
+          <!-- Calculated Units -->
+          <div class="unit-calc">
+            ≈ <strong>8.77 units</strong> at $57.02/unit
+          </div>
+
+          <!-- Review Button -->
+          <button class="btn btn-primary btn-lg" style="width:100%;padding:16px;font-size:var(--text-md);border-radius:var(--radius-md);">
+            Review Investment
+          </button>
+        </div>
+      </div>
+
+    </div><!-- end panel-desktop-inner -->
+  </div><!-- end panel-desktop -->
+
+  <!-- ==================== MOBILE VIEW ==================== -->
+  <div class="panel-mobile">
+    <div class="panel-label">Mobile View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <!-- Background content (dimmed) -->
+        <div style="padding: 16px 16px 90px;filter:blur(1px);opacity:0.5;">
+
+          <div class="breadcrumb" style="font-size:11px;margin-bottom:12px;">
+            <a href="invest-products.html" style="font-size:11px;">Investments</a>
+            <span class="breadcrumb-sep">/</span>
+            <span style="color:var(--text-primary);font-weight:500;font-size:11px;">Capital Growth</span>
+          </div>
+
+          <div style="margin-bottom:20px;">
+            <div style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--text-primary);margin-bottom:8px;">Capital Growth Fund</div>
+            <div style="display:flex;gap:6px;margin-bottom:10px;">
+              <span class="badge badge-risk-medium" style="font-size:9px;padding:3px 8px;">Medium Risk</span>
+              <span class="badge badge-active" style="font-size:9px;padding:3px 8px;">Active</span>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;">
+            <div class="info-grid-item" style="padding:12px;">
+              <div class="info-grid-label" style="font-size:9px;">Unit Price</div>
+              <div class="info-grid-value" style="font-size:15px;">$57.02</div>
+            </div>
+            <div class="info-grid-item" style="padding:12px;">
+              <div class="info-grid-label" style="font-size:9px;">Min. Investment</div>
+              <div class="info-grid-value" style="font-size:15px;">$50</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Sheet Overlay -->
+        <div class="sheet-overlay active" data-sheet="invest" style="position:absolute;inset:0;z-index:50;">
+          <div class="sheet-content" style="padding:24px;max-width:100%;">
+            <div class="sheet-handle"></div>
+            <div class="sheet-title" style="font-size:18px;">Invest in Capital Growth Fund</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px;">Step 1 of 2 — Enter amount</div>
+
+            <!-- Currency -->
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;">
+              <span style="font-size:12px;color:var(--text-secondary);font-weight:500;">Currency:</span>
+              <div style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--bg-secondary);border-radius:var(--radius-full);border:1px solid var(--border);">
+                <span style="font-size:12px;">🇺🇸</span>
+                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">USD</span>
+              </div>
+            </div>
+
+            <!-- Amount Input -->
+            <div style="margin-bottom:14px;">
+              <input type="text" class="amount-input" value="$500" readonly style="font-size:22px;padding:14px 16px;">
+            </div>
+
+            <!-- Quick Amounts -->
+            <div class="quick-amount-chips" style="margin-bottom:14px;">
+              <button class="quick-amount-chip" style="padding:6px 14px;font-size:12px;">$100</button>
+              <button class="quick-amount-chip quick-amount-chip--active" style="padding:6px 14px;font-size:12px;">$500</button>
+              <button class="quick-amount-chip" style="padding:6px 14px;font-size:12px;">$1,000</button>
+              <button class="quick-amount-chip" style="padding:6px 14px;font-size:12px;">$5,000</button>
+            </div>
+
+            <!-- Unit Calc -->
+            <div class="unit-calc" style="font-size:12px;padding:10px;">
+              ≈ <strong>8.77 units</strong> at $57.02/unit
+            </div>
+
+            <!-- Review Button -->
+            <button class="btn btn-primary btn-md" style="width:100%;padding:14px;font-size:14px;border-radius:var(--radius-md);">
+              Review Investment
+            </button>
+          </div>
+        </div>
+
+        <!-- Bottom Tabs -->
+        <div class="bottom-tabs" style="z-index:1;">
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Home
+          </button>
+          <button class="bottom-tab bottom-tab--active">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Invest
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+            Wallet
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Chat
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            More
+          </button>
+        </div>
+
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../system/interactions.js"></script>
+</body>
+</html>

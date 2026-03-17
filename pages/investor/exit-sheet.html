@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eltrich Prime — Exit Position</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 600;
+      font-family: var(--font-sans);
+    }
+    .portfolio-summary {
+      background: linear-gradient(135deg, #1a1208 0%, #3d2a0e 25%, #6b4c1a 50%, #a07830 75%, #c4952a 100%);
+      color: #fff;
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(100,60,10,0.25);
+    }
+    .portfolio-summary::after {
+      content: '';
+      position: absolute;
+      bottom: -40px;
+      right: -40px;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .portfolio-stat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.6);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .holding-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 16px;
+      transition: box-shadow var(--transition-normal);
+    }
+    .btn-exit {
+      padding: 8px 20px;
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      font-family: var(--font-sans);
+    }
+    .btn-exit:hover { background: var(--danger); color: #fff; }
+    /* Toggle switch */
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: var(--accent);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      border: none;
+      flex-shrink: 0;
+    }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition-fast);
+    }
+    .toggle-switch.off {
+      background: var(--border);
+    }
+    .toggle-switch.off::after {
+      transform: translateX(-20px);
+    }
+    .sheet-detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .sheet-detail-row:last-child { border-bottom: none; }
+    .sheet-detail-label {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .sheet-detail-value {
+      font-family: var(--font-serif);
+      font-size: var(--text-md);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    /* Desktop sheet overlay positioning */
+    .desktop-sheet-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 50;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      backdrop-filter: blur(2px);
+    }
+    .desktop-sheet-content {
+      background: var(--bg-card);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      padding: 32px;
+      max-height: 80%;
+      overflow-y: auto;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: var(--shadow-xl);
+    }
+  </style>
+</head>
+<body>
+
+<div class="dual-panel">
+
+  <!-- ==================== DESKTOP VIEW ==================== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop View</div>
+    <div class="panel-desktop-inner" style="position:relative;">
+      <div class="desktop-content" style="filter:blur(1px);opacity:0.6;">
+
+        <!-- Sidebar (dimmed background) -->
+        <div class="desktop-sidebar">
+          <div class="nav-logo">
+            <div>
+              <div class="nav-logo-text">Eltrich Prime</div>
+              <div class="nav-logo-subtitle">Private Family Office</div>
+            </div>
+          </div>
+
+          <div class="nav-section-label">Platform</div>
+          <a class="nav-item" href="dashboard.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+          <a class="nav-item nav-item--active" href="invest-products.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Investments
+          </a>
+          <a class="nav-item" href="wallet.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+            Wallet
+          </a>
+        </div>
+
+        <!-- Main Content (dimmed background) -->
+        <div class="desktop-main">
+          <div class="page-header">
+            <div class="section-label" style="margin-bottom: 8px;">Portfolio Management</div>
+            <div class="page-title">Investment Hub</div>
+          </div>
+          <div class="tab-bar" style="margin-bottom:24px;">
+            <button class="tab-item">Products</button>
+            <button class="tab-item tab-item--active">My Investments</button>
+          </div>
+          <div class="portfolio-summary" style="padding:20px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <div class="portfolio-stat-label" style="font-size:10px;">Total Current Value</div>
+                <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:#fff;">$2,533.50</div>
+              </div>
+              <div style="padding:4px 10px;border-radius:16px;background:rgba(255,255,255,0.12);font-size:12px;font-weight:600;color:#7ddf9a;">+12.4%</div>
+            </div>
+          </div>
+          <div class="holding-card" style="padding:20px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <div style="font-family:var(--font-serif);font-size:var(--text-md);font-weight:600;">Eltrich Capital Growth Fund</div>
+                <div style="font-size:var(--text-sm);color:var(--text-muted);margin-top:4px;">25 units at $50.00/unit</div>
+              </div>
+              <span class="badge badge-active">Active</span>
+            </div>
+          </div>
+          <div class="holding-card" style="padding:20px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <div style="font-family:var(--font-serif);font-size:var(--text-md);font-weight:600;">Eltrich Fixed Income Fund</div>
+                <div style="font-size:var(--text-sm);color:var(--text-muted);margin-top:4px;">100 units at KES 1,000/unit</div>
+              </div>
+              <span class="badge badge-active">Active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Sheet Overlay -->
+      <div class="desktop-sheet-overlay">
+        <div class="desktop-sheet-content">
+          <div class="sheet-handle"></div>
+          <div class="sheet-title">Exit Position</div>
+          <div style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:24px;">Sell your units in Capital Growth Fund</div>
+
+          <!-- Product Info -->
+          <div style="display:flex;align-items:center;gap:12px;padding:16px;background:var(--bg-secondary);border-radius:var(--radius-md);margin-bottom:24px;">
+            <div style="width:40px;height:40px;border-radius:var(--radius-md);background:var(--info-light);display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div>
+              <div style="font-family:var(--font-serif);font-weight:600;font-size:var(--text-md);">Capital Growth Fund</div>
+              <div style="font-size:var(--text-sm);color:var(--text-muted);">25 units held</div>
+            </div>
+          </div>
+
+          <!-- Sell All Toggle -->
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border-light);margin-bottom:16px;">
+            <div>
+              <div style="font-size:var(--text-base);font-weight:500;color:var(--text-primary);">Sell All Units</div>
+              <div style="font-size:var(--text-sm);color:var(--text-muted);">Exit your entire position</div>
+            </div>
+            <button class="toggle-switch" aria-label="Sell all units toggle"></button>
+          </div>
+
+          <!-- Units to Sell -->
+          <div class="sheet-detail-row">
+            <span class="sheet-detail-label">Units to Sell</span>
+            <span class="sheet-detail-value">25</span>
+          </div>
+
+          <!-- Current Price -->
+          <div class="sheet-detail-row">
+            <span class="sheet-detail-label">Current Price</span>
+            <span class="sheet-detail-value">$57.02/unit</span>
+          </div>
+
+          <!-- Estimated Proceeds -->
+          <div class="sheet-detail-row" style="border-bottom:none;padding-bottom:4px;">
+            <span class="sheet-detail-label">Estimated Proceeds</span>
+            <span class="sheet-detail-value" style="color:var(--success);font-size:var(--text-lg);">$1,425.50</span>
+          </div>
+
+          <!-- Info Note -->
+          <div style="background:var(--warning-light);border:1px solid var(--warning);border-radius:var(--radius-md);padding:12px 14px;margin:20px 0;display:flex;align-items:flex-start;gap:10px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a6a10" stroke-width="2" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div style="font-size:var(--text-sm);color:#8a6a10;line-height:1.5;">Proceeds will be credited to your USD wallet within 1-2 business days.</div>
+          </div>
+
+          <!-- Confirm Button -->
+          <button class="btn btn-lg" style="width:100%;padding:16px;font-size:var(--text-md);border-radius:var(--radius-md);background:var(--danger);color:#fff;border:none;cursor:pointer;font-family:var(--font-sans);font-weight:500;">
+            Confirm Exit
+          </button>
+        </div>
+      </div>
+
+    </div><!-- end panel-desktop-inner -->
+  </div><!-- end panel-desktop -->
+
+  <!-- ==================== MOBILE VIEW ==================== -->
+  <div class="panel-mobile">
+    <div class="panel-label">Mobile View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <!-- Background content (dimmed) -->
+        <div style="padding: 16px 16px 90px;filter:blur(1px);opacity:0.5;">
+
+          <div style="margin-bottom:20px;">
+            <div class="section-label" style="margin-bottom:4px;font-size:10px;">Portfolio Management</div>
+            <div style="font-family:var(--font-serif);font-size:22px;font-weight:600;color:var(--text-primary);line-height:1.2;">
+              Investment Hub
+            </div>
+          </div>
+
+          <div class="tab-bar" style="margin-bottom:16px;">
+            <button class="tab-item" style="font-size:13px;padding:10px 16px;">Products</button>
+            <button class="tab-item tab-item--active" style="font-size:13px;padding:10px 16px;">My Investments</button>
+          </div>
+
+          <div class="portfolio-summary" style="padding:16px;border-radius:14px;margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <div class="portfolio-stat-label" style="font-size:9px;">Total Value</div>
+                <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:#fff;">$2,533.50</div>
+              </div>
+              <div style="padding:3px 8px;border-radius:12px;background:rgba(255,255,255,0.12);font-size:10px;font-weight:600;color:#7ddf9a;">+12.4%</div>
+            </div>
+          </div>
+
+          <div class="card" style="padding:14px;margin-bottom:8px;">
+            <div style="font-family:var(--font-serif);font-size:14px;font-weight:600;">Capital Growth Fund</div>
+          </div>
+          <div class="card" style="padding:14px;">
+            <div style="font-family:var(--font-serif);font-size:14px;font-weight:600;">Fixed Income Fund</div>
+          </div>
+        </div>
+
+        <!-- Mobile Sheet Overlay -->
+        <div class="sheet-overlay active" data-sheet="exit" style="position:absolute;inset:0;z-index:50;">
+          <div class="sheet-content" style="padding:24px;max-width:100%;">
+            <div class="sheet-handle"></div>
+            <div class="sheet-title" style="font-size:18px;">Exit Position</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px;">Sell units in Capital Growth Fund</div>
+
+            <!-- Product Info -->
+            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg-secondary);border-radius:var(--radius-md);margin-bottom:18px;">
+              <div style="width:34px;height:34px;border-radius:var(--radius-md);background:var(--info-light);display:flex;align-items:center;justify-content:center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div>
+                <div style="font-family:var(--font-serif);font-weight:600;font-size:14px;">Capital Growth Fund</div>
+                <div style="font-size:11px;color:var(--text-muted);">25 units held</div>
+              </div>
+            </div>
+
+            <!-- Sell All Toggle -->
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border-light);margin-bottom:14px;">
+              <div>
+                <div style="font-size:13px;font-weight:500;color:var(--text-primary);">Sell All Units</div>
+                <div style="font-size:11px;color:var(--text-muted);">Exit entire position</div>
+              </div>
+              <button class="toggle-switch" aria-label="Sell all units toggle"></button>
+            </div>
+
+            <!-- Detail Rows -->
+            <div class="sheet-detail-row" style="padding:10px 0;">
+              <span class="sheet-detail-label" style="font-size:12px;">Units to Sell</span>
+              <span class="sheet-detail-value" style="font-size:14px;">25</span>
+            </div>
+            <div class="sheet-detail-row" style="padding:10px 0;">
+              <span class="sheet-detail-label" style="font-size:12px;">Current Price</span>
+              <span class="sheet-detail-value" style="font-size:14px;">$57.02/unit</span>
+            </div>
+            <div class="sheet-detail-row" style="padding:10px 0;border-bottom:none;">
+              <span class="sheet-detail-label" style="font-size:12px;">Est. Proceeds</span>
+              <span class="sheet-detail-value" style="font-size:16px;color:var(--success);">$1,425.50</span>
+            </div>
+
+            <!-- Warning -->
+            <div style="background:var(--warning-light);border:1px solid var(--warning);border-radius:var(--radius-md);padding:10px 12px;margin:16px 0;display:flex;align-items:flex-start;gap:8px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8a6a10" stroke-width="2" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <div style="font-size:11px;color:#8a6a10;line-height:1.5;">Proceeds credited to USD wallet within 1-2 business days.</div>
+            </div>
+
+            <!-- Confirm Button -->
+            <button class="btn btn-md" style="width:100%;padding:14px;font-size:14px;border-radius:var(--radius-md);background:var(--danger);color:#fff;border:none;cursor:pointer;font-family:var(--font-sans);font-weight:500;">
+              Confirm Exit
+            </button>
+          </div>
+        </div>
+
+        <!-- Bottom Tabs -->
+        <div class="bottom-tabs" style="z-index:1;">
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Home
+          </button>
+          <button class="bottom-tab bottom-tab--active">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Invest
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+            Wallet
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Chat
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            More
+          </button>
+        </div>
+
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../system/interactions.js"></script>
+</body>
+</html>

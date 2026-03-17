@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eltrich Prime — Bank Account Review</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    .bank-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 12px;
+      transition: box-shadow var(--transition-normal);
+    }
+    .bank-card:hover { box-shadow: var(--shadow-md); }
+    .bank-card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .bank-card-info { flex: 1; min-width: 0; }
+    .bank-card-user {
+      font-weight: 600;
+      font-size: var(--text-base);
+      color: var(--text-primary);
+    }
+    .bank-card-email {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .bank-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 14px 0;
+      border-top: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 14px;
+    }
+    .bank-detail-item {}
+    .bank-detail-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .bank-detail-value {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 2px;
+    }
+    .bank-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .bank-icon.pending { background: var(--warning-light); color: #8a6a10; }
+    .bank-icon.approved { background: var(--success-light); color: var(--success); }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    .switch-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      margin: 8px 16px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .switch-link:hover { background: var(--accent-light); color: var(--accent); }
+    .approved-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dual-panel">
+
+  <!-- ==================== DESKTOP VIEW ==================== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop View</div>
+    <div class="panel-desktop-inner">
+      <div class="desktop-content">
+
+        <!-- Admin Sidebar -->
+        <div class="desktop-sidebar">
+          <div class="nav-logo">
+            <div>
+              <div class="nav-logo-text">Eltrich Prime</div>
+              <div class="nav-logo-subtitle">Private Family Office</div>
+            </div>
+          </div>
+
+          <div class="nav-section-label">Admin Panel</div>
+          <a class="nav-item" href="dashboard.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+          <a class="nav-item" href="users.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            Users
+          </a>
+          <a class="nav-item" href="kyc-review.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            KYC Review
+          </a>
+          <a class="nav-item" href="transactions.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Transactions
+          </a>
+          <a class="nav-item" href="investments.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Investments
+          </a>
+          <a class="nav-item" href="#">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            Products
+          </a>
+          <a class="nav-item nav-item--active" href="bank-accounts.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+            Bank Accounts
+          </a>
+          <a class="nav-item" href="#">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+            Conversions
+          </a>
+          <a class="nav-item" href="#">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+            Consultations
+          </a>
+          <a class="nav-item" href="#">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            Notifications
+          </a>
+          <a class="nav-item" href="#">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>
+            Support
+          </a>
+
+          <a class="switch-link" href="../investor/dashboard.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><path d="M21 3l-7 7"/><polyline points="9 21 3 21 3 15"/><path d="M3 21l7-7"/></svg>
+            Switch to User View
+          </a>
+
+          <div class="nav-user">
+            <div class="avatar avatar-initials" style="width:36px;height:36px;font-size:14px;">B</div>
+            <div>
+              <div class="nav-user-name">Bileonaire</div>
+              <div class="nav-user-email">kiokoleon@gmail.c...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="desktop-main">
+
+          <div class="page-header">
+            <div class="page-title">Bank Account Review</div>
+            <div class="page-subtitle">Review and approve pending bank account submissions</div>
+          </div>
+
+          <!-- Pending Accounts Section -->
+          <div class="section">
+            <div class="section-header">
+              <div class="section-title">Pending Accounts (2)</div>
+            </div>
+
+            <!-- Bank Account 1: Grace Muthoni -->
+            <div class="bank-card">
+              <div class="bank-card-header">
+                <div class="bank-icon pending">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+                </div>
+                <div class="bank-card-info">
+                  <div class="bank-card-user">Grace Muthoni</div>
+                  <div class="bank-card-email">grace.m@email.com</div>
+                </div>
+                <span class="badge badge-pending">Pending</span>
+              </div>
+              <div class="bank-details">
+                <div class="bank-detail-item">
+                  <div class="bank-detail-label">Bank Name</div>
+                  <div class="bank-detail-value">Equity Bank</div>
+                </div>
+                <div class="bank-detail-item">
+                  <div class="bank-detail-label">Account Number</div>
+                  <div class="bank-detail-value">****5678</div>
+                </div>
+                <div class="bank-detail-item">
+                  <div class="bank-detail-label">Currency</div>
+                  <div class="bank-detail-value">KES</div>
+                </div>
+                <div class="bank-detail-item">
+                  <div class="bank-detail-label">Branch Code</div>
+                  <div class="bank-detail-value">068</div>
+                </div>
+                <div class="bank-detail-item">
+                  <div class="bank-detail-label">Account Type</div>
+                  <div class="bank-detail-value">Savings</div>
+                </div>
+                <div class="bank-detail-item">
+                  <div class="bank-detail-label">Submitted</div>
+                  <div class="bank-detail-value">2 hours ago</div>
+                </div>
+              </div>
+              <div class="action-buttons">
+                <button class="btn btn-md" style="background: var(--success); color: #fff; flex: 1;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  Approve
+                </button>
+                <button class="btn btn-md btn-danger" style="flex: 1;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  Reject
+                </button>
+              </div>
+            </div>
+
+            <!-- Bank Account 2: Peter Njoroge -->
+            <div class="bank-card">
+              <div class="bank-card-header">
+                <div class="bank-icon pending">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+                </div>
+                <div class="bank-card-info">
+                  <div class="bank-card-user">Peter Njoroge</div>
+                  <div class="bank-card-email">peter.n@email.com</div>
+                </div>
+                <span class="badge badge-pending">Pending</span>
+              </div>
+              <div class="bank-details">
+                <div class="bank-detail-item">
+                  <div class="bank-detail-label">Bank Name</div>
+                  <div class="bank-detail-value">Standard Chartered</div>
+                </div>
+                <div class="bank-detail-item">
+                  <div class="bank-detail-label">Account Number</div>
+                  <div class="bank-detail-value">****9012</div>
+                </div>
+                <div class="bank-detail-item">
+                  <div class="bank-detail-label">Currency</div>
+                  <div class="bank-detail-value">USD</div>
+                </div>
+                <div class="bank-detail-item">
+                  <div class="bank-detail-label">Branch Code</div>
+                  <div class="bank-detail-value">002</div>
+                </div>
+                <div class="bank-detail-item">
+                  <div class="bank-detail-label">Account Type</div>
+                  <div class="bank-detail-value">Current</div>
+                </div>
+                <div class="bank-detail-item">
+                  <div class="bank-detail-label">Submitted</div>
+                  <div class="bank-detail-value">1 day ago</div>
+                </div>
+              </div>
+              <div class="action-buttons">
+                <button class="btn btn-md" style="background: var(--success); color: #fff; flex: 1;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  Approve
+                </button>
+                <button class="btn btn-md btn-danger" style="flex: 1;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  Reject
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Approved Accounts Section -->
+          <div class="section">
+            <div class="section-header">
+              <div class="section-title">Approved Accounts</div>
+            </div>
+
+            <div class="approved-card">
+              <div class="bank-icon approved" style="width: 40px; height: 40px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="22" x2="21" y2="22"/><polygon points="12 2 20 7 4 7"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/></svg>
+              </div>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; font-size: var(--text-sm); color: var(--text-primary);">Bileonaire</div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted);">Equity Bank &middot; ****3456 &middot; KES</div>
+              </div>
+              <span class="badge badge-approved">Approved</span>
+            </div>
+
+            <div class="approved-card">
+              <div class="bank-icon approved" style="width: 40px; height: 40px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="22" x2="21" y2="22"/><polygon points="12 2 20 7 4 7"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/></svg>
+              </div>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; font-size: var(--text-sm); color: var(--text-primary);">Bileonaire</div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted);">Standard Chartered &middot; ****7890 &middot; USD</div>
+              </div>
+              <span class="badge badge-approved">Approved</span>
+            </div>
+
+            <div class="approved-card">
+              <div class="bank-icon approved" style="width: 40px; height: 40px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="22" x2="21" y2="22"/><polygon points="12 2 20 7 4 7"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/></svg>
+              </div>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; font-size: var(--text-sm); color: var(--text-primary);">John Kamau</div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted);">KCB Bank &middot; ****2345 &middot; KES</div>
+              </div>
+              <span class="badge badge-approved">Approved</span>
+            </div>
+
+            <div class="approved-card">
+              <div class="bank-icon approved" style="width: 40px; height: 40px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="22" x2="21" y2="22"/><polygon points="12 2 20 7 4 7"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/></svg>
+              </div>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; font-size: var(--text-sm); color: var(--text-primary);">Sarah Wanjiku</div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted);">NCBA &middot; ****6789 &middot; KES</div>
+              </div>
+              <span class="badge badge-approved">Approved</span>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MOBILE VIEW ==================== -->
+  <div class="panel-mobile">
+    <div class="panel-label">Mobile View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div style="padding: 16px 16px 90px;">
+
+          <!-- Mobile Header -->
+          <div style="margin-bottom: 16px;">
+            <div style="font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--text-primary); line-height: 1.2;">Bank Accounts</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Review pending bank account submissions</div>
+          </div>
+
+          <!-- Pending Section Label -->
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);font-weight:600;margin-bottom:10px;">Pending (2)</div>
+
+          <!-- Mobile Pending Cards -->
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;">
+
+            <!-- Grace Muthoni -->
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <div style="width:36px;height:36px;border-radius:var(--radius-md);background:var(--warning-light);color:#8a6a10;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="22" x2="21" y2="22"/><polygon points="12 2 20 7 4 7"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/></svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-weight:600;font-size:13px;color:var(--text-primary);">Grace Muthoni</div>
+                  <div style="font-size:11px;color:var(--text-muted);">grace.m@email.com</div>
+                </div>
+                <span class="badge badge-pending" style="font-size:9px;padding:2px 6px;">Pending</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 0;border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light);margin-bottom:10px;">
+                <div>
+                  <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Bank</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-top:1px;">Equity Bank</div>
+                </div>
+                <div>
+                  <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Account</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-top:1px;">****5678</div>
+                </div>
+                <div>
+                  <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Currency</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-top:1px;">KES</div>
+                </div>
+                <div>
+                  <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Submitted</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-top:1px;">2h ago</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-sm" style="background:var(--success);color:#fff;flex:1;font-size:11px;">Approve</button>
+                <button class="btn btn-sm btn-danger" style="flex:1;font-size:11px;">Reject</button>
+              </div>
+            </div>
+
+            <!-- Peter Njoroge -->
+            <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <div style="width:36px;height:36px;border-radius:var(--radius-md);background:var(--warning-light);color:#8a6a10;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="22" x2="21" y2="22"/><polygon points="12 2 20 7 4 7"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/></svg>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-weight:600;font-size:13px;color:var(--text-primary);">Peter Njoroge</div>
+                  <div style="font-size:11px;color:var(--text-muted);">peter.n@email.com</div>
+                </div>
+                <span class="badge badge-pending" style="font-size:9px;padding:2px 6px;">Pending</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 0;border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light);margin-bottom:10px;">
+                <div>
+                  <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Bank</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-top:1px;">Std Chartered</div>
+                </div>
+                <div>
+                  <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Account</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-top:1px;">****9012</div>
+                </div>
+                <div>
+                  <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Currency</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-top:1px;">USD</div>
+                </div>
+                <div>
+                  <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Submitted</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-top:1px;">1d ago</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-sm" style="background:var(--success);color:#fff;flex:1;font-size:11px;">Approve</button>
+                <button class="btn btn-sm btn-danger" style="flex:1;font-size:11px;">Reject</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Approved Section -->
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--success);font-weight:600;margin-bottom:10px;">Approved</div>
+
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);">
+              <div style="width:32px;height:32px;border-radius:var(--radius-sm);background:var(--success-light);color:var(--success);display:flex;align-items:center;justify-content:center;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="22" x2="21" y2="22"/><polygon points="12 2 20 7 4 7"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:12px;color:var(--text-primary);">Bileonaire</div>
+                <div style="font-size:10px;color:var(--text-muted);">Equity &middot; ****3456 &middot; KES</div>
+              </div>
+              <span class="badge badge-approved" style="font-size:8px;padding:2px 5px;">Approved</span>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);">
+              <div style="width:32px;height:32px;border-radius:var(--radius-sm);background:var(--success-light);color:var(--success);display:flex;align-items:center;justify-content:center;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="22" x2="21" y2="22"/><polygon points="12 2 20 7 4 7"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:12px;color:var(--text-primary);">John Kamau</div>
+                <div style="font-size:10px;color:var(--text-muted);">KCB &middot; ****2345 &middot; KES</div>
+              </div>
+              <span class="badge badge-approved" style="font-size:8px;padding:2px 5px;">Approved</span>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);">
+              <div style="width:32px;height:32px;border-radius:var(--radius-sm);background:var(--success-light);color:var(--success);display:flex;align-items:center;justify-content:center;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="22" x2="21" y2="22"/><polygon points="12 2 20 7 4 7"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/></svg>
+              </div>
+              <div style="flex:1;">
+                <div style="font-weight:600;font-size:12px;color:var(--text-primary);">Sarah Wanjiku</div>
+                <div style="font-size:10px;color:var(--text-muted);">NCBA &middot; ****6789 &middot; KES</div>
+              </div>
+              <span class="badge badge-approved" style="font-size:8px;padding:2px 5px;">Approved</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Bottom Tabs -->
+        <div class="bottom-tabs">
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Home
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Users
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            KYC
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Txns
+          </button>
+          <button class="bottom-tab bottom-tab--active">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            More
+          </button>
+        </div>
+
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../system/interactions.js"></script>
+</body>
+</html>
