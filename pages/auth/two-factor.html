@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eltrich Prime — Two-Factor Authentication</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    .auth-heading {
+      font-family: var(--font-serif);
+      font-size: var(--text-3xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .auth-subtitle {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 32px;
+    }
+    .auth-section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 600;
+      font-family: var(--font-sans);
+      margin-bottom: 24px;
+    }
+    /* Method cards */
+    .method-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .method-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .method-card:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    .method-card.selected {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .method-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 22px;
+    }
+    .method-icon.authenticator {
+      background: var(--info-light);
+      color: var(--info);
+    }
+    .method-icon.sms {
+      background: var(--success-light);
+      color: var(--success);
+    }
+    .method-icon.email {
+      background: var(--warning-light);
+      color: #8a6a10;
+    }
+    .method-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .method-title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+    .method-desc {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .method-radio {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+    .method-card.selected .method-radio {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+    .method-card.selected .method-radio::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fff;
+    }
+    /* Code input */
+    .code-section-label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .code-inputs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+      justify-content: center;
+    }
+    .code-box {
+      width: 52px;
+      height: 60px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      text-align: center;
+      font-size: var(--text-xl);
+      font-family: var(--font-serif);
+      font-weight: 600;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color var(--transition-fast);
+      caret-color: var(--accent);
+    }
+    .code-box:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+    .btn-full {
+      width: 100%;
+      padding: 14px 28px;
+      font-size: var(--text-md);
+    }
+    .auth-links {
+      text-align: center;
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .auth-links a {
+      font-size: var(--text-sm);
+      color: var(--accent);
+      font-weight: 500;
+      cursor: pointer;
+      transition: color var(--transition-fast);
+    }
+    .auth-links a:hover {
+      color: var(--accent-hover);
+    }
+    .auth-links .back-link {
+      color: var(--text-muted);
+    }
+    .auth-links .back-link:hover {
+      color: var(--text-primary);
+    }
+    /* Mobile auth overrides */
+    .mobile-auth-wrap {
+      padding: 24px 20px;
+      padding-bottom: 40px;
+    }
+    .mobile-auth-wrap .auth-heading {
+      font-size: var(--text-xl);
+    }
+    .mobile-auth-wrap .auth-subtitle {
+      font-size: var(--text-sm);
+      margin-bottom: 24px;
+    }
+    .mobile-auth-wrap .method-card {
+      padding: 14px 16px;
+      gap: 12px;
+    }
+    .mobile-auth-wrap .method-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+    }
+    .mobile-auth-wrap .method-desc {
+      font-size: var(--text-xs);
+    }
+    .mobile-auth-wrap .code-box {
+      width: 44px;
+      height: 52px;
+      font-size: var(--text-lg);
+    }
+    .mobile-auth-wrap .code-inputs {
+      gap: 8px;
+    }
+    .mobile-logo {
+      text-align: center;
+      padding: 16px 20px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+    .mobile-logo .nav-logo-text {
+      text-align: center;
+      font-size: var(--text-lg);
+    }
+    .mobile-logo .nav-logo-subtitle {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dual-panel">
+
+  <!-- ==================== DESKTOP VIEW ==================== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop View</div>
+    <div class="panel-desktop-inner">
+      <!-- Top bar with centered logo -->
+      <div class="top-bar">
+        <div>
+          <div class="nav-logo-text" style="text-align:center;">Eltrich Prime</div>
+          <div class="nav-logo-subtitle" style="text-align:center;">Private Family Office</div>
+        </div>
+      </div>
+
+      <!-- Centered form content -->
+      <div style="max-width:480px;margin:60px auto;padding:0 24px;">
+        <div class="auth-section-label">SECURITY VERIFICATION</div>
+        <h1 class="auth-heading">Two-Factor Authentication</h1>
+        <p class="auth-subtitle">Choose your verification method</p>
+
+        <!-- Method Cards -->
+        <div class="method-cards" id="desktop-methods">
+          <div class="method-card selected" onclick="selectMethod('desktop', this)">
+            <div class="method-icon authenticator">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            </div>
+            <div class="method-info">
+              <div class="method-title">Authenticator App</div>
+              <div class="method-desc">Use Google Authenticator or Authy to generate a time-based code</div>
+            </div>
+            <div class="method-radio"></div>
+          </div>
+
+          <div class="method-card" onclick="selectMethod('desktop', this)">
+            <div class="method-icon sms">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </div>
+            <div class="method-info">
+              <div class="method-title">SMS Code</div>
+              <div class="method-desc">Receive a 6-digit code via text message to +1 *** ***-4829</div>
+            </div>
+            <div class="method-radio"></div>
+          </div>
+
+          <div class="method-card" onclick="selectMethod('desktop', this)">
+            <div class="method-icon email">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div class="method-info">
+              <div class="method-title">Email Code</div>
+              <div class="method-desc">Receive a verification code to k***leon@gmail.com</div>
+            </div>
+            <div class="method-radio"></div>
+          </div>
+        </div>
+
+        <!-- Code Input -->
+        <div class="code-section-label">Enter verification code</div>
+        <div class="code-inputs">
+          <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+          <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+          <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+          <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+          <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+          <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+        </div>
+
+        <button type="button" class="btn btn-primary btn-full">Verify</button>
+
+        <div class="auth-links">
+          <a href="#">Use backup codes</a>
+          <a href="sign-in.html" class="back-link">Back to sign in</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MOBILE VIEW ==================== -->
+  <div class="panel-mobile">
+    <div class="panel-label">Mobile View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="mobile-logo">
+          <div class="nav-logo-text">Eltrich Prime</div>
+          <div class="nav-logo-subtitle">Private Family Office</div>
+        </div>
+
+        <div class="mobile-auth-wrap">
+          <div class="auth-section-label">SECURITY VERIFICATION</div>
+          <h1 class="auth-heading">Two-Factor Authentication</h1>
+          <p class="auth-subtitle">Choose your verification method</p>
+
+          <!-- Method Cards -->
+          <div class="method-cards" id="mobile-methods">
+            <div class="method-card selected" onclick="selectMethod('mobile', this)">
+              <div class="method-icon authenticator">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              </div>
+              <div class="method-info">
+                <div class="method-title">Authenticator App</div>
+                <div class="method-desc">Use Google Authenticator or Authy</div>
+              </div>
+              <div class="method-radio"></div>
+            </div>
+
+            <div class="method-card" onclick="selectMethod('mobile', this)">
+              <div class="method-icon sms">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              </div>
+              <div class="method-info">
+                <div class="method-title">SMS Code</div>
+                <div class="method-desc">Text to +1 *** ***-4829</div>
+              </div>
+              <div class="method-radio"></div>
+            </div>
+
+            <div class="method-card" onclick="selectMethod('mobile', this)">
+              <div class="method-icon email">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div class="method-info">
+                <div class="method-title">Email Code</div>
+                <div class="method-desc">Send to k***leon@gmail.com</div>
+              </div>
+              <div class="method-radio"></div>
+            </div>
+          </div>
+
+          <!-- Code Input -->
+          <div class="code-section-label">Enter verification code</div>
+          <div class="code-inputs">
+            <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+            <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+            <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+            <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+            <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+            <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+          </div>
+
+          <button type="button" class="btn btn-primary btn-full">Verify</button>
+
+          <div class="auth-links">
+            <a href="#">Use backup codes</a>
+            <a href="sign-in.html" class="back-link">Back to sign in</a>
+          </div>
+        </div>
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../system/interactions.js"></script>
+<script>
+  function selectMethod(prefix, card) {
+    const container = document.getElementById(prefix + '-methods');
+    container.querySelectorAll('.method-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+  }
+
+  function autoAdvance(input) {
+    // Only allow digits
+    input.value = input.value.replace(/[^0-9]/g, '');
+    if (input.value.length === 1) {
+      const next = input.nextElementSibling;
+      if (next && next.classList.contains('code-box')) {
+        next.focus();
+      }
+    }
+  }
+
+  // Handle backspace to go to previous input
+  document.querySelectorAll('.code-box').forEach(box => {
+    box.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && box.value === '') {
+        const prev = box.previousElementSibling;
+        if (prev && prev.classList.contains('code-box')) {
+          prev.focus();
+          prev.select();
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

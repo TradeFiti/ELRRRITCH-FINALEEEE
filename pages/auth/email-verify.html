@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eltrich Prime — Verify Your Email</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    .auth-heading {
+      font-family: var(--font-serif);
+      font-size: var(--text-3xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .auth-subtitle {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 32px;
+    }
+    .auth-subtitle strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .auth-section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 600;
+      font-family: var(--font-sans);
+      margin-bottom: 24px;
+    }
+    /* Mail illustration */
+    .mail-illustration {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 32px;
+      position: relative;
+    }
+    .mail-illustration svg {
+      color: var(--accent);
+    }
+    .mail-illustration::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2px dashed var(--accent-subtle);
+    }
+    /* Code input */
+    .code-inputs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+      justify-content: center;
+    }
+    .code-box {
+      width: 52px;
+      height: 60px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      text-align: center;
+      font-size: var(--text-xl);
+      font-family: var(--font-serif);
+      font-weight: 600;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color var(--transition-fast);
+      caret-color: var(--accent);
+    }
+    .code-box:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+    .btn-full {
+      width: 100%;
+      padding: 14px 28px;
+      font-size: var(--text-md);
+    }
+    .resend-row {
+      text-align: center;
+      margin-top: 24px;
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+    }
+    .resend-row a {
+      color: var(--accent);
+      font-weight: 600;
+      cursor: pointer;
+      transition: color var(--transition-fast);
+    }
+    .resend-row a:hover {
+      color: var(--accent-hover);
+    }
+    .resend-timer {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+    .auth-links {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .auth-links a {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      font-weight: 500;
+      cursor: pointer;
+      transition: color var(--transition-fast);
+    }
+    .auth-links a:hover {
+      color: var(--text-primary);
+    }
+    /* Confirmation details card */
+    .email-confirm-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .email-confirm-card .icon-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--accent);
+    }
+    .email-confirm-card .detail {
+      flex: 1;
+      min-width: 0;
+    }
+    .email-confirm-card .detail-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .email-confirm-card .detail-value {
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+      font-weight: 600;
+      word-break: break-all;
+    }
+    /* Mobile auth overrides */
+    .mobile-auth-wrap {
+      padding: 24px 20px;
+      padding-bottom: 40px;
+      text-align: center;
+    }
+    .mobile-auth-wrap .auth-heading {
+      font-size: var(--text-xl);
+    }
+    .mobile-auth-wrap .auth-subtitle {
+      font-size: var(--text-sm);
+      margin-bottom: 24px;
+    }
+    .mobile-auth-wrap .mail-illustration {
+      width: 72px;
+      height: 72px;
+      margin-bottom: 24px;
+    }
+    .mobile-auth-wrap .mail-illustration svg {
+      width: 32px;
+      height: 32px;
+    }
+    .mobile-auth-wrap .code-box {
+      width: 44px;
+      height: 52px;
+      font-size: var(--text-lg);
+    }
+    .mobile-auth-wrap .code-inputs {
+      gap: 8px;
+    }
+    .mobile-auth-wrap .email-confirm-card {
+      text-align: left;
+    }
+    .mobile-logo {
+      text-align: center;
+      padding: 16px 20px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+    .mobile-logo .nav-logo-text {
+      text-align: center;
+      font-size: var(--text-lg);
+    }
+    .mobile-logo .nav-logo-subtitle {
+      text-align: center;
+    }
+    .desktop-center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dual-panel">
+
+  <!-- ==================== DESKTOP VIEW ==================== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop View</div>
+    <div class="panel-desktop-inner">
+      <!-- Top bar with centered logo -->
+      <div class="top-bar">
+        <div>
+          <div class="nav-logo-text" style="text-align:center;">Eltrich Prime</div>
+          <div class="nav-logo-subtitle" style="text-align:center;">Private Family Office</div>
+        </div>
+      </div>
+
+      <!-- Centered form content -->
+      <div style="max-width:480px;margin:60px auto;padding:0 24px;">
+        <div class="desktop-center">
+          <div class="auth-section-label">EMAIL VERIFICATION</div>
+
+          <!-- Mail Icon -->
+          <div class="mail-illustration">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+
+          <h1 class="auth-heading">Verify Your Email</h1>
+          <p class="auth-subtitle">We've sent a verification code to<br><strong>kiokoleon@gmail.com</strong></p>
+        </div>
+
+        <!-- Email detail card -->
+        <div class="email-confirm-card">
+          <div class="icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="detail">
+            <div class="detail-label">Sent to</div>
+            <div class="detail-value">kiokoleon@gmail.com</div>
+          </div>
+        </div>
+
+        <!-- Code Input -->
+        <div class="code-inputs">
+          <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+          <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+          <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+          <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+          <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+          <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+        </div>
+
+        <button type="button" class="btn btn-primary btn-full">Verify Email</button>
+
+        <div class="resend-row">
+          Didn't receive the code? <a href="#" id="desktop-resend" onclick="resendCode('desktop')">Resend</a> <span class="resend-timer" id="desktop-timer">(59s)</span>
+        </div>
+
+        <div class="auth-links">
+          <a href="sign-in.html">Back to sign in</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MOBILE VIEW ==================== -->
+  <div class="panel-mobile">
+    <div class="panel-label">Mobile View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="mobile-logo">
+          <div class="nav-logo-text">Eltrich Prime</div>
+          <div class="nav-logo-subtitle">Private Family Office</div>
+        </div>
+
+        <div class="mobile-auth-wrap">
+          <div class="auth-section-label">EMAIL VERIFICATION</div>
+
+          <!-- Mail Icon -->
+          <div class="mail-illustration">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+
+          <h1 class="auth-heading">Verify Your Email</h1>
+          <p class="auth-subtitle">We've sent a verification code to<br><strong>kiokoleon@gmail.com</strong></p>
+
+          <!-- Email detail card -->
+          <div class="email-confirm-card">
+            <div class="icon-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div class="detail">
+              <div class="detail-label">Sent to</div>
+              <div class="detail-value">kiokoleon@gmail.com</div>
+            </div>
+          </div>
+
+          <!-- Code Input -->
+          <div class="code-inputs">
+            <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+            <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+            <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+            <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+            <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+            <input type="text" class="code-box" maxlength="1" inputmode="numeric" oninput="autoAdvance(this)" onfocus="this.select()">
+          </div>
+
+          <button type="button" class="btn btn-primary btn-full">Verify Email</button>
+
+          <div class="resend-row">
+            Didn't receive the code? <a href="#" id="mobile-resend" onclick="resendCode('mobile')">Resend</a> <span class="resend-timer" id="mobile-timer">(59s)</span>
+          </div>
+
+          <div class="auth-links">
+            <a href="sign-in.html">Back to sign in</a>
+          </div>
+        </div>
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../system/interactions.js"></script>
+<script>
+  function autoAdvance(input) {
+    input.value = input.value.replace(/[^0-9]/g, '');
+    if (input.value.length === 1) {
+      const next = input.nextElementSibling;
+      if (next && next.classList.contains('code-box')) {
+        next.focus();
+      }
+    }
+  }
+
+  // Handle backspace to go to previous input
+  document.querySelectorAll('.code-box').forEach(box => {
+    box.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && box.value === '') {
+        const prev = box.previousElementSibling;
+        if (prev && prev.classList.contains('code-box')) {
+          prev.focus();
+          prev.select();
+        }
+      }
+    });
+  });
+
+  // Countdown timers
+  const timers = { desktop: 59, mobile: 59 };
+  const intervals = {};
+
+  function startTimer(prefix) {
+    const timerEl = document.getElementById(prefix + '-timer');
+    const resendEl = document.getElementById(prefix + '-resend');
+
+    if (intervals[prefix]) clearInterval(intervals[prefix]);
+
+    timers[prefix] = 59;
+    timerEl.style.display = 'inline';
+    resendEl.style.pointerEvents = 'none';
+    resendEl.style.opacity = '0.5';
+
+    intervals[prefix] = setInterval(() => {
+      timers[prefix]--;
+      timerEl.textContent = '(' + timers[prefix] + 's)';
+
+      if (timers[prefix] <= 0) {
+        clearInterval(intervals[prefix]);
+        timerEl.style.display = 'none';
+        resendEl.style.pointerEvents = 'auto';
+        resendEl.style.opacity = '1';
+      }
+    }, 1000);
+  }
+
+  function resendCode(prefix) {
+    startTimer(prefix);
+  }
+
+  // Start timers on load
+  startTimer('desktop');
+  startTimer('mobile');
+</script>
+
+</body>
+</html>

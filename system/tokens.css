@@ -1,0 +1,153 @@
+/* ============================================
+   ELTRICH PRIME — Design Tokens
+   Warm Editorial Elegance
+   ============================================ */
+
+/* --- Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+/* --- Reset --- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* --- Light Mode (Default) --- */
+:root {
+  /* Brand */
+  --accent: #d4952a;
+  --accent-hover: #b8801f;
+  --accent-light: #fdf4e6;
+  --accent-subtle: #faf0d8;
+
+  /* Backgrounds */
+  --bg-primary: #faf8f5;
+  --bg-secondary: #f5f0eb;
+  --bg-card: #ffffff;
+  --bg-elevated: #ffffff;
+
+  /* Text */
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b6560;
+  --text-muted: #9c9590;
+
+  /* Semantic */
+  --success: #2d8a56;
+  --success-light: #e8f5ee;
+  --danger: #c4442a;
+  --danger-light: #fce8e4;
+  --warning: #e8ad3b;
+  --warning-light: #fdf4e6;
+  --info: #2563eb;
+  --info-light: #eff6ff;
+
+  /* Borders */
+  --border: #e8e2dc;
+  --border-light: #f0ebe6;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(26,26,26,0.04);
+  --shadow-md: 0 4px 12px rgba(26,26,26,0.06);
+  --shadow-lg: 0 8px 24px rgba(26,26,26,0.08);
+  --shadow-xl: 0 16px 48px rgba(26,26,26,0.1);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Type Scale */
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+  --text-2xl: 26px;
+  --text-3xl: 32px;
+  --text-4xl: 40px;
+  --text-5xl: 52px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* Phone frame */
+  --phone-bezel: #1a1a1a;
+}
+
+/* --- Dark Mode --- */
+[data-theme="dark"] {
+  --accent: #e8ad3b;
+  --accent-hover: #d4952a;
+  --accent-light: #2a2418;
+  --accent-subtle: #221e14;
+
+  --bg-primary: #0f1219;
+  --bg-secondary: #171c26;
+  --bg-card: #1e2430;
+  --bg-elevated: #252d3a;
+
+  --text-primary: #f0ece8;
+  --text-secondary: #a09890;
+  --text-muted: #706860;
+
+  --success: #3da868;
+  --success-light: #1a2a20;
+  --danger: #e05a40;
+  --danger-light: #2a1a18;
+  --warning: #e8ad3b;
+  --warning-light: #2a2418;
+  --info: #4b8cf5;
+  --info-light: #1a2030;
+
+  --border: #2a3040;
+  --border-light: #222830;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+  --shadow-xl: 0 16px 48px rgba(0,0,0,0.5);
+
+  --phone-bezel: #333;
+}
+
+/* --- Base Styles --- */
+body {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); }
+
+img { max-width: 100%; height: auto; }
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }

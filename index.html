@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eltrich Prime — All Screens</title>
+  <link rel="stylesheet" href="system/tokens.css">
+  <link rel="stylesheet" href="system/components.css">
+  <link rel="stylesheet" href="system/layout.css">
+  <style>
+    body { background: var(--bg-primary); padding: 0; }
+    .hub { max-width: 1200px; margin: 0 auto; padding: 48px 32px; }
+    .hub-header { text-align: center; margin-bottom: 56px; }
+    .hub-logo { font-family: var(--font-serif); font-size: 36px; font-weight: 700; color: var(--accent); }
+    .hub-subtitle { font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-top: 4px; }
+    .hub-desc { font-size: 15px; color: var(--text-secondary); margin-top: 16px; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+    .hub-stats { display: flex; justify-content: center; gap: 32px; margin-top: 24px; }
+    .hub-stat-num { font-family: var(--font-serif); font-size: 28px; font-weight: 600; color: var(--text-primary); }
+    .hub-stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-top: 2px; }
+    .flow-group { margin-bottom: 48px; }
+    .flow-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+    .flow-title { font-family: var(--font-serif); font-size: 24px; font-weight: 600; color: var(--text-primary); margin-bottom: 20px; }
+    .page-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+    .page-link {
+      display: block;
+      padding: 18px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .page-link:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px rgba(212,149,42,0.1);
+      transform: translateY(-2px);
+    }
+    .page-link-name { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: var(--text-primary); }
+    .page-link-desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
+    .page-link-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; margin-top: 8px; }
+    .badge-investor { background: var(--accent-light); color: var(--accent); }
+    .badge-admin-tag { background: var(--info-light); color: var(--info); }
+    .badge-public-tag { background: var(--success-light); color: var(--success); }
+    .badge-auth-tag { background: var(--bg-secondary); color: var(--text-muted); }
+    .theme-bar { position: fixed; top: 16px; right: 16px; z-index: 100; }
+  </style>
+</head>
+<body>
+<div class="theme-bar">
+  <button class="theme-toggle" data-theme-toggle title="Toggle dark mode"></button>
+</div>
+
+<div class="hub">
+  <div class="hub-header">
+    <div class="hub-logo">Eltrich Prime</div>
+    <div class="hub-subtitle">Private Family Office</div>
+    <div class="hub-desc">Complete UI prototype — all screens for the Eltrich Prime investment platform, showing both desktop and mobile views.</div>
+    <div class="hub-stats">
+      <div style="text-align:center;"><div class="hub-stat-num">42</div><div class="hub-stat-label">Total Screens</div></div>
+      <div style="text-align:center;"><div class="hub-stat-num">5</div><div class="hub-stat-label">User Flows</div></div>
+      <div style="text-align:center;"><div class="hub-stat-num">2</div><div class="hub-stat-label">Viewports</div></div>
+    </div>
+  </div>
+
+  <!-- Public -->
+  <div class="flow-group">
+    <div class="flow-label">Public Experience</div>
+    <div class="flow-title">Marketing & Lead Capture</div>
+    <div class="page-grid">
+      <a href="pages/public/landing.html" class="page-link">
+        <div class="page-link-name">Landing Page</div>
+        <div class="page-link-desc">Marketing page with hero, philosophy, services, and CTA sections</div>
+        <span class="page-link-badge badge-public-tag">Public</span>
+      </a>
+      <a href="pages/public/consultation.html" class="page-link">
+        <div class="page-link-name">Consultation Request</div>
+        <div class="page-link-desc">Form for prospective investors to request advisory consultations</div>
+        <span class="page-link-badge badge-public-tag">Public</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Auth -->
+  <div class="flow-group">
+    <div class="flow-label">Authentication</div>
+    <div class="flow-title">Sign In & Security</div>
+    <div class="page-grid">
+      <a href="pages/auth/sign-in.html" class="page-link">
+        <div class="page-link-name">Sign In</div>
+        <div class="page-link-desc">Email/password login with OAuth options</div>
+        <span class="page-link-badge badge-auth-tag">Auth</span>
+      </a>
+      <a href="pages/auth/sign-up.html" class="page-link">
+        <div class="page-link-name">Sign Up</div>
+        <div class="page-link-desc">Account creation with email verification</div>
+        <span class="page-link-badge badge-auth-tag">Auth</span>
+      </a>
+      <a href="pages/auth/two-factor.html" class="page-link">
+        <div class="page-link-name">Two-Factor Auth</div>
+        <div class="page-link-desc">2FA verification method selection and code entry</div>
+        <span class="page-link-badge badge-auth-tag">Auth</span>
+      </a>
+      <a href="pages/auth/email-verify.html" class="page-link">
+        <div class="page-link-name">Email Verification</div>
+        <div class="page-link-desc">Verification code entry after signup</div>
+        <span class="page-link-badge badge-auth-tag">Auth</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Onboarding -->
+  <div class="flow-group">
+    <div class="flow-label">Onboarding Flow</div>
+    <div class="flow-title">New Investor Setup (4 Steps)</div>
+    <div class="page-grid">
+      <a href="pages/onboarding/profile.html" class="page-link">
+        <div class="page-link-name">Step 1: Profile Setup</div>
+        <div class="page-link-desc">Name, phone number, and avatar photo</div>
+        <span class="page-link-badge badge-auth-tag">Onboarding</span>
+      </a>
+      <a href="pages/onboarding/kyc.html" class="page-link">
+        <div class="page-link-name">Step 2: KYC Submission</div>
+        <div class="page-link-desc">Identity, address, investor classification, declarations</div>
+        <span class="page-link-badge badge-auth-tag">Onboarding</span>
+      </a>
+      <a href="pages/onboarding/verification.html" class="page-link">
+        <div class="page-link-name">Step 3: Identity Verification</div>
+        <div class="page-link-desc">SmileID biometric liveness check</div>
+        <span class="page-link-badge badge-auth-tag">Onboarding</span>
+      </a>
+      <a href="pages/onboarding/bank-account.html" class="page-link">
+        <div class="page-link-name">Step 4: Bank Account</div>
+        <div class="page-link-desc">Link primary bank account for transactions</div>
+        <span class="page-link-badge badge-auth-tag">Onboarding</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Investor -->
+  <div class="flow-group">
+    <div class="flow-label">Investor Experience</div>
+    <div class="flow-title">Authenticated App (19 Screens)</div>
+    <div class="page-grid">
+      <a href="pages/investor/dashboard.html" class="page-link">
+        <div class="page-link-name">Dashboard</div>
+        <div class="page-link-desc">Portfolio overview, wallet balances, quick actions</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/invest-products.html" class="page-link">
+        <div class="page-link-name">Investment Products</div>
+        <div class="page-link-desc">Browse and filter investment products</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/invest-portfolio.html" class="page-link">
+        <div class="page-link-name">My Investments</div>
+        <div class="page-link-desc">Portfolio summary and active holdings</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/product-detail.html" class="page-link">
+        <div class="page-link-name">Product Detail</div>
+        <div class="page-link-desc">Full product information and invest CTA</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/invest-sheet.html" class="page-link">
+        <div class="page-link-name">Invest Sheet</div>
+        <div class="page-link-desc">Multi-step investment flow bottom sheet</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/exit-sheet.html" class="page-link">
+        <div class="page-link-name">Exit Sheet</div>
+        <div class="page-link-desc">Exit/sell position bottom sheet</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/wallet.html" class="page-link">
+        <div class="page-link-name">Wallet</div>
+        <div class="page-link-desc">Multi-currency wallets and linked bank accounts</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/deposit-sheet.html" class="page-link">
+        <div class="page-link-name">Deposit Sheet</div>
+        <div class="page-link-desc">Deposit funds flow with reference generation</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/withdraw-sheet.html" class="page-link">
+        <div class="page-link-name">Withdraw Sheet</div>
+        <div class="page-link-desc">Withdrawal flow with bank account selection</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/convert-sheet.html" class="page-link">
+        <div class="page-link-name">Convert Sheet</div>
+        <div class="page-link-desc">Currency conversion KES ↔ USD</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/bank-accounts.html" class="page-link">
+        <div class="page-link-name">Bank Accounts</div>
+        <div class="page-link-desc">Manage linked bank accounts</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/chat-list.html" class="page-link">
+        <div class="page-link-name">Support Chat</div>
+        <div class="page-link-desc">Conversation list with support team</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/chat-thread.html" class="page-link">
+        <div class="page-link-name">Chat Thread</div>
+        <div class="page-link-desc">Message thread with support</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/files.html" class="page-link">
+        <div class="page-link-name">Files</div>
+        <div class="page-link-desc">Document upload and management</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/notifications.html" class="page-link">
+        <div class="page-link-name">Notifications</div>
+        <div class="page-link-desc">In-app notification feed</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/profile.html" class="page-link">
+        <div class="page-link-name">Profile</div>
+        <div class="page-link-desc">User profile and KYC status</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/profile-edit.html" class="page-link">
+        <div class="page-link-name">Edit Profile</div>
+        <div class="page-link-desc">Update name, phone, and avatar</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/settings.html" class="page-link">
+        <div class="page-link-name">Settings</div>
+        <div class="page-link-desc">Account, preferences, and about</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/transactions.html" class="page-link">
+        <div class="page-link-name">Transaction History</div>
+        <div class="page-link-desc">Complete financial activity record</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Admin -->
+  <div class="flow-group">
+    <div class="flow-label">Admin Experience</div>
+    <div class="flow-title">Platform Management (13 Screens)</div>
+    <div class="page-grid">
+      <a href="pages/admin/dashboard.html" class="page-link">
+        <div class="page-link-name">Admin Dashboard</div>
+        <div class="page-link-desc">Platform stats, pending actions, quick navigation</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+      <a href="pages/admin/users.html" class="page-link">
+        <div class="page-link-name">User Management</div>
+        <div class="page-link-desc">Search, filter, and manage all users</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+      <a href="pages/admin/user-detail.html" class="page-link">
+        <div class="page-link-name">User Detail</div>
+        <div class="page-link-desc">Complete user profile and activity</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+      <a href="pages/admin/kyc-review.html" class="page-link">
+        <div class="page-link-name">KYC Review</div>
+        <div class="page-link-desc">Review and approve/reject KYC submissions</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+      <a href="pages/admin/transactions.html" class="page-link">
+        <div class="page-link-name">Transaction Management</div>
+        <div class="page-link-desc">Approve/reject pending transactions</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+      <a href="pages/admin/investments.html" class="page-link">
+        <div class="page-link-name">Investment Management</div>
+        <div class="page-link-desc">Approve/reject investment requests</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+      <a href="pages/admin/bank-accounts.html" class="page-link">
+        <div class="page-link-name">Bank Account Review</div>
+        <div class="page-link-desc">Verify and approve bank accounts</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+      <a href="pages/admin/conversions.html" class="page-link">
+        <div class="page-link-name">Currency Conversions</div>
+        <div class="page-link-desc">Process KES ↔ USD conversion requests</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+      <a href="pages/admin/products.html" class="page-link">
+        <div class="page-link-name">Product Management</div>
+        <div class="page-link-desc">Create, edit, and manage investment products</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+      <a href="pages/admin/consultations.html" class="page-link">
+        <div class="page-link-name">Consultations</div>
+        <div class="page-link-desc">Manage consultation requests from prospects</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+      <a href="pages/admin/notifications.html" class="page-link">
+        <div class="page-link-name">Send Notifications</div>
+        <div class="page-link-desc">Broadcast and targeted notification composition</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+      <a href="pages/admin/support.html" class="page-link">
+        <div class="page-link-name">Support Dashboard</div>
+        <div class="page-link-desc">Support ticket overview and management</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+      <a href="pages/admin/chat-console.html" class="page-link">
+        <div class="page-link-name">Admin Chat Console</div>
+        <div class="page-link-desc">Respond to support threads with admin tools</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align:center;padding:40px 0;border-top:1px solid var(--border);margin-top:24px;">
+    <div style="font-family:var(--font-serif);font-size:18px;font-weight:600;color:var(--accent);">Eltrich Prime</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">UI Prototype · 42 Screens · Desktop + Mobile</div>
+    <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">© 2026 Eltrich Prime. All rights reserved.</div>
+  </div>
+</div>
+
+<script src="system/interactions.js"></script>
+</body>
+</html>

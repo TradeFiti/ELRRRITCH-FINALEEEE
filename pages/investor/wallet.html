@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eltrich Prime — Wallet</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    .wallet-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      padding: 28px 28px 24px;
+    }
+    .wallet-card::after {
+      content: '';
+      position: absolute;
+      bottom: -40px;
+      right: -40px;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .wallet-eye-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .wallet-eye-btn:hover { background: rgba(255,255,255,0.2); }
+    .wallet-eye-btn svg { opacity: 0.7; }
+    .wallet-return-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.12);
+      font-size: 12px;
+      font-weight: 500;
+      color: #7ddf9a;
+    }
+    .qa-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .qa-circle:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px rgba(212,149,42,0.12);
+      transform: translateY(-2px);
+    }
+    .qa-circle svg { color: var(--accent); }
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 600;
+      font-family: var(--font-sans);
+    }
+    .bank-account-row {
+      display: flex;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border-light);
+      gap: 14px;
+      transition: background 0.15s;
+    }
+    .bank-account-row:last-child { border-bottom: none; }
+    .bank-account-row:hover { background: var(--bg-secondary); }
+    .bank-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .primary-star {
+      color: var(--accent);
+      font-size: 14px;
+      margin-left: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dual-panel">
+
+  <!-- ==================== DESKTOP VIEW ==================== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop View</div>
+    <div class="panel-desktop-inner">
+      <div class="desktop-content">
+
+        <!-- Sidebar -->
+        <div class="desktop-sidebar">
+          <div class="nav-logo">
+            <div>
+              <div class="nav-logo-text">Eltrich Prime</div>
+              <div class="nav-logo-subtitle">Private Family Office</div>
+            </div>
+          </div>
+
+          <div class="nav-section-label">Platform</div>
+          <a class="nav-item" href="dashboard.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+          <a class="nav-item" href="invest-products.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Investments
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto;opacity:0.4"><polyline points="6 9 12 15 18 9"/></svg>
+          </a>
+          <a class="nav-item nav-item--active" href="wallet.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+            Wallet
+          </a>
+          <a class="nav-item" href="transactions.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Transactions
+          </a>
+
+          <div class="nav-section-label">Communication</div>
+          <a class="nav-item" href="chat-list.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Support
+            <span class="notification-badge" style="margin-left:auto;">2</span>
+          </a>
+          <a class="nav-item" href="files.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+            Files
+          </a>
+          <a class="nav-item" href="notifications.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            Notifications
+          </a>
+
+          <div class="nav-section-label">Account</div>
+          <a class="nav-item" href="profile.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Profile
+          </a>
+          <a class="nav-item" href="settings.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09c-.658.003-1.25.396-1.51 1z"/></svg>
+            Settings
+          </a>
+
+          <!-- Admin Access -->
+          <div style="padding: 12px 24px; margin-top: 8px;">
+            <div style="padding: 12px 16px; background: var(--accent-light); border-radius: var(--radius-md); border: 1px solid var(--accent-subtle);">
+              <div style="font-size: 11px; font-weight: 600; color: var(--accent); display:flex; align-items:center; gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                Super Admin Access
+              </div>
+              <a href="../admin/dashboard.html" style="font-size: 11px; font-weight: 600; color: var(--accent); margin-top: 6px; display: block;">Admin Dashboard &rarr;</a>
+            </div>
+          </div>
+
+          <!-- User -->
+          <div class="nav-user">
+            <div class="avatar avatar-initials" style="width:36px;height:36px;font-size:14px;">B</div>
+            <div>
+              <div class="nav-user-name">Bileonaire</div>
+              <div class="nav-user-email">kiokoleon@gmail.c...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="desktop-main">
+
+          <!-- Header -->
+          <div style="margin-bottom: 36px;">
+            <div class="section-label" style="margin-bottom: 8px;">Wallet Management</div>
+            <div class="page-title">Your Wallets</div>
+            <div class="page-subtitle">Manage your multi-currency wallets</div>
+          </div>
+
+          <!-- Wallet Cards -->
+          <div class="grid-2" style="gap: 20px; margin-bottom: 36px;" data-balance-container>
+            <!-- KES Wallet -->
+            <div class="wallet-card" style="background: linear-gradient(135deg, #1a1208 0%, #3d2a0e 25%, #6b4c1a 50%, #a07830 75%, #c4952a 100%); box-shadow: 0 12px 40px rgba(100,60,10,0.25);">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:18px;">&#127472;&#127466;</span>
+                  <span style="font-size:14px;font-weight:600;color:#fff;letter-spacing:0.02em;">KES</span>
+                </div>
+                <button class="wallet-eye-btn" data-balance-toggle data-balance-hidden="false">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);font-weight:600;margin-bottom:6px;">Available Balance</div>
+              <div style="font-family:var(--font-serif);font-size:32px;font-weight:700;color:#fff;letter-spacing:-0.02em;" data-balance="KES 2,450,000.00">KES 2,450,000.00</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.55);">Kenyan Shilling</span>
+                <span class="wallet-return-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  +4.2%
+                </span>
+              </div>
+            </div>
+
+            <!-- USD Wallet -->
+            <div class="wallet-card" style="background: linear-gradient(135deg, #0d1b33 0%, #1a2d4d 25%, #2a4168 50%, #3a5580 75%, #4a6898 100%); box-shadow: 0 12px 40px rgba(20,40,80,0.25);">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:18px;">&#127482;&#127480;</span>
+                  <span style="font-size:14px;font-weight:600;color:#fff;letter-spacing:0.02em;">USD</span>
+                </div>
+                <button class="wallet-eye-btn">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);font-weight:600;margin-bottom:6px;">Available Balance</div>
+              <div style="font-family:var(--font-serif);font-size:32px;font-weight:700;color:#fff;letter-spacing:-0.02em;" data-balance="$18,750.00">$18,750.00</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+                <span style="font-size:13px;color:rgba(255,255,255,0.55);">US Dollar</span>
+                <span class="wallet-return-badge">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  +2.8%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div style="display:flex;justify-content:center;gap:40px;margin-bottom:40px;">
+            <a href="deposit-sheet.html" style="display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;text-decoration:none;">
+              <div class="qa-circle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+              </div>
+              <span style="font-size:13px;color:var(--text-secondary);font-weight:500;">Deposit</span>
+            </a>
+            <a href="withdraw-sheet.html" style="display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;text-decoration:none;">
+              <div class="qa-circle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>
+              </div>
+              <span style="font-size:13px;color:var(--text-secondary);font-weight:500;">Withdraw</span>
+            </a>
+            <a href="convert-sheet.html" style="display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;text-decoration:none;">
+              <div class="qa-circle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+              </div>
+              <span style="font-size:13px;color:var(--text-secondary);font-weight:500;">Convert</span>
+            </a>
+          </div>
+
+          <!-- Linked Bank Accounts -->
+          <div class="section">
+            <div class="section-header">
+              <div class="section-title">Linked Bank Accounts</div>
+              <a class="section-link" href="bank-accounts.html">Manage All &rarr;</a>
+            </div>
+            <div class="card" style="padding: 0;">
+              <div class="bank-account-row">
+                <div class="bank-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/><path d="M4 10v11"/><path d="M20 10v11"/><path d="M8 14v3"/><path d="M12 14v3"/><path d="M16 14v3"/></svg>
+                </div>
+                <div style="flex:1;min-width:0;">
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-weight:600;font-size:var(--text-base);color:var(--text-primary);">Equity Bank</span>
+                    <span class="primary-star" title="Primary Account">&#9733;</span>
+                  </div>
+                  <div style="font-size:var(--text-sm);color:var(--text-muted);margin-top:2px;">****4521 &middot; KES</div>
+                </div>
+                <span class="badge badge-approved">Approved</span>
+              </div>
+              <div class="bank-account-row">
+                <div class="bank-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/><path d="M4 10v11"/><path d="M20 10v11"/><path d="M8 14v3"/><path d="M12 14v3"/><path d="M16 14v3"/></svg>
+                </div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-weight:600;font-size:var(--text-base);color:var(--text-primary);">KCB</div>
+                  <div style="font-size:var(--text-sm);color:var(--text-muted);margin-top:2px;">****7890 &middot; KES</div>
+                </div>
+                <span class="badge badge-approved">Approved</span>
+              </div>
+              <div class="bank-account-row">
+                <div class="bank-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/><path d="M4 10v11"/><path d="M20 10v11"/><path d="M8 14v3"/><path d="M12 14v3"/><path d="M16 14v3"/></svg>
+                </div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-weight:600;font-size:var(--text-base);color:var(--text-primary);">Standard Chartered</div>
+                  <div style="font-size:var(--text-sm);color:var(--text-muted);margin-top:2px;">****2345 &middot; USD</div>
+                </div>
+                <span class="badge badge-pending">Pending</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Bank Account Button -->
+          <div style="text-align:center;margin-top:8px;">
+            <a href="bank-accounts.html" class="btn btn-secondary btn-md" style="gap:8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Bank Account
+            </a>
+          </div>
+
+        </div><!-- end desktop-main -->
+      </div><!-- end desktop-content -->
+    </div><!-- end panel-desktop-inner -->
+  </div><!-- end panel-desktop -->
+
+  <!-- ==================== MOBILE VIEW ==================== -->
+  <div class="panel-mobile">
+    <div class="panel-label">Mobile View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div style="padding: 16px 16px 90px;">
+
+          <!-- Mobile Header -->
+          <div style="margin-bottom:24px;">
+            <div class="section-label" style="margin-bottom:4px;font-size:10px;">Wallet Management</div>
+            <div style="font-family:var(--font-serif);font-size:24px;font-weight:500;color:var(--text-primary);line-height:1.2;">
+              Your Wallets
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Manage your multi-currency wallets</div>
+          </div>
+
+          <!-- Mobile Wallet Cards -->
+          <div style="margin-bottom:20px;" data-balance-container>
+            <div class="wallet-card" style="background: linear-gradient(135deg, #1a1208 0%, #3d2a0e 25%, #6b4c1a 50%, #a07830 75%, #c4952a 100%); box-shadow: 0 8px 24px rgba(100,60,10,0.2); margin-bottom:10px; padding:20px 20px 18px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span style="font-size:14px;">&#127472;&#127466;</span>
+                  <span style="font-size:12px;font-weight:600;color:#fff;">KES</span>
+                </div>
+                <button class="wallet-eye-btn" style="width:28px;height:28px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.55);font-weight:600;margin-bottom:4px;">Available Balance</div>
+              <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:#fff;" data-balance="KES 2,450,000">KES 2,450,000</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
+                <span style="font-size:11px;color:rgba(255,255,255,0.5);">Kenyan Shilling</span>
+                <span class="wallet-return-badge" style="font-size:10px;padding:3px 8px;">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  +4.2%
+                </span>
+              </div>
+            </div>
+
+            <div class="wallet-card" style="background: linear-gradient(135deg, #0d1b33 0%, #1a2d4d 25%, #2a4168 50%, #3a5580 75%, #4a6898 100%); box-shadow: 0 8px 24px rgba(20,40,80,0.2); padding:20px 20px 18px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span style="font-size:14px;">&#127482;&#127480;</span>
+                  <span style="font-size:12px;font-weight:600;color:#fff;">USD</span>
+                </div>
+                <button class="wallet-eye-btn" style="width:28px;height:28px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.55);font-weight:600;margin-bottom:4px;">Available Balance</div>
+              <div style="font-family:var(--font-serif);font-size:22px;font-weight:700;color:#fff;" data-balance="$18,750.00">$18,750.00</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
+                <span style="font-size:11px;color:rgba(255,255,255,0.5);">US Dollar</span>
+                <span class="wallet-return-badge" style="font-size:10px;padding:3px 8px;">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  +2.8%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Quick Actions -->
+          <div style="display:flex;justify-content:space-around;margin-bottom:20px;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+              <div class="qa-circle" style="width:44px;height:44px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+              </div>
+              <span style="font-size:11px;color:var(--text-secondary);font-weight:500;">Deposit</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+              <div class="qa-circle" style="width:44px;height:44px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>
+              </div>
+              <span style="font-size:11px;color:var(--text-secondary);font-weight:500;">Withdraw</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+              <div class="qa-circle" style="width:44px;height:44px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+              </div>
+              <span style="font-size:11px;color:var(--text-secondary);font-weight:500;">Convert</span>
+            </div>
+          </div>
+
+          <!-- Mobile Bank Accounts -->
+          <div style="margin-bottom:20px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <div style="font-family:var(--font-serif);font-size:var(--text-md);font-weight:600;">Linked Banks</div>
+              <a href="bank-accounts.html" style="font-size:11px;color:var(--accent);font-weight:500;">Manage &rarr;</a>
+            </div>
+            <div class="card" style="padding:0;">
+              <div style="padding:0 14px;">
+                <div style="display:flex;align-items:center;padding:14px 0;border-bottom:1px solid var(--border-light);gap:10px;">
+                  <div style="width:32px;height:32px;border-radius:8px;background:var(--bg-secondary);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/></svg>
+                  </div>
+                  <div style="flex:1;">
+                    <div style="font-size:13px;font-weight:600;display:flex;align-items:center;gap:4px;">Equity Bank <span style="color:var(--accent);font-size:12px;">&#9733;</span></div>
+                    <div style="font-size:10px;color:var(--text-muted);">****4521 &middot; KES</div>
+                  </div>
+                  <span class="badge badge-approved" style="font-size:9px;padding:3px 8px;">Approved</span>
+                </div>
+                <div style="display:flex;align-items:center;padding:14px 0;border-bottom:1px solid var(--border-light);gap:10px;">
+                  <div style="width:32px;height:32px;border-radius:8px;background:var(--bg-secondary);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/></svg>
+                  </div>
+                  <div style="flex:1;">
+                    <div style="font-size:13px;font-weight:600;">KCB</div>
+                    <div style="font-size:10px;color:var(--text-muted);">****7890 &middot; KES</div>
+                  </div>
+                  <span class="badge badge-approved" style="font-size:9px;padding:3px 8px;">Approved</span>
+                </div>
+                <div style="display:flex;align-items:center;padding:14px 0;gap:10px;">
+                  <div style="width:32px;height:32px;border-radius:8px;background:var(--bg-secondary);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2"><path d="M3 21h18"/><path d="M3 10h18"/><path d="M5 6l7-3 7 3"/></svg>
+                  </div>
+                  <div style="flex:1;">
+                    <div style="font-size:13px;font-weight:600;">Std Chartered</div>
+                    <div style="font-size:10px;color:var(--text-muted);">****2345 &middot; USD</div>
+                  </div>
+                  <span class="badge badge-pending" style="font-size:9px;padding:3px 8px;">Pending</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Add Bank -->
+          <div style="text-align:center;">
+            <a href="bank-accounts.html" class="btn btn-secondary btn-sm" style="font-size:12px;gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Bank Account
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Bottom Tabs -->
+        <div class="bottom-tabs">
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Home
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Invest
+          </button>
+          <button class="bottom-tab bottom-tab--active">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+            Wallet
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Chat
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            More
+          </button>
+        </div>
+
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../system/interactions.js"></script>
+</body>
+</html>

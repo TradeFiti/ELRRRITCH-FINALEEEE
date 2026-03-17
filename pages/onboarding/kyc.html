@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eltrich Prime — KYC Submission</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    .onboarding-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 900px;
+    }
+    .onboarding-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 24px 32px;
+      overflow-y: auto;
+    }
+    .onboarding-form {
+      width: 100%;
+      max-width: 540px;
+    }
+    .onboarding-heading {
+      font-family: var(--font-serif);
+      font-size: var(--text-3xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: center;
+      line-height: 1.2;
+    }
+    .onboarding-subtitle {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      text-align: center;
+      margin-top: 8px;
+      margin-bottom: 36px;
+    }
+    .form-section {
+      margin-bottom: 32px;
+    }
+    .form-section-title {
+      font-family: var(--font-serif);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .form-section-desc {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .risk-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .risk-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      background: var(--bg-card);
+    }
+    .risk-card:hover {
+      border-color: var(--accent);
+    }
+    .risk-card.selected {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    .risk-card input[type="radio"] {
+      display: none;
+    }
+    .risk-card-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .risk-card-label {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .risk-card-desc {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      flex-shrink: 0;
+      accent-color: var(--accent);
+    }
+    .checkbox-label {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .checkbox-label a {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+    .onboarding-footer {
+      width: 100%;
+      max-width: 540px;
+      padding-top: 24px;
+      padding-bottom: 8px;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      font-weight: 500;
+      cursor: pointer;
+      transition: color var(--transition-fast);
+    }
+    .back-link:hover { color: var(--text-secondary); }
+
+    /* Mobile overrides */
+    .mobile .onboarding-heading { font-size: var(--text-xl); }
+    .mobile .onboarding-subtitle { font-size: var(--text-sm); margin-bottom: 24px; }
+    .mobile .form-row { grid-template-columns: 1fr; }
+    .mobile .risk-cards { grid-template-columns: 1fr; }
+    .mobile .form-section-title { font-size: var(--text-md); }
+  </style>
+</head>
+<body>
+
+<div class="dual-panel">
+
+  <!-- ==================== DESKTOP VIEW ==================== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop View</div>
+    <div class="panel-desktop-inner">
+      <div class="onboarding-wrapper">
+
+        <!-- Top Bar -->
+        <div class="top-bar">
+          <div class="top-bar-logo">Eltrich Prime</div>
+        </div>
+
+        <!-- Progress Stepper -->
+        <div class="stepper">
+          <div class="stepper-step stepper-step--completed">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="stepper-line stepper-line--completed"></div>
+          <div class="stepper-step stepper-step--active">2</div>
+          <div class="stepper-line"></div>
+          <div class="stepper-step">3</div>
+          <div class="stepper-line"></div>
+          <div class="stepper-step">4</div>
+        </div>
+
+        <!-- Body -->
+        <div class="onboarding-body">
+          <div class="onboarding-form">
+
+            <div class="onboarding-heading">Know Your Customer</div>
+            <div class="onboarding-subtitle">Required for regulatory compliance</div>
+
+            <!-- Personal Information -->
+            <div class="form-section">
+              <div class="form-section-title">Personal Information</div>
+              <div class="form-section-desc">We need a few details to verify your identity</div>
+
+              <div class="form-row">
+                <div class="input-group">
+                  <label class="input-label">Date of Birth</label>
+                  <input type="date" class="input">
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Nationality</label>
+                  <select class="select">
+                    <option value="" disabled selected>Select nationality</option>
+                    <option value="KE">Kenyan</option>
+                    <option value="NG">Nigerian</option>
+                    <option value="ZA">South African</option>
+                    <option value="TZ">Tanzanian</option>
+                    <option value="UG">Ugandan</option>
+                    <option value="GH">Ghanaian</option>
+                    <option value="US">American</option>
+                    <option value="GB">British</option>
+                    <option value="AE">Emirati</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="input-group">
+                  <label class="input-label">ID Type</label>
+                  <select class="select">
+                    <option value="" disabled selected>Select ID type</option>
+                    <option value="national_id">National ID</option>
+                    <option value="passport">Passport</option>
+                    <option value="driving_license">Driving License</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">ID Number</label>
+                  <input type="text" class="input" placeholder="Enter your ID number">
+                </div>
+              </div>
+            </div>
+
+            <!-- Residential Address -->
+            <div class="form-section">
+              <div class="form-section-title">Residential Address</div>
+              <div class="form-section-desc">Where do you currently reside?</div>
+
+              <div class="input-group">
+                <label class="input-label">Street Address</label>
+                <input type="text" class="input" placeholder="e.g. 123 Kenyatta Avenue">
+              </div>
+
+              <div class="form-row">
+                <div class="input-group">
+                  <label class="input-label">City</label>
+                  <input type="text" class="input" placeholder="e.g. Nairobi">
+                </div>
+                <div class="input-group">
+                  <label class="input-label">State / Province</label>
+                  <input type="text" class="input" placeholder="e.g. Nairobi County">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="input-group">
+                  <label class="input-label">Country</label>
+                  <select class="select">
+                    <option value="" disabled selected>Select country</option>
+                    <option value="KE" selected>Kenya</option>
+                    <option value="NG">Nigeria</option>
+                    <option value="ZA">South Africa</option>
+                    <option value="TZ">Tanzania</option>
+                    <option value="UG">Uganda</option>
+                    <option value="GH">Ghana</option>
+                    <option value="US">United States</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="AE">UAE</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Postal Code</label>
+                  <input type="text" class="input" placeholder="e.g. 00100">
+                </div>
+              </div>
+            </div>
+
+            <!-- Investor Classification -->
+            <div class="form-section">
+              <div class="form-section-title">Investor Classification</div>
+              <div class="form-section-desc">Helps us recommend suitable investment products</div>
+
+              <div class="form-row">
+                <div class="input-group">
+                  <label class="input-label">Net Worth Range</label>
+                  <select class="select">
+                    <option value="" disabled selected>Select range</option>
+                    <option value="under_50k">Under $50,000</option>
+                    <option value="50k_250k">$50,000 - $250,000</option>
+                    <option value="250k_1m">$250,000 - $1,000,000</option>
+                    <option value="1m_5m">$1,000,000 - $5,000,000</option>
+                    <option value="over_5m">Over $5,000,000</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label class="input-label">Annual Income Range</label>
+                  <select class="select">
+                    <option value="" disabled selected>Select range</option>
+                    <option value="under_25k">Under $25,000</option>
+                    <option value="25k_75k">$25,000 - $75,000</option>
+                    <option value="75k_200k">$75,000 - $200,000</option>
+                    <option value="200k_500k">$200,000 - $500,000</option>
+                    <option value="over_500k">Over $500,000</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label">Investment Experience</label>
+                <select class="select">
+                  <option value="" disabled selected>Select experience level</option>
+                  <option value="none">None - I'm new to investing</option>
+                  <option value="beginner">Beginner - Less than 2 years</option>
+                  <option value="intermediate">Intermediate - 2 to 5 years</option>
+                  <option value="experienced">Experienced - 5 to 10 years</option>
+                  <option value="expert">Expert - Over 10 years</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label">Risk Tolerance</label>
+                <div class="risk-cards">
+                  <label class="risk-card">
+                    <input type="radio" name="risk" value="conservative">
+                    <div class="risk-card-icon">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div class="risk-card-label">Conservative</div>
+                    <div class="risk-card-desc">Capital preservation, low volatility</div>
+                  </label>
+                  <label class="risk-card selected">
+                    <input type="radio" name="risk" value="moderate" checked>
+                    <div class="risk-card-icon">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <div class="risk-card-label">Moderate</div>
+                    <div class="risk-card-desc">Balanced growth and stability</div>
+                  </label>
+                  <label class="risk-card">
+                    <input type="radio" name="risk" value="aggressive">
+                    <div class="risk-card-icon">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    </div>
+                    <div class="risk-card-label">Aggressive</div>
+                    <div class="risk-card-desc">Maximum growth, higher volatility</div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Declarations -->
+            <div class="form-section">
+              <div class="form-section-title">Declarations</div>
+              <div class="form-section-desc">Required regulatory disclosures</div>
+
+              <div class="checkbox-row">
+                <input type="checkbox" id="pep">
+                <label class="checkbox-label" for="pep">
+                  I am a <strong>Politically Exposed Person (PEP)</strong> or a close associate/family member of a PEP
+                </label>
+              </div>
+
+              <div class="checkbox-row">
+                <input type="checkbox" id="us-person">
+                <label class="checkbox-label" for="us-person">
+                  I am a <strong>US Person</strong> for tax purposes (US citizen, green card holder, or US tax resident)
+                </label>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="checkbox-row">
+                <input type="checkbox" id="terms">
+                <label class="checkbox-label" for="terms">
+                  I confirm the information provided is accurate and I agree to the <a href="#">Terms of Service</a>, <a href="#">Privacy Policy</a>, and <a href="#">Investment Risk Disclosures</a>
+                </label>
+              </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="onboarding-footer">
+              <button class="btn btn-primary btn-lg w-full">Submit for Review</button>
+              <a class="back-link" href="profile.html">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><polyline points="15 18 9 12 15 6"/></svg>
+                Back
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MOBILE VIEW ==================== -->
+  <div class="panel-mobile">
+    <div class="panel-label" style="text-align:center;">Mobile View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="mobile onboarding-wrapper" style="min-height:auto;">
+
+          <!-- Top Bar -->
+          <div class="top-bar" style="padding:14px 16px;">
+            <div class="top-bar-logo" style="font-size:var(--text-lg);">Eltrich Prime</div>
+          </div>
+
+          <!-- Progress Stepper -->
+          <div class="stepper" style="padding:12px 8px;">
+            <div class="stepper-step stepper-step--completed" style="width:26px;height:26px;font-size:11px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="stepper-line stepper-line--completed" style="width:28px;"></div>
+            <div class="stepper-step stepper-step--active" style="width:26px;height:26px;font-size:11px;">2</div>
+            <div class="stepper-line" style="width:28px;"></div>
+            <div class="stepper-step" style="width:26px;height:26px;font-size:11px;">3</div>
+            <div class="stepper-line" style="width:28px;"></div>
+            <div class="stepper-step" style="width:26px;height:26px;font-size:11px;">4</div>
+          </div>
+
+          <!-- Body -->
+          <div style="padding:20px 16px 24px;">
+
+            <div style="font-family:var(--font-serif);font-size:var(--text-xl);font-weight:600;color:var(--text-primary);text-align:center;line-height:1.2;">Know Your Customer</div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);text-align:center;margin-top:6px;margin-bottom:24px;">Required for regulatory compliance</div>
+
+            <!-- Personal Information -->
+            <div style="margin-bottom:24px;">
+              <div style="font-family:var(--font-serif);font-size:var(--text-md);font-weight:600;color:var(--text-primary);margin-bottom:4px;">Personal Information</div>
+              <div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:16px;">We need a few details to verify your identity</div>
+
+              <div class="input-group">
+                <label class="input-label">Date of Birth</label>
+                <input type="date" class="input">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Nationality</label>
+                <select class="select">
+                  <option value="" disabled selected>Select nationality</option>
+                  <option value="KE">Kenyan</option>
+                  <option value="NG">Nigerian</option>
+                  <option value="ZA">South African</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">ID Type</label>
+                <select class="select">
+                  <option value="" disabled selected>Select ID type</option>
+                  <option value="national_id">National ID</option>
+                  <option value="passport">Passport</option>
+                  <option value="driving_license">Driving License</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">ID Number</label>
+                <input type="text" class="input" placeholder="Enter your ID number">
+              </div>
+            </div>
+
+            <!-- Residential Address -->
+            <div style="margin-bottom:24px;">
+              <div style="font-family:var(--font-serif);font-size:var(--text-md);font-weight:600;color:var(--text-primary);margin-bottom:4px;">Residential Address</div>
+              <div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:16px;">Where do you currently reside?</div>
+
+              <div class="input-group">
+                <label class="input-label">Street Address</label>
+                <input type="text" class="input" placeholder="e.g. 123 Kenyatta Avenue">
+              </div>
+              <div class="input-group">
+                <label class="input-label">City</label>
+                <input type="text" class="input" placeholder="e.g. Nairobi">
+              </div>
+              <div class="input-group">
+                <label class="input-label">State / Province</label>
+                <input type="text" class="input" placeholder="e.g. Nairobi County">
+              </div>
+              <div class="input-group">
+                <label class="input-label">Country</label>
+                <select class="select">
+                  <option value="KE" selected>Kenya</option>
+                  <option value="NG">Nigeria</option>
+                  <option value="ZA">South Africa</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Postal Code</label>
+                <input type="text" class="input" placeholder="e.g. 00100">
+              </div>
+            </div>
+
+            <!-- Investor Classification -->
+            <div style="margin-bottom:24px;">
+              <div style="font-family:var(--font-serif);font-size:var(--text-md);font-weight:600;color:var(--text-primary);margin-bottom:4px;">Investor Classification</div>
+              <div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:16px;">Helps us recommend suitable products</div>
+
+              <div class="input-group">
+                <label class="input-label">Net Worth Range</label>
+                <select class="select">
+                  <option value="" disabled selected>Select range</option>
+                  <option value="under_50k">Under $50,000</option>
+                  <option value="50k_250k">$50,000 - $250,000</option>
+                  <option value="250k_1m">$250,000 - $1,000,000</option>
+                  <option value="1m_5m">$1,000,000 - $5,000,000</option>
+                  <option value="over_5m">Over $5,000,000</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Annual Income Range</label>
+                <select class="select">
+                  <option value="" disabled selected>Select range</option>
+                  <option value="under_25k">Under $25,000</option>
+                  <option value="25k_75k">$25,000 - $75,000</option>
+                  <option value="75k_200k">$75,000 - $200,000</option>
+                  <option value="over_500k">Over $500,000</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Investment Experience</label>
+                <select class="select">
+                  <option value="" disabled selected>Select experience</option>
+                  <option value="none">None</option>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="experienced">Experienced</option>
+                  <option value="expert">Expert</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label">Risk Tolerance</label>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <label class="risk-card" style="display:flex;align-items:center;gap:12px;padding:12px;text-align:left;">
+                    <input type="radio" name="m-risk" value="conservative">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <div>
+                      <div class="risk-card-label">Conservative</div>
+                      <div class="risk-card-desc">Capital preservation</div>
+                    </div>
+                  </label>
+                  <label class="risk-card selected" style="display:flex;align-items:center;gap:12px;padding:12px;text-align:left;">
+                    <input type="radio" name="m-risk" value="moderate" checked>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    <div>
+                      <div class="risk-card-label">Moderate</div>
+                      <div class="risk-card-desc">Balanced growth</div>
+                    </div>
+                  </label>
+                  <label class="risk-card" style="display:flex;align-items:center;gap:12px;padding:12px;text-align:left;">
+                    <input type="radio" name="m-risk" value="aggressive">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    <div>
+                      <div class="risk-card-label">Aggressive</div>
+                      <div class="risk-card-desc">Maximum growth</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Declarations -->
+            <div style="margin-bottom:24px;">
+              <div style="font-family:var(--font-serif);font-size:var(--text-md);font-weight:600;color:var(--text-primary);margin-bottom:4px;">Declarations</div>
+              <div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:16px;">Required regulatory disclosures</div>
+
+              <div class="checkbox-row">
+                <input type="checkbox" id="m-pep">
+                <label class="checkbox-label" for="m-pep">I am a <strong>Politically Exposed Person</strong></label>
+              </div>
+              <div class="checkbox-row">
+                <input type="checkbox" id="m-us">
+                <label class="checkbox-label" for="m-us">I am a <strong>US Person</strong> for tax purposes</label>
+              </div>
+              <div style="height:1px;background:var(--border);margin:16px 0;"></div>
+              <div class="checkbox-row">
+                <input type="checkbox" id="m-terms">
+                <label class="checkbox-label" for="m-terms">I agree to the <a href="#">Terms</a>, <a href="#">Privacy Policy</a>, and <a href="#">Risk Disclosures</a></label>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="margin-top:8px;">
+              <button class="btn btn-primary btn-lg w-full">Submit for Review</button>
+              <a class="back-link" href="profile.html">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><polyline points="15 18 9 12 15 6"/></svg>
+                Back
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
