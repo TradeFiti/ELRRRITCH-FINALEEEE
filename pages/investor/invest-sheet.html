@@ -43,56 +43,6 @@
       font-weight: 600;
       color: var(--text-primary);
     }
-    .asset-bar {
-      display: flex;
-      height: 12px;
-      border-radius: var(--radius-full);
-      overflow: hidden;
-      margin-bottom: 12px;
-    }
-    .asset-bar-segment { height: 100%; }
-    .asset-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    .asset-legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: var(--text-sm);
-      color: var(--text-secondary);
-    }
-    .asset-legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .risk-list {
-      list-style: none;
-      padding: 0;
-    }
-    .risk-list li {
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border-light);
-      font-size: var(--text-sm);
-      color: var(--text-secondary);
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
-    .risk-list li:last-child { border-bottom: none; }
-    .risk-list li::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--warning);
-      flex-shrink: 0;
-      margin-top: 6px;
-    }
-    /* Sheet-specific: amount input */
     .amount-input-wrap {
       position: relative;
       margin-bottom: 16px;
@@ -110,6 +60,7 @@
       outline: none;
       text-align: center;
     }
+    .amount-input:focus { border-color: var(--accent-hover); }
     .quick-amount-chips {
       display: flex;
       gap: 8px;
@@ -147,7 +98,6 @@
       color: var(--text-primary);
       font-weight: 600;
     }
-    /* Desktop sheet overlay positioning */
     .desktop-sheet-overlay {
       position: absolute;
       inset: 0;
@@ -167,6 +117,69 @@
       width: 100%;
       max-width: 480px;
       box-shadow: var(--shadow-xl);
+    }
+    /* Step indicator */
+    .step-indicators {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .step-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      transition: all var(--transition-normal);
+    }
+    .step-dot.active { background: var(--accent); color: #fff; }
+    .step-dot.completed { background: var(--success); color: #fff; }
+    .step-line {
+      width: 40px;
+      height: 2px;
+      background: var(--border);
+      transition: background var(--transition-normal);
+    }
+    .step-line.completed { background: var(--success); }
+    .step-container { display: none; }
+    .step-container.active { display: block; }
+    /* Review rows */
+    .review-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .review-row:last-child { border-bottom: none; }
+    .review-label {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .review-value {
+      font-family: var(--font-serif);
+      font-size: var(--text-md);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    /* Success state */
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--success-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
     }
   </style>
 </head>
@@ -202,6 +215,45 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
             Wallet
           </a>
+          <a class="nav-item" href="transactions.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Transactions
+          </a>
+          <div class="nav-section-label">Communication</div>
+          <a class="nav-item" href="chat-list.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Support
+            <span class="notification-badge" style="margin-left:auto;">2</span>
+          </a>
+          <a class="nav-item" href="files.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+            Files
+          </a>
+          <div class="nav-section-label">Account</div>
+          <a class="nav-item" href="profile.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Profile
+          </a>
+          <a class="nav-item" href="settings.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09c-.658.003-1.25.396-1.51 1z"/></svg>
+            Settings
+          </a>
+          <div style="padding: 12px 24px; margin-top: 8px;">
+            <div style="padding: 12px 16px; background: var(--accent-light); border-radius: var(--radius-md); border: 1px solid var(--accent-subtle);">
+              <div style="font-size: 11px; font-weight: 600; color: var(--accent); display:flex; align-items:center; gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                Super Admin Access
+              </div>
+              <a href="../admin/dashboard.html" style="font-size: 11px; font-weight: 600; color: var(--accent); margin-top: 6px; display: block;">Admin Dashboard &rarr;</a>
+            </div>
+          </div>
+          <div class="nav-user">
+            <div class="avatar avatar-initials" style="width:36px;height:36px;font-size:14px;">B</div>
+            <div>
+              <div class="nav-user-name">Bileonaire</div>
+              <div class="nav-user-email">kiokoleon@gmail.c...</div>
+            </div>
+          </div>
         </div>
 
         <!-- Main Content (dimmed background) -->
@@ -243,42 +295,109 @@
 
       <!-- Desktop Sheet Overlay -->
       <div class="desktop-sheet-overlay">
-        <div class="desktop-sheet-content">
+        <div class="desktop-sheet-content" id="d-invest-sheet">
           <div class="sheet-handle"></div>
           <div class="sheet-title">Invest in Capital Growth Fund</div>
-          <div style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:24px;">Step 1 of 2 — Enter amount</div>
+          <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:16px;">Eltrich Capital Growth Fund</p>
 
-          <!-- Currency Display -->
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
-            <div style="font-size:var(--text-sm);color:var(--text-secondary);font-weight:500;">Currency:</div>
-            <div style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--bg-secondary);border-radius:var(--radius-full);border:1px solid var(--border);">
-              <span style="font-size:14px;">🇺🇸</span>
-              <span style="font-size:var(--text-sm);font-weight:600;color:var(--text-primary);">USD</span>
+          <!-- Step Indicators -->
+          <div class="step-indicators" id="d-step-indicators">
+            <div class="step-dot active" data-step="1">1</div>
+            <div class="step-line" data-line="1"></div>
+            <div class="step-dot" data-step="2">2</div>
+            <div class="step-line" data-line="2"></div>
+            <div class="step-dot" data-step="3">3</div>
+          </div>
+
+          <!-- STEP 1: Enter Amount -->
+          <div class="step-container active" data-step-content="1" id="d-step1">
+            <!-- Currency Display -->
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+              <div style="font-size:var(--text-sm);color:var(--text-secondary);font-weight:500;">Currency:</div>
+              <div style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--bg-secondary);border-radius:var(--radius-full);border:1px solid var(--border);">
+                <span style="font-size:14px;">&#127482;&#127480;</span>
+                <span style="font-size:var(--text-sm);font-weight:600;color:var(--text-primary);">USD</span>
+              </div>
+            </div>
+
+            <!-- Amount Input -->
+            <div class="amount-input-wrap">
+              <input type="text" class="amount-input" value="$500" id="d-invest-amount">
+            </div>
+
+            <!-- Quick Amount Chips -->
+            <div class="quick-amount-chips" id="d-quick-chips">
+              <button class="quick-amount-chip" data-amount="100">$100</button>
+              <button class="quick-amount-chip quick-amount-chip--active" data-amount="500">$500</button>
+              <button class="quick-amount-chip" data-amount="1000">$1,000</button>
+              <button class="quick-amount-chip" data-amount="5000">$5,000</button>
+            </div>
+
+            <!-- Calculated Units -->
+            <div class="unit-calc" id="d-unit-calc">
+              &#8776; <strong>8.77 units</strong> at $57.02/unit
+            </div>
+
+            <!-- Review Button -->
+            <button class="btn btn-primary btn-lg" style="width:100%;padding:16px;font-size:var(--text-md);border-radius:var(--radius-md);" onclick="investGoStep(2, 'd')">
+              Review Investment
+            </button>
+            <div style="text-align:center;margin-top:14px;">
+              <a href="invest-products.html" style="font-size:var(--text-sm);color:var(--text-muted);font-weight:500;">Cancel</a>
             </div>
           </div>
 
-          <!-- Amount Input -->
-          <div class="amount-input-wrap">
-            <input type="text" class="amount-input" value="$500" readonly>
+          <!-- STEP 2: Review -->
+          <div class="step-container" data-step-content="2" id="d-step2">
+            <div style="text-align:center;margin-bottom:24px;">
+              <div style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:8px;">Investment Amount</div>
+              <div style="font-family:var(--font-serif);font-size:var(--text-3xl);font-weight:700;color:var(--text-primary);" id="d-review-amount">$500.00</div>
+            </div>
+
+            <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:16px;margin-bottom:24px;">
+              <div class="review-row">
+                <span class="review-label">Product</span>
+                <span class="review-value">Capital Growth Fund</span>
+              </div>
+              <div class="review-row">
+                <span class="review-label">Amount</span>
+                <span class="review-value" id="d-review-amt2">$500.00</span>
+              </div>
+              <div class="review-row">
+                <span class="review-label">Unit Price</span>
+                <span class="review-value">$57.02</span>
+              </div>
+              <div class="review-row">
+                <span class="review-label">Units</span>
+                <span class="review-value" id="d-review-units">8.77</span>
+              </div>
+              <div class="review-row" style="border-bottom:none;">
+                <span class="review-label">Currency</span>
+                <span class="review-value">USD</span>
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-lg" style="width:100%;padding:16px;font-size:var(--text-md);border-radius:var(--radius-md);" onclick="investGoStep(3, 'd')">
+              Confirm Investment
+            </button>
+            <div style="text-align:center;margin-top:14px;">
+              <a href="javascript:void(0)" onclick="investGoStep(1, 'd')" style="font-size:var(--text-sm);color:var(--text-muted);font-weight:500;">Back</a>
+            </div>
           </div>
 
-          <!-- Quick Amount Chips -->
-          <div class="quick-amount-chips">
-            <button class="quick-amount-chip">$100</button>
-            <button class="quick-amount-chip quick-amount-chip--active">$500</button>
-            <button class="quick-amount-chip">$1,000</button>
-            <button class="quick-amount-chip">$5,000</button>
+          <!-- STEP 3: Success -->
+          <div class="step-container" data-step-content="3" id="d-step3">
+            <div style="text-align:center;padding:20px 0;">
+              <div class="success-icon">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div style="font-family:var(--font-serif);font-size:var(--text-xl);font-weight:600;color:var(--text-primary);margin-bottom:8px;">Investment Request Submitted</div>
+              <div style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:32px;line-height:1.6;" id="d-success-msg">Your investment of $500.00 in Capital Growth Fund is pending approval.</div>
+              <a href="invest-portfolio.html" class="btn btn-primary btn-lg" style="width:100%;border-radius:var(--radius-md);font-size:var(--text-md);text-decoration:none;margin-bottom:12px;">Back to Investments</a>
+              <a href="dashboard.html" class="btn btn-secondary btn-lg" style="width:100%;border-radius:var(--radius-md);font-size:var(--text-md);text-decoration:none;">View Dashboard</a>
+            </div>
           </div>
 
-          <!-- Calculated Units -->
-          <div class="unit-calc">
-            ≈ <strong>8.77 units</strong> at $57.02/unit
-          </div>
-
-          <!-- Review Button -->
-          <button class="btn btn-primary btn-lg" style="width:100%;padding:16px;font-size:var(--text-md);border-radius:var(--radius-md);">
-            Review Investment
-          </button>
         </div>
       </div>
 
@@ -322,42 +441,109 @@
 
         <!-- Mobile Sheet Overlay -->
         <div class="sheet-overlay active" data-sheet="invest" style="position:absolute;inset:0;z-index:50;">
-          <div class="sheet-content" style="padding:24px;max-width:100%;">
+          <div class="sheet-content" style="padding:24px;max-width:100%;" id="m-invest-sheet">
             <div class="sheet-handle"></div>
             <div class="sheet-title" style="font-size:18px;">Invest in Capital Growth Fund</div>
-            <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px;">Step 1 of 2 — Enter amount</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Eltrich Capital Growth Fund</div>
 
-            <!-- Currency -->
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;">
-              <span style="font-size:12px;color:var(--text-secondary);font-weight:500;">Currency:</span>
-              <div style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--bg-secondary);border-radius:var(--radius-full);border:1px solid var(--border);">
-                <span style="font-size:12px;">🇺🇸</span>
-                <span style="font-size:12px;font-weight:600;color:var(--text-primary);">USD</span>
+            <!-- Step Indicators -->
+            <div class="step-indicators" id="m-step-indicators" style="margin-bottom:18px;">
+              <div class="step-dot active" data-step="1" style="width:28px;height:28px;font-size:12px;">1</div>
+              <div class="step-line" data-line="1" style="width:30px;"></div>
+              <div class="step-dot" data-step="2" style="width:28px;height:28px;font-size:12px;">2</div>
+              <div class="step-line" data-line="2" style="width:30px;"></div>
+              <div class="step-dot" data-step="3" style="width:28px;height:28px;font-size:12px;">3</div>
+            </div>
+
+            <!-- STEP 1: Enter Amount -->
+            <div class="step-container active" data-step-content="1" id="m-step1">
+              <!-- Currency -->
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;">
+                <span style="font-size:12px;color:var(--text-secondary);font-weight:500;">Currency:</span>
+                <div style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--bg-secondary);border-radius:var(--radius-full);border:1px solid var(--border);">
+                  <span style="font-size:12px;">&#127482;&#127480;</span>
+                  <span style="font-size:12px;font-weight:600;color:var(--text-primary);">USD</span>
+                </div>
+              </div>
+
+              <!-- Amount Input -->
+              <div style="margin-bottom:14px;">
+                <input type="text" class="amount-input" value="$500" id="m-invest-amount" style="font-size:22px;padding:14px 16px;">
+              </div>
+
+              <!-- Quick Amounts -->
+              <div class="quick-amount-chips" id="m-quick-chips" style="margin-bottom:14px;">
+                <button class="quick-amount-chip" data-amount="100" style="padding:6px 14px;font-size:12px;">$100</button>
+                <button class="quick-amount-chip quick-amount-chip--active" data-amount="500" style="padding:6px 14px;font-size:12px;">$500</button>
+                <button class="quick-amount-chip" data-amount="1000" style="padding:6px 14px;font-size:12px;">$1,000</button>
+                <button class="quick-amount-chip" data-amount="5000" style="padding:6px 14px;font-size:12px;">$5,000</button>
+              </div>
+
+              <!-- Unit Calc -->
+              <div class="unit-calc" id="m-unit-calc" style="font-size:12px;padding:10px;">
+                &#8776; <strong>8.77 units</strong> at $57.02/unit
+              </div>
+
+              <!-- Review Button -->
+              <button class="btn btn-primary btn-md" style="width:100%;padding:14px;font-size:14px;border-radius:var(--radius-md);" onclick="investGoStep(2, 'm')">
+                Review Investment
+              </button>
+              <div style="text-align:center;margin-top:10px;">
+                <a href="invest-products.html" style="font-size:12px;color:var(--text-muted);font-weight:500;">Cancel</a>
               </div>
             </div>
 
-            <!-- Amount Input -->
-            <div style="margin-bottom:14px;">
-              <input type="text" class="amount-input" value="$500" readonly style="font-size:22px;padding:14px 16px;">
+            <!-- STEP 2: Review -->
+            <div class="step-container" data-step-content="2" id="m-step2">
+              <div style="text-align:center;margin-bottom:18px;">
+                <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">Investment Amount</div>
+                <div style="font-family:var(--font-serif);font-size:24px;font-weight:700;color:var(--text-primary);" id="m-review-amount">$500.00</div>
+              </div>
+
+              <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:12px;margin-bottom:18px;">
+                <div class="review-row" style="padding:10px 0;">
+                  <span class="review-label" style="font-size:12px;">Product</span>
+                  <span class="review-value" style="font-size:13px;">Capital Growth Fund</span>
+                </div>
+                <div class="review-row" style="padding:10px 0;">
+                  <span class="review-label" style="font-size:12px;">Amount</span>
+                  <span class="review-value" style="font-size:13px;" id="m-review-amt2">$500.00</span>
+                </div>
+                <div class="review-row" style="padding:10px 0;">
+                  <span class="review-label" style="font-size:12px;">Unit Price</span>
+                  <span class="review-value" style="font-size:13px;">$57.02</span>
+                </div>
+                <div class="review-row" style="padding:10px 0;">
+                  <span class="review-label" style="font-size:12px;">Units</span>
+                  <span class="review-value" style="font-size:13px;" id="m-review-units">8.77</span>
+                </div>
+                <div class="review-row" style="padding:10px 0;border-bottom:none;">
+                  <span class="review-label" style="font-size:12px;">Currency</span>
+                  <span class="review-value" style="font-size:13px;">USD</span>
+                </div>
+              </div>
+
+              <button class="btn btn-primary btn-md" style="width:100%;padding:14px;font-size:14px;border-radius:var(--radius-md);" onclick="investGoStep(3, 'm')">
+                Confirm Investment
+              </button>
+              <div style="text-align:center;margin-top:10px;">
+                <a href="javascript:void(0)" onclick="investGoStep(1, 'm')" style="font-size:12px;color:var(--text-muted);font-weight:500;">Back</a>
+              </div>
             </div>
 
-            <!-- Quick Amounts -->
-            <div class="quick-amount-chips" style="margin-bottom:14px;">
-              <button class="quick-amount-chip" style="padding:6px 14px;font-size:12px;">$100</button>
-              <button class="quick-amount-chip quick-amount-chip--active" style="padding:6px 14px;font-size:12px;">$500</button>
-              <button class="quick-amount-chip" style="padding:6px 14px;font-size:12px;">$1,000</button>
-              <button class="quick-amount-chip" style="padding:6px 14px;font-size:12px;">$5,000</button>
+            <!-- STEP 3: Success -->
+            <div class="step-container" data-step-content="3" id="m-step3">
+              <div style="text-align:center;padding:16px 0;">
+                <div class="success-icon" style="width:56px;height:56px;margin-bottom:16px;">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div style="font-family:var(--font-serif);font-size:18px;font-weight:600;color:var(--text-primary);margin-bottom:6px;">Investment Submitted</div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:24px;line-height:1.6;" id="m-success-msg">Your investment of $500.00 in Capital Growth Fund is pending approval.</div>
+                <a href="invest-portfolio.html" class="btn btn-primary btn-md" style="width:100%;border-radius:var(--radius-md);font-size:14px;text-decoration:none;margin-bottom:10px;">Back to Investments</a>
+                <a href="dashboard.html" class="btn btn-secondary btn-md" style="width:100%;border-radius:var(--radius-md);font-size:14px;text-decoration:none;">View Dashboard</a>
+              </div>
             </div>
 
-            <!-- Unit Calc -->
-            <div class="unit-calc" style="font-size:12px;padding:10px;">
-              ≈ <strong>8.77 units</strong> at $57.02/unit
-            </div>
-
-            <!-- Review Button -->
-            <button class="btn btn-primary btn-md" style="width:100%;padding:14px;font-size:14px;border-radius:var(--radius-md);">
-              Review Investment
-            </button>
           </div>
         </div>
 
@@ -393,5 +579,113 @@
 </div>
 
 <script src="../../system/interactions.js"></script>
+<script>
+(function() {
+  var UNIT_PRICE = 57.02;
+
+  function parseNum(str) {
+    return parseFloat(String(str).replace(/[^0-9.]/g, '')) || 0;
+  }
+
+  function formatMoney(n) {
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function recalcUnits(panel) {
+    var input = document.getElementById(panel + '-invest-amount');
+    var calcEl = document.getElementById(panel + '-unit-calc');
+    var amount = parseNum(input.value);
+    var units = amount / UNIT_PRICE;
+    calcEl.innerHTML = '&#8776; <strong>' + units.toFixed(2) + ' units</strong> at $' + UNIT_PRICE.toFixed(2) + '/unit';
+  }
+
+  function populateReview(panel) {
+    var input = document.getElementById(panel + '-invest-amount');
+    var amount = parseNum(input.value);
+    var units = (amount / UNIT_PRICE).toFixed(2);
+    var amtStr = formatMoney(amount);
+
+    document.getElementById(panel + '-review-amount').textContent = amtStr;
+    document.getElementById(panel + '-review-amt2').textContent = amtStr;
+    document.getElementById(panel + '-review-units').textContent = units;
+    document.getElementById(panel + '-success-msg').textContent =
+      'Your investment of ' + amtStr + ' in Capital Growth Fund is pending approval.';
+  }
+
+  // Step navigation
+  window.investGoStep = function(step, panel) {
+    if (step === 2) populateReview(panel);
+
+    for (var i = 1; i <= 3; i++) {
+      var el = document.getElementById(panel + '-step' + i);
+      if (el) el.classList.remove('active');
+    }
+    var target = document.getElementById(panel + '-step' + step);
+    if (target) target.classList.add('active');
+
+    // Update indicators
+    var indicators = document.getElementById(panel + '-step-indicators');
+    if (indicators) {
+      var dots = indicators.querySelectorAll('.step-dot');
+      var lines = indicators.querySelectorAll('.step-line');
+      dots.forEach(function(dot, idx) {
+        var dotStep = idx + 1;
+        dot.classList.remove('active', 'completed');
+        if (dotStep < step) dot.classList.add('completed');
+        else if (dotStep === step) dot.classList.add('active');
+      });
+      lines.forEach(function(line, idx) {
+        line.classList.toggle('completed', (idx + 1) < step);
+      });
+    }
+  };
+
+  // Quick amount chips
+  function setupChips(panel) {
+    var container = document.getElementById(panel + '-quick-chips');
+    var input = document.getElementById(panel + '-invest-amount');
+    if (!container || !input) return;
+
+    var chips = container.querySelectorAll('.quick-amount-chip');
+    chips.forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        // Remove active from all
+        chips.forEach(function(c) { c.classList.remove('quick-amount-chip--active'); });
+        chip.classList.add('quick-amount-chip--active');
+        var amt = parseInt(chip.getAttribute('data-amount'));
+        input.value = '$' + amt.toLocaleString('en-US');
+        recalcUnits(panel);
+      });
+    });
+  }
+
+  // Input listeners
+  ['d', 'm'].forEach(function(panel) {
+    var input = document.getElementById(panel + '-invest-amount');
+    if (input) {
+      input.addEventListener('input', function() {
+        recalcUnits(panel);
+        // Deactivate chips if manual typing
+        var chips = document.querySelectorAll('#' + panel + '-quick-chips .quick-amount-chip');
+        var val = parseNum(input.value);
+        chips.forEach(function(c) {
+          var chipVal = parseInt(c.getAttribute('data-amount'));
+          if (chipVal === val) {
+            c.classList.add('quick-amount-chip--active');
+          } else {
+            c.classList.remove('quick-amount-chip--active');
+          }
+        });
+      });
+      input.addEventListener('focus', function() { this.select(); });
+    }
+    setupChips(panel);
+  });
+
+  // Initial calc
+  recalcUnits('d');
+  recalcUnits('m');
+})();
+</script>
 </body>
 </html>

@@ -24,30 +24,6 @@
       background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
       border-radius: 50%;
     }
-    .wallet-eye-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.12);
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .wallet-eye-btn:hover { background: rgba(255,255,255,0.2); }
-    .wallet-return-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.12);
-      font-size: 12px;
-      font-weight: 500;
-      color: #7ddf9a;
-    }
     .section-label {
       font-size: 11px;
       text-transform: uppercase;
@@ -56,6 +32,8 @@
       font-weight: 600;
       font-family: var(--font-sans);
     }
+
+    /* Sheet overlays */
     .desktop-sheet-overlay {
       position: absolute;
       inset: 0;
@@ -71,7 +49,7 @@
       background: var(--bg-card);
       border-radius: var(--radius-xl) var(--radius-xl) 0 0;
       padding: 32px;
-      max-height: 80%;
+      max-height: 85%;
       overflow-y: auto;
       width: 100%;
       max-width: 520px;
@@ -91,21 +69,84 @@
       border-radius: 20px 20px 0 0;
       padding: 20px 16px 32px;
       width: 100%;
-      max-height: 75%;
+      max-height: 80%;
       overflow-y: auto;
     }
-    .currency-chip {
-      display: inline-flex;
+
+    /* Step indicator */
+    .step-indicator {
+      display: flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
-      padding: 6px 14px;
+      margin-bottom: 24px;
+    }
+    .step-indicator.compact {
+      margin-bottom: 16px;
+      gap: 4px;
+    }
+    .step-dot {
+      width: 32px;
+      height: 6px;
       border-radius: var(--radius-full);
-      background: var(--accent-light);
-      color: var(--accent);
+      background: var(--border);
+      transition: all 0.3s ease;
+    }
+    .step-dot.active {
+      background: var(--accent);
+      width: 48px;
+    }
+    .step-dot.completed {
+      background: var(--success);
+    }
+    .step-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .step-label.compact {
+      font-size: 10px;
+      margin-bottom: 2px;
+    }
+
+    /* Currency toggle */
+    .currency-toggle {
+      display: flex;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      gap: 0;
+      border: 1px solid var(--border);
+    }
+    .currency-toggle-btn {
+      flex: 1;
+      padding: 8px 20px;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      font-family: var(--font-sans);
       font-size: var(--text-sm);
       font-weight: 600;
-      border: 1px solid var(--accent-subtle);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
+    .currency-toggle-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+    .currency-toggle-btn:not(.active):hover {
+      color: var(--text-primary);
+    }
+    .currency-toggle.compact .currency-toggle-btn {
+      padding: 6px 16px;
+      font-size: 12px;
+    }
+
+    /* Balance display */
     .balance-display {
       background: var(--bg-secondary);
       border-radius: var(--radius-md);
@@ -114,6 +155,8 @@
       justify-content: space-between;
       align-items: center;
     }
+
+    /* Amount input */
     .amount-input-wrapper {
       display: flex;
       align-items: center;
@@ -154,30 +197,37 @@
       letter-spacing: 0.05em;
       transition: background 0.15s;
       font-family: var(--font-sans);
+      white-space: nowrap;
     }
     .max-btn:hover { background: var(--accent-hover); }
+
+    /* Bank cards */
     .bank-select {
       display: flex;
       align-items: center;
       gap: 12px;
       padding: 14px 16px;
-      border: 1px solid var(--border);
+      border: 2px solid var(--border);
       border-radius: var(--radius-md);
       background: var(--bg-card);
       cursor: pointer;
-      transition: border-color 0.15s;
+      transition: all 0.2s ease;
     }
     .bank-select:hover { border-color: var(--accent); }
-    .bank-select.selected { border-color: var(--accent); background: var(--accent-light); }
+    .bank-select.selected {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
     .bank-select-radio {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       border: 2px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      transition: border-color 0.2s;
     }
     .bank-select.selected .bank-select-radio {
       border-color: var(--accent);
@@ -189,6 +239,108 @@
       border-radius: 50%;
       background: var(--accent);
     }
+
+    /* Summary rows */
+    .summary-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      border: 1px solid var(--border);
+    }
+    .summary-card.compact {
+      padding: 14px;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-row-label {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .summary-row-value {
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+      font-weight: 600;
+      text-align: right;
+    }
+    .summary-row-value.highlight {
+      color: var(--accent);
+      font-family: var(--font-serif);
+      font-size: var(--text-md);
+    }
+    .summary-row.compact {
+      padding: 7px 0;
+    }
+    .summary-row.compact .summary-row-label { font-size: 11px; }
+    .summary-row.compact .summary-row-value { font-size: 11px; }
+    .summary-row.compact .summary-row-value.highlight { font-size: 13px; }
+
+    /* Success state */
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--success-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .success-icon.compact {
+      width: 56px;
+      height: 56px;
+      margin-bottom: 14px;
+    }
+    .success-icon svg {
+      color: var(--success);
+    }
+
+    /* Step panels */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+
+    /* Button row */
+    .btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .btn-row.compact {
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      font-weight: 500;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: var(--font-sans);
+      transition: color 0.15s;
+      justify-content: center;
+    }
+    .btn-back:hover { color: var(--text-primary); }
+
+    /* Error message for validation */
+    .amount-error {
+      font-size: var(--text-xs);
+      color: var(--danger);
+      font-weight: 500;
+      margin-top: 6px;
+      display: none;
+    }
+    .amount-error.visible { display: block; }
   </style>
 </head>
 <body>
@@ -266,7 +418,7 @@
             </div>
           </div>
         </div>
-        <!-- Main (dimmed) -->
+        <!-- Main (dimmed background) -->
         <div class="desktop-main">
           <div style="margin-bottom: 36px;">
             <div class="section-label" style="margin-bottom: 8px;">Wallet Management</div>
@@ -286,67 +438,170 @@
         </div>
       </div>
 
-      <!-- Desktop Withdraw Sheet -->
+      <!-- ===== DESKTOP SHEET OVERLAY ===== -->
       <div class="desktop-sheet-overlay">
-        <div class="desktop-sheet-content">
+        <div class="desktop-sheet-content" id="desktop-sheet">
           <div class="sheet-handle"></div>
-          <div class="sheet-title">Withdraw Funds</div>
-          <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:24px;">Transfer funds to your linked bank account</p>
 
-          <!-- Currency -->
-          <div style="margin-bottom:20px;">
-            <label style="font-size:var(--text-sm);font-weight:500;color:var(--text-secondary);display:block;margin-bottom:8px;">Currency</label>
-            <div class="currency-chip">
-              <span>&#127472;&#127466;</span> KES &mdash; Kenyan Shilling
+          <!-- STEP 1: Currency & Amount -->
+          <div class="step-panel active" data-step="1" data-panel="desktop">
+            <div class="step-label">Step 1 of 4</div>
+            <div class="step-indicator">
+              <div class="step-dot active"></div>
+              <div class="step-dot"></div>
+              <div class="step-dot"></div>
+              <div class="step-dot"></div>
+            </div>
+            <div class="sheet-title">Withdraw Funds</div>
+            <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:24px;">Transfer funds to your linked bank account</p>
+
+            <!-- Currency toggle -->
+            <div style="margin-bottom:20px;">
+              <label style="font-size:var(--text-sm);font-weight:500;color:var(--text-secondary);display:block;margin-bottom:8px;">Currency</label>
+              <div class="currency-toggle" data-panel="desktop">
+                <button class="currency-toggle-btn active" data-currency="KES">&#127472;&#127466; KES</button>
+                <button class="currency-toggle-btn" data-currency="USD">&#127482;&#127480; USD</button>
+              </div>
+            </div>
+
+            <!-- Available Balance -->
+            <div style="margin-bottom:24px;">
+              <label style="font-size:var(--text-sm);font-weight:500;color:var(--text-secondary);display:block;margin-bottom:8px;">Available Balance</label>
+              <div class="balance-display">
+                <div class="balance-amount" style="font-family:var(--font-serif);font-size:var(--text-xl);font-weight:700;color:var(--text-primary);">KES 2,450,000.00</div>
+                <span style="font-size:var(--text-xs);color:var(--success);font-weight:600;">Available</span>
+              </div>
+            </div>
+
+            <!-- Amount -->
+            <div style="margin-bottom:24px;">
+              <label style="font-size:var(--text-sm);font-weight:500;color:var(--text-secondary);display:block;margin-bottom:8px;">Withdrawal Amount</label>
+              <div class="amount-input-wrapper">
+                <span class="currency-prefix">KES</span>
+                <input type="text" class="amount-input" placeholder="0.00" data-panel="desktop" inputmode="decimal">
+                <button class="max-btn" data-panel="desktop">MAX</button>
+              </div>
+              <div class="amount-error" data-panel="desktop">Please enter a valid amount</div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-row">
+              <button class="btn btn-primary btn-lg w-full" style="width:100%;border-radius:var(--radius-md);font-size:var(--text-md);" data-action="next" data-panel="desktop">Continue</button>
+              <div style="text-align:center;">
+                <a href="wallet.html" style="font-size:var(--text-sm);color:var(--text-muted);font-weight:500;">Cancel</a>
+              </div>
             </div>
           </div>
 
-          <!-- Available Balance -->
-          <div style="margin-bottom:24px;">
-            <label style="font-size:var(--text-sm);font-weight:500;color:var(--text-secondary);display:block;margin-bottom:8px;">Available Balance</label>
-            <div class="balance-display">
-              <div style="font-family:var(--font-serif);font-size:var(--text-xl);font-weight:700;color:var(--text-primary);">KES 2,450,000.00</div>
-              <span style="font-size:var(--text-xs);color:var(--success);font-weight:600;">Available</span>
+          <!-- STEP 2: Select Bank Account -->
+          <div class="step-panel" data-step="2" data-panel="desktop">
+            <div class="step-label">Step 2 of 4</div>
+            <div class="step-indicator">
+              <div class="step-dot completed"></div>
+              <div class="step-dot active"></div>
+              <div class="step-dot"></div>
+              <div class="step-dot"></div>
             </div>
-          </div>
+            <div class="sheet-title">Select Bank Account</div>
+            <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:24px;">Choose where to receive your funds</p>
 
-          <!-- Amount Input -->
-          <div style="margin-bottom:24px;">
-            <label style="font-size:var(--text-sm);font-weight:500;color:var(--text-secondary);display:block;margin-bottom:8px;">Withdrawal Amount</label>
-            <div class="amount-input-wrapper">
-              <span class="currency-prefix">KES</span>
-              <input type="text" placeholder="0.00" value="">
-              <button class="max-btn">MAX</button>
-            </div>
-          </div>
-
-          <!-- Bank Destination -->
-          <div style="margin-bottom:28px;">
-            <label style="font-size:var(--text-sm);font-weight:500;color:var(--text-secondary);display:block;margin-bottom:8px;">Destination Bank Account</label>
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <div class="bank-select selected">
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+              <div class="bank-select selected" data-bank="equity" data-panel="desktop">
                 <div class="bank-select-radio"></div>
                 <div style="flex:1;">
-                  <div style="font-weight:600;font-size:var(--text-base);">Equity Bank</div>
-                  <div style="font-size:var(--text-xs);color:var(--text-muted);">****4521 &middot; KES</div>
+                  <div style="font-weight:600;font-size:var(--text-base);color:var(--text-primary);">Equity Bank</div>
+                  <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;">****4521 &middot; KES</div>
                 </div>
                 <span class="badge badge-approved" style="font-size:9px;">Primary</span>
               </div>
-              <div class="bank-select">
+              <div class="bank-select" data-bank="kcb" data-panel="desktop">
                 <div class="bank-select-radio"></div>
                 <div style="flex:1;">
-                  <div style="font-weight:600;font-size:var(--text-base);">KCB</div>
-                  <div style="font-size:var(--text-xs);color:var(--text-muted);">****7890 &middot; KES</div>
+                  <div style="font-weight:600;font-size:var(--text-base);color:var(--text-primary);">KCB</div>
+                  <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;">****7890 &middot; KES</div>
                 </div>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-primary btn-lg w-full" style="width:100%;border-radius:var(--radius-md);font-size:var(--text-md);" data-action="next" data-panel="desktop">Continue</button>
+              <button class="btn-back" data-action="back" data-panel="desktop">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                Back
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 3: Review Summary -->
+          <div class="step-panel" data-step="3" data-panel="desktop">
+            <div class="step-label">Step 3 of 4</div>
+            <div class="step-indicator">
+              <div class="step-dot completed"></div>
+              <div class="step-dot completed"></div>
+              <div class="step-dot active"></div>
+              <div class="step-dot"></div>
+            </div>
+            <div class="sheet-title">Review Withdrawal</div>
+            <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:24px;">Please confirm the details below</p>
+
+            <div class="summary-card">
+              <div class="summary-row">
+                <span class="summary-row-label">Amount</span>
+                <span class="summary-row-value highlight summary-amount">KES 500,000.00</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-row-label">Currency</span>
+                <span class="summary-row-value summary-currency">KES - Kenyan Shilling</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-row-label">Destination Bank</span>
+                <span class="summary-row-value summary-bank">Equity Bank</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-row-label">Account Number</span>
+                <span class="summary-row-value summary-account">****4521</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-row-label">Estimated Timeline</span>
+                <span class="summary-row-value">1-2 business days</span>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-primary btn-lg w-full" style="width:100%;border-radius:var(--radius-md);font-size:var(--text-md);" data-action="next" data-panel="desktop">Confirm Withdrawal</button>
+              <button class="btn-back" data-action="back" data-panel="desktop">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                Back
+              </button>
+            </div>
+          </div>
+
+          <!-- STEP 4: Success -->
+          <div class="step-panel" data-step="4" data-panel="desktop">
+            <div class="step-label">Step 4 of 4</div>
+            <div class="step-indicator">
+              <div class="step-dot completed"></div>
+              <div class="step-dot completed"></div>
+              <div class="step-dot completed"></div>
+              <div class="step-dot completed"></div>
+            </div>
+
+            <div style="text-align:center;padding:16px 0;">
+              <div class="success-icon">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div style="font-family:var(--font-serif);font-size:var(--text-xl);font-weight:600;color:var(--text-primary);margin-bottom:8px;">Withdrawal Request Submitted</div>
+              <p class="success-message" style="font-size:var(--text-sm);color:var(--text-muted);line-height:1.6;max-width:340px;margin:0 auto;">Your withdrawal of <strong>KES 500,000.00</strong> will be processed within 1-2 business days.</p>
+            </div>
+
+            <div class="btn-row" style="margin-top:28px;">
+              <a href="wallet.html" class="btn btn-primary btn-lg w-full" style="width:100%;border-radius:var(--radius-md);font-size:var(--text-md);text-decoration:none;">Back to Wallet</a>
+              <div style="text-align:center;">
+                <a href="transactions.html" style="font-size:var(--text-sm);color:var(--accent);font-weight:500;">View Transactions</a>
               </div>
             </div>
           </div>
 
-          <!-- Continue -->
-          <button class="btn btn-primary btn-lg w-full" style="width:100%;border-radius:var(--radius-md);font-size:var(--text-md);">Continue</button>
-          <div style="text-align:center;margin-top:14px;">
-            <a href="wallet.html" style="font-size:var(--text-sm);color:var(--text-muted);font-weight:500;">Cancel</a>
-          </div>
         </div>
       </div>
 
@@ -372,58 +627,168 @@
           </div>
         </div>
 
-        <!-- Mobile Withdraw Sheet -->
+        <!-- ===== MOBILE SHEET OVERLAY ===== -->
         <div class="mobile-sheet-overlay">
-          <div class="mobile-sheet-content">
+          <div class="mobile-sheet-content" id="mobile-sheet">
             <div class="sheet-handle"></div>
-            <div style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Withdraw Funds</div>
-            <p style="font-size:12px;color:var(--text-muted);margin-bottom:18px;">Transfer to your bank account</p>
 
-            <div style="margin-bottom:14px;">
-              <label style="font-size:11px;font-weight:500;color:var(--text-secondary);display:block;margin-bottom:6px;">Currency</label>
-              <div class="currency-chip" style="font-size:12px;padding:4px 10px;">
-                <span style="font-size:12px;">&#127472;&#127466;</span> KES
+            <!-- STEP 1: Currency & Amount -->
+            <div class="step-panel active" data-step="1" data-panel="mobile">
+              <div class="step-label compact">Step 1 of 4</div>
+              <div class="step-indicator compact">
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
               </div>
-            </div>
+              <div style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Withdraw Funds</div>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Transfer to your bank account</p>
 
-            <div style="margin-bottom:14px;">
-              <label style="font-size:11px;font-weight:500;color:var(--text-secondary);display:block;margin-bottom:6px;">Available</label>
-              <div class="balance-display" style="padding:10px 14px;">
-                <div style="font-family:var(--font-serif);font-size:16px;font-weight:700;">KES 2,450,000.00</div>
-              </div>
-            </div>
-
-            <div style="margin-bottom:14px;">
-              <label style="font-size:11px;font-weight:500;color:var(--text-secondary);display:block;margin-bottom:6px;">Amount</label>
-              <div class="amount-input-wrapper" style="padding:10px 12px;">
-                <span class="currency-prefix" style="font-size:15px;">KES</span>
-                <input type="text" placeholder="0.00" value="" style="font-size:18px;">
-                <button class="max-btn" style="font-size:10px;padding:4px 10px;">MAX</button>
-              </div>
-            </div>
-
-            <div style="margin-bottom:18px;">
-              <label style="font-size:11px;font-weight:500;color:var(--text-secondary);display:block;margin-bottom:6px;">Destination</label>
-              <div style="display:flex;flex-direction:column;gap:6px;">
-                <div class="bank-select selected" style="padding:10px 12px;">
-                  <div class="bank-select-radio" style="width:16px;height:16px;"></div>
-                  <div style="flex:1;">
-                    <div style="font-weight:600;font-size:13px;">Equity Bank ****4521</div>
-                  </div>
-                </div>
-                <div class="bank-select" style="padding:10px 12px;">
-                  <div class="bank-select-radio" style="width:16px;height:16px;"></div>
-                  <div style="flex:1;">
-                    <div style="font-weight:600;font-size:13px;">KCB ****7890</div>
-                  </div>
+              <!-- Currency toggle -->
+              <div style="margin-bottom:14px;">
+                <label style="font-size:11px;font-weight:500;color:var(--text-secondary);display:block;margin-bottom:6px;">Currency</label>
+                <div class="currency-toggle compact" data-panel="mobile">
+                  <button class="currency-toggle-btn active" data-currency="KES">&#127472;&#127466; KES</button>
+                  <button class="currency-toggle-btn" data-currency="USD">&#127482;&#127480; USD</button>
                 </div>
               </div>
+
+              <!-- Balance -->
+              <div style="margin-bottom:14px;">
+                <label style="font-size:11px;font-weight:500;color:var(--text-secondary);display:block;margin-bottom:6px;">Available</label>
+                <div class="balance-display" style="padding:10px 14px;">
+                  <div class="balance-amount" style="font-family:var(--font-serif);font-size:16px;font-weight:700;">KES 2,450,000.00</div>
+                </div>
+              </div>
+
+              <!-- Amount -->
+              <div style="margin-bottom:16px;">
+                <label style="font-size:11px;font-weight:500;color:var(--text-secondary);display:block;margin-bottom:6px;">Amount</label>
+                <div class="amount-input-wrapper" style="padding:10px 12px;">
+                  <span class="currency-prefix" style="font-size:15px;">KES</span>
+                  <input type="text" class="amount-input" placeholder="0.00" data-panel="mobile" style="font-size:18px;" inputmode="decimal">
+                  <button class="max-btn" data-panel="mobile" style="font-size:10px;padding:4px 10px;">MAX</button>
+                </div>
+                <div class="amount-error" data-panel="mobile" style="font-size:10px;">Please enter a valid amount</div>
+              </div>
+
+              <div class="btn-row compact">
+                <button class="btn btn-primary btn-md w-full" style="width:100%;border-radius:var(--radius-md);font-size:14px;" data-action="next" data-panel="mobile">Continue</button>
+                <div style="text-align:center;">
+                  <a href="wallet.html" style="font-size:12px;color:var(--text-muted);font-weight:500;">Cancel</a>
+                </div>
+              </div>
             </div>
 
-            <button class="btn btn-primary btn-md w-full" style="width:100%;border-radius:var(--radius-md);font-size:14px;">Continue</button>
-            <div style="text-align:center;margin-top:10px;">
-              <a href="wallet.html" style="font-size:12px;color:var(--text-muted);font-weight:500;">Cancel</a>
+            <!-- STEP 2: Select Bank -->
+            <div class="step-panel" data-step="2" data-panel="mobile">
+              <div class="step-label compact">Step 2 of 4</div>
+              <div class="step-indicator compact">
+                <div class="step-dot completed"></div>
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+              </div>
+              <div style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Select Bank</div>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Choose your destination</p>
+
+              <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">
+                <div class="bank-select selected" data-bank="equity" data-panel="mobile" style="padding:12px;">
+                  <div class="bank-select-radio" style="width:18px;height:18px;"></div>
+                  <div style="flex:1;">
+                    <div style="font-weight:600;font-size:13px;color:var(--text-primary);">Equity Bank</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">****4521 &middot; KES</div>
+                  </div>
+                  <span class="badge badge-approved" style="font-size:8px;padding:3px 7px;">Primary</span>
+                </div>
+                <div class="bank-select" data-bank="kcb" data-panel="mobile" style="padding:12px;">
+                  <div class="bank-select-radio" style="width:18px;height:18px;"></div>
+                  <div style="flex:1;">
+                    <div style="font-weight:600;font-size:13px;color:var(--text-primary);">KCB</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">****7890 &middot; KES</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="btn-row compact">
+                <button class="btn btn-primary btn-md w-full" style="width:100%;border-radius:var(--radius-md);font-size:14px;" data-action="next" data-panel="mobile">Continue</button>
+                <button class="btn-back" data-action="back" data-panel="mobile" style="font-size:12px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                  Back
+                </button>
+              </div>
             </div>
+
+            <!-- STEP 3: Review -->
+            <div class="step-panel" data-step="3" data-panel="mobile">
+              <div class="step-label compact">Step 3 of 4</div>
+              <div class="step-indicator compact">
+                <div class="step-dot completed"></div>
+                <div class="step-dot completed"></div>
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+              </div>
+              <div style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Review</div>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Confirm the details below</p>
+
+              <div class="summary-card compact">
+                <div class="summary-row compact">
+                  <span class="summary-row-label">Amount</span>
+                  <span class="summary-row-value highlight summary-amount">KES 500,000.00</span>
+                </div>
+                <div class="summary-row compact">
+                  <span class="summary-row-label">Currency</span>
+                  <span class="summary-row-value summary-currency">KES</span>
+                </div>
+                <div class="summary-row compact">
+                  <span class="summary-row-label">Destination</span>
+                  <span class="summary-row-value summary-bank">Equity Bank</span>
+                </div>
+                <div class="summary-row compact">
+                  <span class="summary-row-label">Account</span>
+                  <span class="summary-row-value summary-account">****4521</span>
+                </div>
+                <div class="summary-row compact">
+                  <span class="summary-row-label">Timeline</span>
+                  <span class="summary-row-value">1-2 business days</span>
+                </div>
+              </div>
+
+              <div class="btn-row compact">
+                <button class="btn btn-primary btn-md w-full" style="width:100%;border-radius:var(--radius-md);font-size:14px;" data-action="next" data-panel="mobile">Confirm Withdrawal</button>
+                <button class="btn-back" data-action="back" data-panel="mobile" style="font-size:12px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                  Back
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 4: Success -->
+            <div class="step-panel" data-step="4" data-panel="mobile">
+              <div class="step-label compact">Step 4 of 4</div>
+              <div class="step-indicator compact">
+                <div class="step-dot completed"></div>
+                <div class="step-dot completed"></div>
+                <div class="step-dot completed"></div>
+                <div class="step-dot completed"></div>
+              </div>
+
+              <div style="text-align:center;padding:12px 0;">
+                <div class="success-icon compact">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div style="font-family:var(--font-serif);font-size:18px;font-weight:600;color:var(--text-primary);margin-bottom:6px;">Withdrawal Submitted</div>
+                <p class="success-message" style="font-size:12px;color:var(--text-muted);line-height:1.5;">Your withdrawal of <strong>KES 500,000.00</strong> will be processed within 1-2 business days.</p>
+              </div>
+
+              <div class="btn-row compact" style="margin-top:16px;">
+                <a href="wallet.html" class="btn btn-primary btn-md w-full" style="width:100%;border-radius:var(--radius-md);font-size:14px;text-decoration:none;">Back to Wallet</a>
+                <div style="text-align:center;">
+                  <a href="transactions.html" style="font-size:12px;color:var(--accent);font-weight:500;">View Transactions</a>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -457,5 +822,267 @@
 </div>
 
 <script src="../../system/interactions.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  // ===== DATA =====
+  var balances = { KES: 2450000.00, USD: 18750.00 };
+  var currencyLabels = { KES: 'KES - Kenyan Shilling', USD: 'USD - US Dollar' };
+  var currencyFlags = { KES: '\u{1F1F0}\u{1F1EA}', USD: '\u{1F1FA}\u{1F1F8}' };
+  var banks = {
+    equity: { name: 'Equity Bank', account: '****4521', currency: 'KES' },
+    kcb: { name: 'KCB', account: '****7890', currency: 'KES' }
+  };
+
+  // ===== STATE (one per panel) =====
+  var state = {
+    desktop: { step: 1, currency: 'KES', amount: '', bank: 'equity' },
+    mobile:  { step: 1, currency: 'KES', amount: '', bank: 'equity' }
+  };
+
+  // ===== HELPERS =====
+  function formatNumber(num) {
+    return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function parseAmount(str) {
+    var cleaned = str.replace(/[^0-9.]/g, '');
+    var val = parseFloat(cleaned);
+    return isNaN(val) ? 0 : val;
+  }
+
+  function getContainer(panel) {
+    return panel === 'desktop'
+      ? document.getElementById('desktop-sheet')
+      : document.getElementById('mobile-sheet');
+  }
+
+  // ===== STEP NAVIGATION =====
+  function goToStep(panel, step) {
+    var s = state[panel];
+    s.step = step;
+    var container = getContainer(panel);
+    var panels = container.querySelectorAll('.step-panel[data-panel="' + panel + '"]');
+    panels.forEach(function(p) {
+      p.classList.remove('active');
+      if (parseInt(p.getAttribute('data-step')) === step) {
+        p.classList.add('active');
+      }
+    });
+
+    // If entering step 3, populate summary
+    if (step === 3) populateSummary(panel);
+    // If entering step 4, populate success message
+    if (step === 4) populateSuccess(panel);
+  }
+
+  // ===== CURRENCY TOGGLE =====
+  function setCurrency(panel, currency) {
+    var s = state[panel];
+    s.currency = currency;
+    var container = getContainer(panel);
+
+    // Toggle button states
+    var toggleBtns = container.querySelectorAll('.currency-toggle[data-panel="' + panel + '"] .currency-toggle-btn');
+    toggleBtns.forEach(function(btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-currency') === currency);
+    });
+
+    // Update balance display
+    var balanceEl = container.querySelector('.balance-amount');
+    if (balanceEl) {
+      balanceEl.textContent = currency + ' ' + formatNumber(balances[currency]);
+    }
+
+    // Update currency prefix on input
+    var prefixEl = container.querySelector('.currency-prefix');
+    if (prefixEl) {
+      prefixEl.textContent = currency;
+    }
+
+    // Clear amount
+    var inputEl = container.querySelector('.amount-input[data-panel="' + panel + '"]');
+    if (inputEl) {
+      inputEl.value = '';
+      s.amount = '';
+    }
+
+    // Hide error
+    var errorEl = container.querySelector('.amount-error[data-panel="' + panel + '"]');
+    if (errorEl) errorEl.classList.remove('visible');
+  }
+
+  // ===== MAX BUTTON =====
+  function fillMax(panel) {
+    var s = state[panel];
+    var container = getContainer(panel);
+    var inputEl = container.querySelector('.amount-input[data-panel="' + panel + '"]');
+    if (inputEl) {
+      var maxVal = formatNumber(balances[s.currency]);
+      inputEl.value = maxVal;
+      s.amount = maxVal;
+    }
+    // Hide error
+    var errorEl = container.querySelector('.amount-error[data-panel="' + panel + '"]');
+    if (errorEl) errorEl.classList.remove('visible');
+  }
+
+  // ===== BANK SELECTION =====
+  function selectBank(panel, bankKey) {
+    var s = state[panel];
+    s.bank = bankKey;
+    var container = getContainer(panel);
+    var bankCards = container.querySelectorAll('.bank-select[data-panel="' + panel + '"]');
+    bankCards.forEach(function(card) {
+      card.classList.toggle('selected', card.getAttribute('data-bank') === bankKey);
+    });
+  }
+
+  // ===== POPULATE SUMMARY =====
+  function populateSummary(panel) {
+    var s = state[panel];
+    var container = getContainer(panel);
+    var step3 = container.querySelector('.step-panel[data-step="3"][data-panel="' + panel + '"]');
+    if (!step3) return;
+
+    var amountVal = parseAmount(s.amount);
+    var amountDisplay = s.currency + ' ' + formatNumber(amountVal);
+    var bank = banks[s.bank];
+
+    var amountEls = step3.querySelectorAll('.summary-amount');
+    amountEls.forEach(function(el) { el.textContent = amountDisplay; });
+
+    var currEls = step3.querySelectorAll('.summary-currency');
+    currEls.forEach(function(el) { el.textContent = currencyLabels[s.currency] || s.currency; });
+
+    var bankEls = step3.querySelectorAll('.summary-bank');
+    bankEls.forEach(function(el) { el.textContent = bank.name; });
+
+    var accEls = step3.querySelectorAll('.summary-account');
+    accEls.forEach(function(el) { el.textContent = bank.account; });
+  }
+
+  // ===== POPULATE SUCCESS =====
+  function populateSuccess(panel) {
+    var s = state[panel];
+    var container = getContainer(panel);
+    var step4 = container.querySelector('.step-panel[data-step="4"][data-panel="' + panel + '"]');
+    if (!step4) return;
+
+    var amountVal = parseAmount(s.amount);
+    var amountDisplay = s.currency + ' ' + formatNumber(amountVal);
+
+    var msgEl = step4.querySelector('.success-message');
+    if (msgEl) {
+      msgEl.innerHTML = 'Your withdrawal of <strong>' + amountDisplay + '</strong> will be processed within 1-2 business days.';
+    }
+  }
+
+  // ===== VALIDATE STEP 1 =====
+  function validateStep1(panel) {
+    var s = state[panel];
+    var container = getContainer(panel);
+    var inputEl = container.querySelector('.amount-input[data-panel="' + panel + '"]');
+    var errorEl = container.querySelector('.amount-error[data-panel="' + panel + '"]');
+
+    s.amount = inputEl ? inputEl.value : '';
+    var val = parseAmount(s.amount);
+
+    if (val <= 0) {
+      if (errorEl) {
+        errorEl.textContent = 'Please enter a valid amount';
+        errorEl.classList.add('visible');
+      }
+      return false;
+    }
+
+    if (val > balances[s.currency]) {
+      if (errorEl) {
+        errorEl.textContent = 'Amount exceeds available balance of ' + s.currency + ' ' + formatNumber(balances[s.currency]);
+        errorEl.classList.add('visible');
+      }
+      return false;
+    }
+
+    if (errorEl) errorEl.classList.remove('visible');
+    return true;
+  }
+
+  // ===== EVENT BINDING =====
+
+  // Currency toggles
+  document.querySelectorAll('.currency-toggle-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      var toggle = btn.closest('.currency-toggle');
+      var panel = toggle.getAttribute('data-panel');
+      var currency = btn.getAttribute('data-currency');
+      setCurrency(panel, currency);
+    });
+  });
+
+  // MAX buttons
+  document.querySelectorAll('.max-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      var panel = btn.getAttribute('data-panel');
+      fillMax(panel);
+    });
+  });
+
+  // Bank selection cards
+  document.querySelectorAll('.bank-select').forEach(function(card) {
+    card.addEventListener('click', function() {
+      var panel = card.getAttribute('data-panel');
+      var bankKey = card.getAttribute('data-bank');
+      selectBank(panel, bankKey);
+    });
+  });
+
+  // Continue / Next buttons
+  document.querySelectorAll('[data-action="next"]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      var panel = btn.getAttribute('data-panel');
+      var s = state[panel];
+
+      if (s.step === 1) {
+        if (!validateStep1(panel)) return;
+        goToStep(panel, 2);
+      } else if (s.step === 2) {
+        goToStep(panel, 3);
+      } else if (s.step === 3) {
+        goToStep(panel, 4);
+      }
+    });
+  });
+
+  // Back buttons
+  document.querySelectorAll('[data-action="back"]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      var panel = btn.getAttribute('data-panel');
+      var s = state[panel];
+      if (s.step > 1) {
+        goToStep(panel, s.step - 1);
+      }
+    });
+  });
+
+  // Track amount input changes
+  document.querySelectorAll('.amount-input').forEach(function(input) {
+    input.addEventListener('input', function() {
+      var panel = input.getAttribute('data-panel');
+      state[panel].amount = input.value;
+      // Hide error on typing
+      var container = getContainer(panel);
+      var errorEl = container.querySelector('.amount-error[data-panel="' + panel + '"]');
+      if (errorEl) errorEl.classList.remove('visible');
+    });
+  });
+
+})();
+</script>
 </body>
 </html>

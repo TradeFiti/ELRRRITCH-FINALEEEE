@@ -24,17 +24,6 @@
       background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
       border-radius: 50%;
     }
-    .wallet-return-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.12);
-      font-size: 12px;
-      font-weight: 500;
-      color: #7ddf9a;
-    }
     .section-label {
       font-size: 11px;
       text-transform: uppercase;
@@ -175,6 +164,78 @@
       justify-content: center;
       flex-shrink: 0;
     }
+    /* Step indicator */
+    .step-indicators {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .step-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      transition: all var(--transition-normal);
+    }
+    .step-dot.active {
+      background: var(--accent);
+      color: #fff;
+    }
+    .step-dot.completed {
+      background: var(--success);
+      color: #fff;
+    }
+    .step-line {
+      width: 40px;
+      height: 2px;
+      background: var(--border);
+      transition: background var(--transition-normal);
+    }
+    .step-line.completed {
+      background: var(--success);
+    }
+    .step-container { display: none; }
+    .step-container.active { display: block; }
+    /* Review rows */
+    .review-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .review-row:last-child { border-bottom: none; }
+    .review-label {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .review-value {
+      font-family: var(--font-serif);
+      font-size: var(--text-md);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    /* Success state */
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--success-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .success-icon svg { color: var(--success); }
   </style>
 </head>
 <body>
@@ -273,64 +334,126 @@
 
       <!-- Desktop Convert Sheet -->
       <div class="desktop-sheet-overlay">
-        <div class="desktop-sheet-content">
+        <div class="desktop-sheet-content" id="desktop-sheet">
           <div class="sheet-handle"></div>
           <div class="sheet-title">Convert Currency</div>
-          <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:24px;">Exchange between your wallets at admin-set rates</p>
+          <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:16px;">Exchange between your wallets at admin-set rates</p>
 
-          <!-- From Card -->
-          <div class="convert-card convert-card-from" style="margin-bottom:0;">
-            <div class="card-label">From</div>
-            <div class="card-currency">
-              <span style="font-size:18px;">&#127472;&#127466;</span>
-              <span class="card-currency-code">KES</span>
-              <span class="card-currency-name">Kenyan Shilling</span>
+          <!-- Step Indicators -->
+          <div class="step-indicators" id="d-step-indicators">
+            <div class="step-dot active" data-step="1">1</div>
+            <div class="step-line" data-line="1"></div>
+            <div class="step-dot" data-step="2">2</div>
+            <div class="step-line" data-line="2"></div>
+            <div class="step-dot" data-step="3">3</div>
+          </div>
+
+          <!-- STEP 1: Enter Conversion -->
+          <div class="step-container active" data-step-content="1" id="d-step1">
+            <!-- From Card -->
+            <div class="convert-card convert-card-from" id="d-from-card" style="margin-bottom:0;">
+              <div class="card-label">From</div>
+              <div class="card-currency">
+                <span style="font-size:18px;" class="d-from-flag">&#127472;&#127466;</span>
+                <span class="card-currency-code d-from-code">KES</span>
+                <span class="card-currency-name d-from-name">Kenyan Shilling</span>
+              </div>
+              <input class="convert-input" type="text" placeholder="0.00" value="2,450" id="d-from-input">
+              <div style="font-size:var(--text-xs);opacity:0.5;margin-top:8px;" class="d-from-avail">Available: KES 2,450,000.00</div>
             </div>
-            <input class="convert-input" type="text" placeholder="0.00" value="2,450">
-            <div style="font-size:var(--text-xs);opacity:0.5;margin-top:8px;">Available: KES 2,450,000.00</div>
-          </div>
 
-          <!-- Swap Button -->
-          <div style="display:flex;justify-content:center;">
-            <button class="swap-btn">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>
-            </button>
-          </div>
-
-          <!-- To Card -->
-          <div class="convert-card convert-card-to" style="margin-top:0;">
-            <div class="card-label">To</div>
-            <div class="card-currency">
-              <span style="font-size:18px;">&#127482;&#127480;</span>
-              <span class="card-currency-code">USD</span>
-              <span class="card-currency-name">US Dollar</span>
+            <!-- Swap Button -->
+            <div style="display:flex;justify-content:center;">
+              <button class="swap-btn" id="d-swap-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+              </button>
             </div>
-            <input class="convert-input output" type="text" value="$19.07" readonly>
-            <div style="font-size:var(--text-xs);opacity:0.5;margin-top:8px;">Available: $18,750.00</div>
-          </div>
 
-          <!-- Exchange Rate -->
-          <div class="rate-display" style="margin-top:20px;margin-bottom:24px;">
-            <div class="rate-display-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+            <!-- To Card -->
+            <div class="convert-card convert-card-to" id="d-to-card" style="margin-top:0;">
+              <div class="card-label">To</div>
+              <div class="card-currency">
+                <span style="font-size:18px;" class="d-to-flag">&#127482;&#127480;</span>
+                <span class="card-currency-code d-to-code">USD</span>
+                <span class="card-currency-name d-to-name">US Dollar</span>
+              </div>
+              <input class="convert-input output" type="text" id="d-to-output" value="$19.07" readonly>
+              <div style="font-size:var(--text-xs);opacity:0.5;margin-top:8px;" class="d-to-avail">Available: $18,750.00</div>
             </div>
-            <div>
-              <div style="font-size:var(--text-sm);font-weight:600;color:var(--text-primary);">1 USD = KES 128.50</div>
-              <div style="font-size:var(--text-xs);color:var(--text-muted);">Admin-set rate &middot; Updated today</div>
+
+            <!-- Exchange Rate -->
+            <div class="rate-display" style="margin-top:20px;margin-bottom:24px;">
+              <div class="rate-display-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+              </div>
+              <div>
+                <div style="font-size:var(--text-sm);font-weight:600;color:var(--text-primary);" id="d-rate-text">1 USD = KES 128.50</div>
+                <div style="font-size:var(--text-xs);color:var(--text-muted);">Admin-set rate &middot; Updated today</div>
+              </div>
+            </div>
+
+            <!-- Estimated Output -->
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--border);margin-bottom:24px;">
+              <span style="font-size:var(--text-sm);color:var(--text-muted);">Estimated output</span>
+              <span style="font-family:var(--font-serif);font-size:var(--text-lg);font-weight:700;color:var(--text-primary);" id="d-est-output">$19.07</span>
+            </div>
+
+            <!-- Continue Button -->
+            <button class="btn btn-primary btn-lg w-full" style="width:100%;border-radius:var(--radius-md);font-size:var(--text-md);" onclick="convertGoStep(2, 'd')">Continue</button>
+            <div style="text-align:center;margin-top:14px;">
+              <a href="wallet.html" style="font-size:var(--text-sm);color:var(--text-muted);font-weight:500;">Cancel</a>
             </div>
           </div>
 
-          <!-- Estimated Output -->
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--border);margin-bottom:24px;">
-            <span style="font-size:var(--text-sm);color:var(--text-muted);">Estimated output</span>
-            <span style="font-family:var(--font-serif);font-size:var(--text-lg);font-weight:700;color:var(--text-primary);">$19.07</span>
+          <!-- STEP 2: Review -->
+          <div class="step-container" data-step-content="2" id="d-step2">
+            <div style="text-align:center;margin-bottom:24px;">
+              <div style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:8px;">You are converting</div>
+              <div style="font-family:var(--font-serif);font-size:var(--text-2xl);font-weight:700;color:var(--text-primary);" id="d-review-from">KES 2,450</div>
+              <div style="margin:12px 0;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>
+              </div>
+              <div style="font-family:var(--font-serif);font-size:var(--text-2xl);font-weight:700;color:var(--success);" id="d-review-to">$19.07</div>
+            </div>
+
+            <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:16px;margin-bottom:24px;">
+              <div class="review-row">
+                <span class="review-label">From Currency</span>
+                <span class="review-value" id="d-review-from-curr">KES</span>
+              </div>
+              <div class="review-row">
+                <span class="review-label">To Currency</span>
+                <span class="review-value" id="d-review-to-curr">USD</span>
+              </div>
+              <div class="review-row">
+                <span class="review-label">Exchange Rate</span>
+                <span class="review-value" id="d-review-rate">1 USD = KES 128.50</span>
+              </div>
+              <div class="review-row" style="border-bottom:none;">
+                <span class="review-label">You Receive</span>
+                <span class="review-value" style="color:var(--success);" id="d-review-receive">$19.07</span>
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-lg w-full" style="width:100%;border-radius:var(--radius-md);font-size:var(--text-md);" onclick="convertGoStep(3, 'd')">Confirm Conversion</button>
+            <div style="text-align:center;margin-top:14px;">
+              <a href="javascript:void(0)" onclick="convertGoStep(1, 'd')" style="font-size:var(--text-sm);color:var(--text-muted);font-weight:500;">Back</a>
+            </div>
           </div>
 
-          <!-- Convert Button -->
-          <button class="btn btn-primary btn-lg w-full" style="width:100%;border-radius:var(--radius-md);font-size:var(--text-md);">Convert</button>
-          <div style="text-align:center;margin-top:14px;">
-            <a href="wallet.html" style="font-size:var(--text-sm);color:var(--text-muted);font-weight:500;">Cancel</a>
+          <!-- STEP 3: Success -->
+          <div class="step-container" data-step-content="3" id="d-step3">
+            <div style="text-align:center;padding:20px 0;">
+              <div class="success-icon">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div style="font-family:var(--font-serif);font-size:var(--text-xl);font-weight:600;color:var(--text-primary);margin-bottom:8px;">Conversion Request Submitted</div>
+              <div style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:8px;">Pending admin approval</div>
+              <div style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:32px;" id="d-success-summary">Your conversion of KES 2,450 to $19.07 is being processed.</div>
+              <a href="wallet.html" class="btn btn-primary btn-lg" style="width:100%;border-radius:var(--radius-md);font-size:var(--text-md);text-decoration:none;">Back to Wallet</a>
+            </div>
           </div>
+
         </div>
       </div>
 
@@ -357,58 +480,112 @@
 
         <!-- Mobile Convert Sheet -->
         <div class="mobile-sheet-overlay">
-          <div class="mobile-sheet-content">
+          <div class="mobile-sheet-content" id="mobile-sheet">
             <div class="sheet-handle"></div>
             <div style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">Convert Currency</div>
-            <p style="font-size:12px;color:var(--text-muted);margin-bottom:18px;">Exchange at admin-set rates</p>
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Exchange at admin-set rates</p>
 
-            <!-- From -->
-            <div class="convert-card convert-card-from" style="margin-bottom:0;padding:14px 14px;">
-              <div class="card-label" style="font-size:10px;">From</div>
-              <div class="card-currency" style="margin-bottom:8px;">
-                <span style="font-size:14px;">&#127472;&#127466;</span>
-                <span class="card-currency-code" style="font-size:14px;">KES</span>
+            <!-- Step Indicators -->
+            <div class="step-indicators" id="m-step-indicators" style="margin-bottom:18px;">
+              <div class="step-dot active" data-step="1" style="width:28px;height:28px;font-size:12px;">1</div>
+              <div class="step-line" data-line="1" style="width:30px;"></div>
+              <div class="step-dot" data-step="2" style="width:28px;height:28px;font-size:12px;">2</div>
+              <div class="step-line" data-line="2" style="width:30px;"></div>
+              <div class="step-dot" data-step="3" style="width:28px;height:28px;font-size:12px;">3</div>
+            </div>
+
+            <!-- STEP 1 -->
+            <div class="step-container active" data-step-content="1" id="m-step1">
+              <!-- From -->
+              <div class="convert-card convert-card-from" id="m-from-card" style="margin-bottom:0;padding:14px 14px;">
+                <div class="card-label" style="font-size:10px;">From</div>
+                <div class="card-currency" style="margin-bottom:8px;">
+                  <span style="font-size:14px;" class="m-from-flag">&#127472;&#127466;</span>
+                  <span class="card-currency-code m-from-code" style="font-size:14px;">KES</span>
+                </div>
+                <input class="convert-input" type="text" placeholder="0.00" value="2,450" id="m-from-input" style="font-size:18px;padding:8px 10px;">
+                <div style="font-size:10px;opacity:0.5;margin-top:6px;" class="m-from-avail">Available: KES 2,450,000</div>
               </div>
-              <input class="convert-input" type="text" placeholder="0.00" value="2,450" style="font-size:18px;padding:8px 10px;">
-              <div style="font-size:10px;opacity:0.5;margin-top:6px;">Available: KES 2,450,000</div>
-            </div>
 
-            <div style="display:flex;justify-content:center;">
-              <button class="swap-btn" style="width:36px;height:36px;margin:-10px auto;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>
-              </button>
-            </div>
-
-            <!-- To -->
-            <div class="convert-card convert-card-to" style="margin-top:0;padding:14px 14px;">
-              <div class="card-label" style="font-size:10px;">To</div>
-              <div class="card-currency" style="margin-bottom:8px;">
-                <span style="font-size:14px;">&#127482;&#127480;</span>
-                <span class="card-currency-code" style="font-size:14px;">USD</span>
+              <div style="display:flex;justify-content:center;">
+                <button class="swap-btn" id="m-swap-btn" style="width:36px;height:36px;margin:-10px auto;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+                </button>
               </div>
-              <input class="convert-input output" type="text" value="$19.07" readonly style="font-size:18px;padding:8px 10px;">
-            </div>
 
-            <!-- Rate -->
-            <div class="rate-display" style="margin-top:14px;margin-bottom:16px;padding:10px 14px;">
-              <div class="rate-display-icon" style="width:28px;height:28px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+              <!-- To -->
+              <div class="convert-card convert-card-to" id="m-to-card" style="margin-top:0;padding:14px 14px;">
+                <div class="card-label" style="font-size:10px;">To</div>
+                <div class="card-currency" style="margin-bottom:8px;">
+                  <span style="font-size:14px;" class="m-to-flag">&#127482;&#127480;</span>
+                  <span class="card-currency-code m-to-code" style="font-size:14px;">USD</span>
+                </div>
+                <input class="convert-input output" type="text" id="m-to-output" value="$19.07" readonly style="font-size:18px;padding:8px 10px;">
               </div>
-              <div>
-                <div style="font-size:12px;font-weight:600;color:var(--text-primary);">1 USD = KES 128.50</div>
-                <div style="font-size:10px;color:var(--text-muted);">Admin-set rate</div>
+
+              <!-- Rate -->
+              <div class="rate-display" style="margin-top:14px;margin-bottom:16px;padding:10px 14px;">
+                <div class="rate-display-icon" style="width:28px;height:28px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-primary);" id="m-rate-text">1 USD = KES 128.50</div>
+                  <div style="font-size:10px;color:var(--text-muted);">Admin-set rate</div>
+                </div>
+              </div>
+
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--border);margin-bottom:16px;">
+                <span style="font-size:12px;color:var(--text-muted);">Estimated output</span>
+                <span style="font-family:var(--font-serif);font-size:16px;font-weight:700;color:var(--text-primary);" id="m-est-output">$19.07</span>
+              </div>
+
+              <button class="btn btn-primary btn-md w-full" style="width:100%;border-radius:var(--radius-md);font-size:14px;" onclick="convertGoStep(2, 'm')">Continue</button>
+              <div style="text-align:center;margin-top:10px;">
+                <a href="wallet.html" style="font-size:12px;color:var(--text-muted);font-weight:500;">Cancel</a>
               </div>
             </div>
 
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--border);margin-bottom:16px;">
-              <span style="font-size:12px;color:var(--text-muted);">Estimated output</span>
-              <span style="font-family:var(--font-serif);font-size:16px;font-weight:700;color:var(--text-primary);">$19.07</span>
+            <!-- STEP 2: Review -->
+            <div class="step-container" data-step-content="2" id="m-step2">
+              <div style="text-align:center;margin-bottom:18px;">
+                <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">You are converting</div>
+                <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--text-primary);" id="m-review-from">KES 2,450</div>
+                <div style="margin:8px 0;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>
+                </div>
+                <div style="font-family:var(--font-serif);font-size:20px;font-weight:700;color:var(--success);" id="m-review-to">$19.07</div>
+              </div>
+
+              <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:12px;margin-bottom:18px;">
+                <div class="review-row" style="padding:10px 0;">
+                  <span class="review-label" style="font-size:12px;">Exchange Rate</span>
+                  <span class="review-value" style="font-size:13px;" id="m-review-rate">1 USD = KES 128.50</span>
+                </div>
+                <div class="review-row" style="padding:10px 0;border-bottom:none;">
+                  <span class="review-label" style="font-size:12px;">You Receive</span>
+                  <span class="review-value" style="font-size:13px;color:var(--success);" id="m-review-receive">$19.07</span>
+                </div>
+              </div>
+
+              <button class="btn btn-primary btn-md w-full" style="width:100%;border-radius:var(--radius-md);font-size:14px;" onclick="convertGoStep(3, 'm')">Confirm Conversion</button>
+              <div style="text-align:center;margin-top:10px;">
+                <a href="javascript:void(0)" onclick="convertGoStep(1, 'm')" style="font-size:12px;color:var(--text-muted);font-weight:500;">Back</a>
+              </div>
             </div>
 
-            <button class="btn btn-primary btn-md w-full" style="width:100%;border-radius:var(--radius-md);font-size:14px;">Convert</button>
-            <div style="text-align:center;margin-top:10px;">
-              <a href="wallet.html" style="font-size:12px;color:var(--text-muted);font-weight:500;">Cancel</a>
+            <!-- STEP 3: Success -->
+            <div class="step-container" data-step-content="3" id="m-step3">
+              <div style="text-align:center;padding:16px 0;">
+                <div class="success-icon" style="width:56px;height:56px;margin-bottom:16px;">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div style="font-family:var(--font-serif);font-size:18px;font-weight:600;color:var(--text-primary);margin-bottom:6px;">Conversion Submitted</div>
+                <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">Pending admin approval</div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:24px;" id="m-success-summary">KES 2,450 to $19.07</div>
+                <a href="wallet.html" class="btn btn-primary btn-md" style="width:100%;border-radius:var(--radius-md);font-size:14px;text-decoration:none;">Back to Wallet</a>
+              </div>
             </div>
+
           </div>
         </div>
 
@@ -442,5 +619,188 @@
 </div>
 
 <script src="../../system/interactions.js"></script>
+<script>
+(function() {
+  const RATE = 128.50;
+
+  // State for each panel: 'd' = desktop, 'm' = mobile
+  var state = {
+    d: { swapped: false, fromAmount: 2450 },
+    m: { swapped: false, fromAmount: 2450 }
+  };
+
+  function parseNum(str) {
+    return parseFloat(String(str).replace(/[^0-9.]/g, '')) || 0;
+  }
+
+  function formatNum(n, decimals) {
+    return n.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  }
+
+  function recalc(panel) {
+    var s = state[panel];
+    var inputEl = document.getElementById(panel + '-from-input');
+    var outputEl = document.getElementById(panel + '-to-output');
+    var estEl = document.getElementById(panel + '-est-output');
+    var rateEl = document.getElementById(panel + '-rate-text');
+
+    var raw = parseNum(inputEl.value);
+    s.fromAmount = raw;
+
+    var result;
+    if (!s.swapped) {
+      // KES -> USD
+      result = raw / RATE;
+      outputEl.value = '$' + formatNum(result, 2);
+      if (estEl) estEl.textContent = '$' + formatNum(result, 2);
+      if (rateEl) rateEl.textContent = '1 USD = KES ' + formatNum(RATE, 2);
+    } else {
+      // USD -> KES
+      result = raw * RATE;
+      outputEl.value = 'KES ' + formatNum(result, 2);
+      if (estEl) estEl.textContent = 'KES ' + formatNum(result, 2);
+      if (rateEl) rateEl.textContent = '1 USD = KES ' + formatNum(RATE, 2);
+    }
+  }
+
+  function swap(panel) {
+    var s = state[panel];
+    s.swapped = !s.swapped;
+
+    var fromCard = document.getElementById(panel + '-from-card');
+    var toCard = document.getElementById(panel + '-to-card');
+
+    // Swap classes
+    if (s.swapped) {
+      fromCard.className = fromCard.className.replace('convert-card-from', 'convert-card-to');
+      toCard.className = toCard.className.replace('convert-card-to', 'convert-card-from');
+    } else {
+      fromCard.className = fromCard.className.replace('convert-card-to', 'convert-card-from');
+      toCard.className = toCard.className.replace('convert-card-from', 'convert-card-to');
+    }
+
+    // Swap flag/code/name text
+    var pref = panel === 'd' ? 'd' : 'm';
+    var fromFlags = document.querySelectorAll('.' + pref + '-from-flag');
+    var toFlags = document.querySelectorAll('.' + pref + '-to-flag');
+    var fromCodes = document.querySelectorAll('.' + pref + '-from-code');
+    var toCodes = document.querySelectorAll('.' + pref + '-to-code');
+
+    if (s.swapped) {
+      fromFlags.forEach(function(el) { el.innerHTML = '&#127482;&#127480;'; });
+      toFlags.forEach(function(el) { el.innerHTML = '&#127472;&#127466;'; });
+      fromCodes.forEach(function(el) { el.textContent = 'USD'; });
+      toCodes.forEach(function(el) { el.textContent = 'KES'; });
+      if (panel === 'd') {
+        document.querySelector('.d-from-name').textContent = 'US Dollar';
+        document.querySelector('.d-to-name').textContent = 'Kenyan Shilling';
+        document.querySelector('.d-from-avail').textContent = 'Available: $18,750.00';
+        document.querySelector('.d-to-avail').textContent = 'Available: KES 2,450,000.00';
+      } else {
+        document.querySelector('.m-from-avail').textContent = 'Available: $18,750.00';
+      }
+    } else {
+      fromFlags.forEach(function(el) { el.innerHTML = '&#127472;&#127466;'; });
+      toFlags.forEach(function(el) { el.innerHTML = '&#127482;&#127480;'; });
+      fromCodes.forEach(function(el) { el.textContent = 'KES'; });
+      toCodes.forEach(function(el) { el.textContent = 'USD'; });
+      if (panel === 'd') {
+        document.querySelector('.d-from-name').textContent = 'Kenyan Shilling';
+        document.querySelector('.d-to-name').textContent = 'US Dollar';
+        document.querySelector('.d-from-avail').textContent = 'Available: KES 2,450,000.00';
+        document.querySelector('.d-to-avail').textContent = 'Available: $18,750.00';
+      } else {
+        document.querySelector('.m-from-avail').textContent = 'Available: KES 2,450,000';
+      }
+    }
+
+    recalc(panel);
+  }
+
+  // Populate review step
+  function populateReview(panel) {
+    var s = state[panel];
+    var raw = s.fromAmount;
+    var fromCurr, toCurr, fromStr, toStr;
+
+    if (!s.swapped) {
+      fromCurr = 'KES'; toCurr = 'USD';
+      fromStr = 'KES ' + formatNum(raw, 0);
+      toStr = '$' + formatNum(raw / RATE, 2);
+    } else {
+      fromCurr = 'USD'; toCurr = 'KES';
+      fromStr = '$' + formatNum(raw, 2);
+      toStr = 'KES ' + formatNum(raw * RATE, 2);
+    }
+
+    var rateStr = '1 USD = KES ' + formatNum(RATE, 2);
+
+    if (panel === 'd') {
+      document.getElementById('d-review-from').textContent = fromStr;
+      document.getElementById('d-review-to').textContent = toStr;
+      document.getElementById('d-review-from-curr').textContent = fromCurr;
+      document.getElementById('d-review-to-curr').textContent = toCurr;
+      document.getElementById('d-review-rate').textContent = rateStr;
+      document.getElementById('d-review-receive').textContent = toStr;
+      document.getElementById('d-success-summary').textContent = 'Your conversion of ' + fromStr + ' to ' + toStr + ' is being processed.';
+    } else {
+      document.getElementById('m-review-from').textContent = fromStr;
+      document.getElementById('m-review-to').textContent = toStr;
+      document.getElementById('m-review-rate').textContent = rateStr;
+      document.getElementById('m-review-receive').textContent = toStr;
+      document.getElementById('m-success-summary').textContent = fromStr + ' to ' + toStr;
+    }
+  }
+
+  // Step navigation
+  window.convertGoStep = function(step, panel) {
+    if (step === 2) populateReview(panel);
+
+    var prefix = panel;
+    // Hide all steps
+    for (var i = 1; i <= 3; i++) {
+      var el = document.getElementById(prefix + '-step' + i);
+      if (el) el.classList.remove('active');
+    }
+    // Show target step
+    var target = document.getElementById(prefix + '-step' + step);
+    if (target) target.classList.add('active');
+
+    // Update indicators
+    var indicators = document.getElementById(prefix + '-step-indicators');
+    if (indicators) {
+      var dots = indicators.querySelectorAll('.step-dot');
+      var lines = indicators.querySelectorAll('.step-line');
+      dots.forEach(function(dot, idx) {
+        var dotStep = idx + 1;
+        dot.classList.remove('active', 'completed');
+        if (dotStep < step) dot.classList.add('completed');
+        else if (dotStep === step) dot.classList.add('active');
+      });
+      lines.forEach(function(line, idx) {
+        var lineStep = idx + 1;
+        line.classList.toggle('completed', lineStep < step);
+      });
+    }
+  };
+
+  // Bind events
+  ['d', 'm'].forEach(function(panel) {
+    var input = document.getElementById(panel + '-from-input');
+    if (input) {
+      input.addEventListener('input', function() { recalc(panel); });
+      input.addEventListener('focus', function() { this.select(); });
+    }
+    var swapBtn = document.getElementById(panel + '-swap-btn');
+    if (swapBtn) {
+      swapBtn.addEventListener('click', function() { swap(panel); });
+    }
+  });
+
+  // Initial calc
+  recalc('d');
+  recalc('m');
+})();
+</script>
 </body>
 </html>
