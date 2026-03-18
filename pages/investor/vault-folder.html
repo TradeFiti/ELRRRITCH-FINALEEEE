@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eltrich Prime — Vault Folder</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    /* Breadcrumb */
+    .vault-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: var(--text-sm); color: var(--text-muted); margin-bottom: 8px; }
+    .vault-breadcrumb a { color: var(--text-muted); text-decoration: none; transition: color var(--transition-fast); }
+    .vault-breadcrumb a:hover { color: var(--accent); }
+    .vault-breadcrumb .breadcrumb-sep { opacity: 0.4; }
+    .vault-breadcrumb .breadcrumb-current { color: var(--text-primary); font-weight: 500; }
+
+    /* Toolbar */
+    .vault-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .vault-toolbar-left { display: flex; align-items: center; gap: 12px; }
+    .vault-toolbar-right { display: flex; align-items: center; gap: 10px; }
+    .vault-search { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--bg-card); font-size: var(--text-sm); color: var(--text-primary); min-width: 180px; }
+    .vault-search input { border: none; outline: none; background: transparent; font-size: var(--text-sm); color: var(--text-primary); width: 100%; font-family: var(--font-sans); }
+    .vault-search input::placeholder { color: var(--text-muted); }
+    .vault-sort { padding: 8px 14px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--bg-card); font-size: var(--text-sm); color: var(--text-secondary); cursor: pointer; font-family: var(--font-sans); appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+    .vault-sort:hover { border-color: var(--accent); }
+    .view-toggle { display: flex; border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+    .view-toggle-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--bg-card); border: none; cursor: pointer; color: var(--text-muted); transition: all var(--transition-fast); }
+    .view-toggle-btn:first-child { border-right: 1px solid var(--border); }
+    .view-toggle-btn--active { background: var(--accent-light); color: var(--accent); }
+    .view-toggle-btn:hover:not(.view-toggle-btn--active) { background: var(--bg-secondary); }
+
+    /* Folder info */
+    .folder-info { font-size: var(--text-sm); color: var(--text-muted); margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+
+    /* File rows */
+    .vault-file-row { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--border-light); transition: background var(--transition-fast); }
+    .vault-file-row:last-child { border-bottom: none; }
+    .vault-file-row:hover { background: var(--bg-secondary); }
+
+    /* Checkbox */
+    .vault-checkbox { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid var(--border); background: var(--bg-card); cursor: pointer; flex-shrink: 0; appearance: none; -webkit-appearance: none; transition: all var(--transition-fast); display: flex; align-items: center; justify-content: center; }
+    .vault-checkbox:checked { background: var(--accent); border-color: var(--accent); }
+    .vault-checkbox:checked::after { content: ''; display: block; width: 5px; height: 9px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) translateY(-1px); }
+    .vault-checkbox:hover { border-color: var(--accent); }
+
+    /* File type icon */
+    .vault-file-icon { width: 42px; height: 42px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .vault-file-icon.icon-pdf { background: #fef2f2; color: #dc2626; }
+    .vault-file-icon.icon-img { background: #eff6ff; color: #2563eb; }
+    .vault-file-icon.icon-xls { background: #f0fdf4; color: #16a34a; }
+    .vault-file-icon.icon-zip { background: #faf5ff; color: #9333ea; }
+
+    /* File info */
+    .vault-file-info { flex: 1; min-width: 0; }
+    .vault-file-name { font-size: var(--text-base); font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Badges */
+    .badge-pdf { background: #fef2f2; color: #dc2626; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+    .badge-img { background: #eff6ff; color: #2563eb; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+    .badge-xls { background: #f0fdf4; color: #16a34a; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+    .badge-zip { background: #faf5ff; color: #9333ea; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+    .badge-shared { background: #eff6ff; color: #2563eb; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; }
+    .badge-private { font-size: 11px; color: var(--text-muted); }
+
+    /* File row columns */
+    .vault-col-type { width: 90px; flex-shrink: 0; }
+    .vault-col-size { width: 70px; flex-shrink: 0; font-size: var(--text-sm); color: var(--text-secondary); }
+    .vault-col-date { width: 80px; flex-shrink: 0; font-size: var(--text-sm); color: var(--text-muted); }
+    .vault-col-shared { width: 80px; flex-shrink: 0; }
+    .vault-col-actions { display: flex; align-items: center; gap: 6px; }
+
+    /* Action buttons */
+    .vault-action-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-card); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition-fast); color: var(--text-muted); }
+    .vault-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Bulk action bar */
+    .bulk-bar { position: sticky; bottom: 0; left: 0; right: 0; background: var(--bg-card); border-top: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 12px; box-shadow: 0 -4px 20px rgba(0,0,0,0.06); z-index: 10; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+    .bulk-bar-count { font-size: var(--text-sm); font-weight: 600; color: var(--text-primary); margin-right: auto; }
+    .bulk-btn { padding: 8px 16px; border-radius: var(--radius-md); font-size: var(--text-sm); font-weight: 500; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all var(--transition-fast); font-family: var(--font-sans); }
+    .bulk-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .bulk-btn-danger { border-color: #fca5a5; color: #dc2626; background: #fef2f2; }
+    .bulk-btn-danger:hover { background: #fee2e2; border-color: #dc2626; }
+
+    /* Mobile file row */
+    .m-file-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-light); }
+    .m-file-row:last-child { border-bottom: none; }
+    .m-file-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .m-file-info { flex: 1; min-width: 0; }
+    .m-file-name { font-size: 13px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .m-file-meta { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Upload FAB */
+    .upload-fab { position: fixed; bottom: 80px; right: 24px; width: 52px; height: 52px; border-radius: 50%; background: var(--accent); color: #fff; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 6px 24px rgba(212,149,42,0.35); z-index: 50; transition: all var(--transition-fast); }
+    .upload-fab:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(212,149,42,0.45); }
+  </style>
+</head>
+<body>
+<a href="../../index.html" style="position:fixed;bottom:24px;left:24px;z-index:9999;display:flex;align-items:center;gap:8px;padding:10px 20px;background:var(--bg-card,#fff);border:1px solid var(--border,#e5e5e5);border-radius:999px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.1);transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:600;color:#d4952a;" onmouseover="this.style.borderColor='#d4952a';this.style.boxShadow='0 6px 24px rgba(212,149,42,0.2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)';this.style.transform=''">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+  All Screens
+</a>
+
+
+<div class="dual-panel">
+
+  <!-- ==================== DESKTOP VIEW ==================== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop View</div>
+    <div class="panel-desktop-inner">
+      <div class="desktop-content">
+
+        <!-- Sidebar -->
+        <div class="desktop-sidebar">
+          <div class="nav-logo">
+            <div>
+              <div class="nav-logo-text">Eltrich Prime</div>
+              <div class="nav-logo-subtitle">Private Family Office</div>
+            </div>
+          </div>
+
+          <div class="nav-section-label">Platform</div>
+          <a class="nav-item" href="dashboard.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+          <a class="nav-item" href="invest-products.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Investments
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto;opacity:0.4"><polyline points="6 9 12 15 18 9"/></svg>
+          </a>
+          <a class="nav-item" href="wallet.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+            Wallet
+          </a>
+          <a class="nav-item" href="transactions.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Transactions
+          </a>
+
+          <div class="nav-section-label">Communication</div>
+          <a class="nav-item" href="chat-list.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Support
+            <span class="notification-badge" style="margin-left:auto;">2</span>
+          </a>
+          <a class="nav-item nav-item--active" href="vault.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            Vault
+          </a>
+          <a class="nav-item" href="notifications.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            Notifications
+          </a>
+
+          <div class="nav-section-label">Account</div>
+          <a class="nav-item" href="profile.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Profile
+          </a>
+          <a class="nav-item" href="settings.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09c-.658.003-1.25.396-1.51 1z"/></svg>
+            Settings
+          </a>
+
+          <div style="padding: 12px 24px; margin-top: 8px;">
+            <div style="padding: 12px 16px; background: var(--accent-light); border-radius: var(--radius-md); border: 1px solid var(--accent-subtle);">
+              <div style="font-size: 11px; font-weight: 600; color: var(--accent); display:flex; align-items:center; gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                Super Admin Access
+              </div>
+              <a href="../admin/dashboard.html" style="font-size: 11px; font-weight: 600; color: var(--accent); margin-top: 6px; display: block;">Admin Dashboard &rarr;</a>
+            </div>
+          </div>
+
+          <div class="nav-user">
+            <div class="avatar avatar-initials" style="width:36px;height:36px;font-size:14px;">B</div>
+            <div>
+              <div class="nav-user-name">Bileonaire</div>
+              <div class="nav-user-email">kiokoleon@gmail.c...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="desktop-main">
+
+          <!-- Breadcrumb -->
+          <div class="vault-breadcrumb">
+            <a href="vault.html" style="display:flex;align-items:center;gap:4px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </a>
+            <a href="vault.html">My Vault</a>
+            <span class="breadcrumb-sep">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </span>
+            <span class="breadcrumb-current">My Documents</span>
+          </div>
+
+          <!-- Toolbar -->
+          <div class="vault-toolbar">
+            <div class="vault-toolbar-left">
+              <div class="page-title" style="margin:0;">My Documents</div>
+            </div>
+            <div class="vault-toolbar-right">
+              <div class="vault-search">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" placeholder="Search files...">
+              </div>
+              <select class="vault-sort">
+                <option>Name</option>
+                <option selected>Date</option>
+                <option>Size</option>
+                <option>Type</option>
+              </select>
+              <div class="view-toggle">
+                <button class="view-toggle-btn view-toggle-btn--active" title="List view">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                </button>
+                <button class="view-toggle-btn" title="Grid view">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                </button>
+              </div>
+              <button class="btn btn-primary btn-md">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload
+              </button>
+            </div>
+          </div>
+
+          <!-- Folder info bar -->
+          <div class="folder-info">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+            12 files &middot; 156 MB &middot; Last updated 2 hours ago
+          </div>
+
+          <!-- File list -->
+          <div class="card" style="padding:0; overflow:hidden;">
+
+            <!-- passport_scan.pdf -->
+            <div class="vault-file-row">
+              <input type="checkbox" class="vault-checkbox" checked>
+              <div class="vault-file-icon icon-pdf">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="vault-file-info">
+                <div class="vault-file-name">passport_scan.pdf</div>
+              </div>
+              <div class="vault-col-type"><span class="badge-pdf">Document</span></div>
+              <div class="vault-col-size">2.4 MB</div>
+              <div class="vault-col-date">Mar 15</div>
+              <div class="vault-col-shared"><span class="badge-private">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                Private
+              </span></div>
+              <div class="vault-col-actions">
+                <button class="vault-action-btn" title="Preview">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="Download">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="More">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- national_id_front.jpg -->
+            <div class="vault-file-row">
+              <input type="checkbox" class="vault-checkbox" checked>
+              <div class="vault-file-icon icon-img">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <div class="vault-file-info">
+                <div class="vault-file-name">national_id_front.jpg</div>
+              </div>
+              <div class="vault-col-type"><span class="badge-img">Image</span></div>
+              <div class="vault-col-size">1.8 MB</div>
+              <div class="vault-col-date">Mar 14</div>
+              <div class="vault-col-shared"><span class="badge-private">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                Private
+              </span></div>
+              <div class="vault-col-actions">
+                <button class="vault-action-btn" title="Preview">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="Download">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="More">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- proof_of_residence.pdf -->
+            <div class="vault-file-row">
+              <input type="checkbox" class="vault-checkbox">
+              <div class="vault-file-icon icon-pdf">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="vault-file-info">
+                <div class="vault-file-name">proof_of_residence.pdf</div>
+              </div>
+              <div class="vault-col-type"><span class="badge-pdf">Document</span></div>
+              <div class="vault-col-size">3.1 MB</div>
+              <div class="vault-col-date">Mar 14</div>
+              <div class="vault-col-shared"><span class="badge-private">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                Private
+              </span></div>
+              <div class="vault-col-actions">
+                <button class="vault-action-btn" title="Preview">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="Download">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="More">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- bank_statement_q4.pdf -->
+            <div class="vault-file-row">
+              <input type="checkbox" class="vault-checkbox">
+              <div class="vault-file-icon icon-pdf">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="vault-file-info">
+                <div class="vault-file-name">bank_statement_q4.pdf</div>
+              </div>
+              <div class="vault-col-type"><span class="badge-pdf">Document</span></div>
+              <div class="vault-col-size">4.2 MB</div>
+              <div class="vault-col-date">Mar 12</div>
+              <div class="vault-col-shared"><span class="badge-private">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                Private
+              </span></div>
+              <div class="vault-col-actions">
+                <button class="vault-action-btn" title="Preview">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="Download">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="More">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- investment_agreement.pdf — Shared -->
+            <div class="vault-file-row">
+              <input type="checkbox" class="vault-checkbox">
+              <div class="vault-file-icon icon-pdf">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="vault-file-info">
+                <div class="vault-file-name">investment_agreement.pdf</div>
+              </div>
+              <div class="vault-col-type"><span class="badge-pdf">Document</span></div>
+              <div class="vault-col-size">1.5 MB</div>
+              <div class="vault-col-date">Mar 10</div>
+              <div class="vault-col-shared"><span class="badge-shared">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                Shared
+              </span></div>
+              <div class="vault-col-actions">
+                <button class="vault-action-btn" title="Preview">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="Download">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="More">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- portfolio_summary.xlsx -->
+            <div class="vault-file-row">
+              <input type="checkbox" class="vault-checkbox">
+              <div class="vault-file-icon icon-xls">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="vault-file-info">
+                <div class="vault-file-name">portfolio_summary.xlsx</div>
+              </div>
+              <div class="vault-col-type"><span class="badge-xls">Spreadsheet</span></div>
+              <div class="vault-col-size">890 KB</div>
+              <div class="vault-col-date">Mar 8</div>
+              <div class="vault-col-shared"><span class="badge-private">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                Private
+              </span></div>
+              <div class="vault-col-actions">
+                <button class="vault-action-btn" title="Preview">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="Download">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="More">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- tax_certificate_2025.pdf -->
+            <div class="vault-file-row">
+              <input type="checkbox" class="vault-checkbox">
+              <div class="vault-file-icon icon-pdf">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="vault-file-info">
+                <div class="vault-file-name">tax_certificate_2025.pdf</div>
+              </div>
+              <div class="vault-col-type"><span class="badge-pdf">Document</span></div>
+              <div class="vault-col-size">2.1 MB</div>
+              <div class="vault-col-date">Mar 5</div>
+              <div class="vault-col-shared"><span class="badge-private">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                Private
+              </span></div>
+              <div class="vault-col-actions">
+                <button class="vault-action-btn" title="Preview">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="Download">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="More">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- profile_photo.jpg -->
+            <div class="vault-file-row">
+              <input type="checkbox" class="vault-checkbox">
+              <div class="vault-file-icon icon-img">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <div class="vault-file-info">
+                <div class="vault-file-name">profile_photo.jpg</div>
+              </div>
+              <div class="vault-col-type"><span class="badge-img">Image</span></div>
+              <div class="vault-col-size">920 KB</div>
+              <div class="vault-col-date">Mar 1</div>
+              <div class="vault-col-shared"><span class="badge-private">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                Private
+              </span></div>
+              <div class="vault-col-actions">
+                <button class="vault-action-btn" title="Preview">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="Download">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+                <button class="vault-action-btn" title="More">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Bulk Actions Bar -->
+            <div class="bulk-bar">
+              <div class="bulk-bar-count">2 selected</div>
+              <button class="bulk-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download All
+              </button>
+              <button class="bulk-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                Move
+              </button>
+              <button class="bulk-btn bulk-btn-danger">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                Delete
+              </button>
+            </div>
+
+          </div>
+
+        </div><!-- end desktop-main -->
+      </div><!-- end desktop-content -->
+    </div><!-- end panel-desktop-inner -->
+  </div><!-- end panel-desktop -->
+
+  <!-- ==================== MOBILE VIEW ==================== -->
+  <div class="panel-mobile">
+    <div class="panel-label">Mobile View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div style="padding: 16px 16px 90px;">
+
+          <!-- Mobile Header -->
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+            <a href="vault.html" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--text-secondary);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </a>
+            <div style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--text-primary);">My Documents</div>
+          </div>
+
+          <!-- Folder info -->
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;gap:4px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+            12 files &middot; 156 MB
+          </div>
+
+          <!-- Mobile File List -->
+          <div class="card" style="padding:0 14px;">
+
+            <!-- passport_scan.pdf -->
+            <div class="m-file-row">
+              <div class="m-file-icon" style="background:#fef2f2;color:#dc2626;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="m-file-info">
+                <div class="m-file-name">passport_scan.pdf</div>
+                <div class="m-file-meta">2.4 MB &middot; Mar 15</div>
+              </div>
+              <button class="vault-action-btn" style="width:28px;height:28px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+              </button>
+            </div>
+
+            <!-- national_id_front.jpg -->
+            <div class="m-file-row">
+              <div class="m-file-icon" style="background:#eff6ff;color:#2563eb;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <div class="m-file-info">
+                <div class="m-file-name">national_id_front.jpg</div>
+                <div class="m-file-meta">1.8 MB &middot; Mar 14</div>
+              </div>
+              <button class="vault-action-btn" style="width:28px;height:28px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+              </button>
+            </div>
+
+            <!-- proof_of_residence.pdf -->
+            <div class="m-file-row">
+              <div class="m-file-icon" style="background:#fef2f2;color:#dc2626;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="m-file-info">
+                <div class="m-file-name">proof_of_residence.pdf</div>
+                <div class="m-file-meta">3.1 MB &middot; Mar 14</div>
+              </div>
+              <button class="vault-action-btn" style="width:28px;height:28px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+              </button>
+            </div>
+
+            <!-- bank_statement_q4.pdf -->
+            <div class="m-file-row">
+              <div class="m-file-icon" style="background:#fef2f2;color:#dc2626;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="m-file-info">
+                <div class="m-file-name">bank_statement_q4.pdf</div>
+                <div class="m-file-meta">4.2 MB &middot; Mar 12</div>
+              </div>
+              <button class="vault-action-btn" style="width:28px;height:28px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+              </button>
+            </div>
+
+            <!-- investment_agreement.pdf -->
+            <div class="m-file-row">
+              <div class="m-file-icon" style="background:#fef2f2;color:#dc2626;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="m-file-info">
+                <div class="m-file-name">investment_agreement.pdf</div>
+                <div class="m-file-meta">1.5 MB &middot; Mar 10 &middot; <span style="color:#2563eb;">Shared</span></div>
+              </div>
+              <button class="vault-action-btn" style="width:28px;height:28px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+              </button>
+            </div>
+
+            <!-- portfolio_summary.xlsx -->
+            <div class="m-file-row">
+              <div class="m-file-icon" style="background:#f0fdf4;color:#16a34a;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="m-file-info">
+                <div class="m-file-name">portfolio_summary.xlsx</div>
+                <div class="m-file-meta">890 KB &middot; Mar 8</div>
+              </div>
+              <button class="vault-action-btn" style="width:28px;height:28px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+              </button>
+            </div>
+
+            <!-- tax_certificate_2025.pdf -->
+            <div class="m-file-row">
+              <div class="m-file-icon" style="background:#fef2f2;color:#dc2626;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="m-file-info">
+                <div class="m-file-name">tax_certificate_2025.pdf</div>
+                <div class="m-file-meta">2.1 MB &middot; Mar 5</div>
+              </div>
+              <button class="vault-action-btn" style="width:28px;height:28px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+              </button>
+            </div>
+
+            <!-- profile_photo.jpg -->
+            <div class="m-file-row">
+              <div class="m-file-icon" style="background:#eff6ff;color:#2563eb;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <div class="m-file-info">
+                <div class="m-file-name">profile_photo.jpg</div>
+                <div class="m-file-meta">920 KB &middot; Mar 1</div>
+              </div>
+              <button class="vault-action-btn" style="width:28px;height:28px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Upload FAB (inside phone-screen context) -->
+          <div style="position:absolute;bottom:80px;right:20px;z-index:50;">
+            <button style="width:48px;height:48px;border-radius:50%;background:var(--accent);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 24px rgba(212,149,42,0.35);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Bottom Tabs -->
+        <div class="bottom-tabs">
+          <a class="bottom-tab" href="dashboard.html">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Home
+          </a>
+          <a class="bottom-tab" href="invest-products.html">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Invest
+          </a>
+          <a class="bottom-tab" href="wallet.html">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+            Wallet
+          </a>
+          <a class="bottom-tab" href="chat-list.html">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Chat
+          </a>
+          <a class="bottom-tab bottom-tab--active" href="settings.html">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            More
+          </a>
+        </div>
+
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../system/interactions.js"></script>
+
+<!-- All Screens Card -->
+<div style="max-width:580px;margin:40px auto;padding:0 24px;">
+  <a href="../../index.html" style="display:flex;align-items:center;gap:16px;padding:20px 24px;background:var(--bg-card,#fff);border:1px solid var(--border,#e5e5e5);border-radius:16px;text-decoration:none;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:all 0.2s;" onmouseover="this.style.borderColor='#d4952a';this.style.boxShadow='0 6px 24px rgba(212,149,42,0.12)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#e5e5e5';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.06)';this.style.transform=''">
+    <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#fdf4e6,#faf0d8);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </div>
+    <div style="flex:1;">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:16px;font-weight:600;color:#1a1a1a;">All Screens</div>
+      <div style="font-size:12px;color:#9c9590;margin-top:2px;">Browse all 64 screens in the Eltrich Prime prototype</div>
+    </div>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+</div>
+</body>
+</html>

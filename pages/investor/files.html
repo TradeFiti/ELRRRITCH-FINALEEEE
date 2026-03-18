@@ -31,6 +31,11 @@
   </style>
 </head>
 <body>
+<a href="../../index.html" style="position:fixed;bottom:24px;left:24px;z-index:9999;display:flex;align-items:center;gap:8px;padding:10px 20px;background:var(--bg-card,#fff);border:1px solid var(--border,#e5e5e5);border-radius:999px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.1);transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:600;color:#d4952a;" onmouseover="this.style.borderColor='#d4952a';this.style.boxShadow='0 6px 24px rgba(212,149,42,0.2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)';this.style.transform=''">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+  All Screens
+</a>
+
 
 <div class="dual-panel">
 
@@ -74,9 +79,9 @@
             Support
             <span class="notification-badge" style="margin-left:auto;">2</span>
           </a>
-          <a class="nav-item nav-item--active" href="files.html">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-            Files
+          <a class="nav-item nav-item--active" href="vault.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Vault
           </a>
           <a class="nav-item" href="notifications.html">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
@@ -356,5 +361,19 @@
 </div>
 
 <script src="../../system/interactions.js"></script>
+
+<!-- All Screens Card -->
+<div style="max-width:580px;margin:40px auto;padding:0 24px;">
+  <a href="../../index.html" style="display:flex;align-items:center;gap:16px;padding:20px 24px;background:var(--bg-card,#fff);border:1px solid var(--border,#e5e5e5);border-radius:16px;text-decoration:none;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:all 0.2s;" onmouseover="this.style.borderColor='#d4952a';this.style.boxShadow='0 6px 24px rgba(212,149,42,0.12)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#e5e5e5';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.06)';this.style.transform=''">
+    <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#fdf4e6,#faf0d8);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </div>
+    <div style="flex:1;">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:16px;font-weight:600;color:#1a1a1a;">All Screens</div>
+      <div style="font-size:12px;color:#9c9590;margin-top:2px;">Browse all 64 screens in the Eltrich Prime prototype</div>
+    </div>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+</div>
 </body>
 </html>

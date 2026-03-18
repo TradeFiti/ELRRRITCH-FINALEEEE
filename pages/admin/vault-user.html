@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eltrich Prime — Vault User</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    .user-header-card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 24px;
+    }
+    .user-header-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4A90D9, #357ABD);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .user-header-info { flex: 1; min-width: 0; }
+    .user-header-name {
+      font-family: var(--font-serif);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .user-header-email {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .user-header-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .user-header-actions {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .vault-stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .vault-stat-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+    }
+    .vault-stat-value {
+      font-family: var(--font-serif);
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .vault-stat-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .vault-doc-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .vault-doc-table th {
+      text-align: left;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--border);
+    }
+    .vault-doc-row {
+      transition: all var(--transition-fast);
+    }
+    .vault-doc-row:hover {
+      background: var(--bg-secondary);
+    }
+    .vault-doc-row td {
+      padding: 14px 12px;
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: middle;
+    }
+    .doc-name-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .doc-type-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .doc-type-icon.pdf { background: var(--danger-light); color: var(--danger); }
+    .doc-type-icon.img { background: var(--info-light); color: var(--info); }
+    .category-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .category-badge.legal { background: var(--danger-light); color: var(--danger); }
+    .category-badge.financial { background: var(--success-light); color: var(--success); }
+    .category-badge.identity { background: var(--info-light); color: var(--info); }
+    .category-badge.investment { background: var(--accent-light); color: var(--accent); }
+    .category-badge.tax { background: #f3e8ff; color: #7c3aed; }
+    .shared-status {
+      font-size: var(--text-xs);
+      font-weight: 500;
+    }
+    .shared-status.admin { color: var(--info); }
+    .shared-status.user { color: var(--text-muted); }
+    .doc-action-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      color: var(--text-muted);
+    }
+    .doc-action-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .doc-action-btn.danger:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+    .doc-actions-cell {
+      display: flex;
+      gap: 6px;
+    }
+    /* Access Log Timeline */
+    .access-log {
+      position: relative;
+      padding-left: 28px;
+    }
+    .access-log::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--border);
+      border-radius: 1px;
+    }
+    .access-log-item {
+      position: relative;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .access-log-item:last-child { border-bottom: none; }
+    .access-log-item::before {
+      content: '';
+      position: absolute;
+      left: -24px;
+      top: 20px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg-card);
+      box-shadow: 0 0 0 2px var(--accent-light);
+    }
+    .access-log-item.view::before { background: var(--info); box-shadow: 0 0 0 2px var(--info-light); }
+    .access-log-item.download::before { background: var(--success); box-shadow: 0 0 0 2px var(--success-light); }
+    .access-log-item.share::before { background: var(--accent); box-shadow: 0 0 0 2px var(--accent-light); }
+    .access-log-item.upload::before { background: #7c3aed; box-shadow: 0 0 0 2px #f3e8ff; }
+    .access-log-item.revoke::before { background: var(--danger); box-shadow: 0 0 0 2px var(--danger-light); }
+    .access-log-text {
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .access-log-text strong { font-weight: 600; }
+    .access-log-time {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    /* Shared by Admin tab rows */
+    .shared-doc-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 10px;
+      transition: all var(--transition-fast);
+    }
+    .shared-doc-card:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--accent);
+    }
+    .shared-doc-info { flex: 1; min-width: 0; }
+    .shared-doc-name {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .shared-doc-meta {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .shared-doc-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .access-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      font-size: 10px;
+      font-weight: 600;
+    }
+    .access-badge.view-only { background: var(--info-light); color: var(--info); }
+    .access-badge.download-allowed { background: var(--success-light); color: var(--success); }
+    .access-badge.full-access { background: var(--accent-light); color: var(--accent); }
+    /* Bulk action bar */
+    .bulk-action-bar {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      background: var(--accent-light);
+      border: 1px solid var(--accent-subtle);
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+    }
+    .bulk-action-bar.active { display: flex; }
+    .bulk-action-bar .bulk-count {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .bulk-action-bar .bulk-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+    /* Sheet overlay */
+    .sheet-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .sheet-overlay.active {
+      display: flex;
+    }
+    .sheet-panel {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 480px;
+      padding: 28px;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+    }
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .sheet-title {
+      font-family: var(--font-serif);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .sheet-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all var(--transition-fast);
+    }
+    .sheet-close:hover { border-color: var(--danger); color: var(--danger); }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .form-select, .form-input, .form-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+      background: var(--bg-card);
+      transition: border-color var(--transition-fast);
+    }
+    .form-select:focus, .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .form-textarea { resize: vertical; min-height: 80px; }
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .radio-option:hover { border-color: var(--accent); }
+    .radio-option input[type="radio"] { accent-color: var(--accent); }
+    .radio-option-label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .radio-option-desc {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    .switch-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      margin: 8px 16px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .switch-link:hover { background: var(--accent-light); color: var(--accent); }
+    /* Checkbox styling */
+    .doc-checkbox {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    /* Mobile compact doc row */
+    .mobile-doc-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 8px;
+      text-decoration: none;
+    }
+    .mobile-doc-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .mobile-doc-info { flex: 1; min-width: 0; }
+    .mobile-doc-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mobile-doc-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    /* Mobile FAB */
+    .mobile-fab {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      z-index: 100;
+    }
+    .fab-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      transition: all var(--transition-fast);
+    }
+    .fab-btn.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .fab-btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212,149,42,0.3);
+    }
+    .fab-btn.secondary {
+      background: var(--bg-card);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+    .fab-btn.secondary:hover {
+      border-color: var(--accent);
+    }
+    /* Uploaded by user tab */
+    .user-upload-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+<a href="../../index.html" style="position:fixed;bottom:24px;left:24px;z-index:9999;display:flex;align-items:center;gap:8px;padding:10px 20px;background:var(--bg-card,#fff);border:1px solid var(--border,#e5e5e5);border-radius:999px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.1);transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:600;color:#d4952a;" onmouseover="this.style.borderColor='#d4952a';this.style.boxShadow='0 6px 24px rgba(212,149,42,0.2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)';this.style.transform=''">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+  All Screens
+</a>
+
+
+<div class="dual-panel">
+
+  <!-- ==================== DESKTOP VIEW ==================== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop View</div>
+    <div class="panel-desktop-inner">
+      <div class="desktop-content">
+
+        <!-- Admin Sidebar -->
+        <div class="desktop-sidebar">
+          <div class="nav-logo">
+            <div>
+              <div class="nav-logo-text">Eltrich Prime</div>
+              <div class="nav-logo-subtitle">Private Family Office</div>
+            </div>
+          </div>
+
+          <div class="nav-section-label">Admin Panel</div>
+          <a class="nav-item" href="dashboard.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+          <a class="nav-item" href="users.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            Users
+          </a>
+          <a class="nav-item" href="kyc-review.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            KYC Review
+          </a>
+          <a class="nav-item" href="transactions.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Transactions
+          </a>
+          <a class="nav-item" href="investments.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Investments
+          </a>
+          <a class="nav-item" href="products.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            Products
+          </a>
+          <a class="nav-item" href="bank-accounts.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+            Bank Accounts
+          </a>
+          <a class="nav-item" href="conversions.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+            Conversions
+          </a>
+          <a class="nav-item nav-item--active" href="vault.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Vault
+          </a>
+          <a class="nav-item" href="consultations.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Consultations
+          </a>
+          <a class="nav-item" href="notifications.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            Notifications
+          </a>
+          <a class="nav-item" href="support.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Support
+          </a>
+
+          <a class="switch-link" href="../investor/dashboard.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><path d="M21 3l-7 7"/><polyline points="9 21 3 21 3 15"/><path d="M3 21l7-7"/></svg>
+            Switch to User View
+          </a>
+
+          <div class="nav-user">
+            <div class="avatar avatar-initials" style="width:36px;height:36px;font-size:14px;">B</div>
+            <div>
+              <div class="nav-user-name">Bileonaire</div>
+              <div class="nav-user-email">kiokoleon@gmail.c...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="desktop-main">
+
+          <!-- Breadcrumb -->
+          <div class="breadcrumb">
+            <a href="dashboard.html">Admin</a>
+            <span class="breadcrumb-sep">/</span>
+            <a href="vault.html">Vault Management</a>
+            <span class="breadcrumb-sep">/</span>
+            <span style="color: var(--text-primary); font-weight: 500;">Bileonaire's Vault</span>
+          </div>
+
+          <!-- User Info Header Card -->
+          <div class="user-header-card">
+            <div class="user-header-avatar">B</div>
+            <div class="user-header-info">
+              <div class="user-header-name">Bileonaire</div>
+              <div class="user-header-email">kiokoleon@gmail.com</div>
+              <div class="user-header-meta">
+                <span class="badge badge-active">Active</span>
+                <span class="badge badge-approved">Verified</span>
+                <span style="font-size: var(--text-xs); color: var(--text-muted);">Member since Jan 15, 2026</span>
+              </div>
+            </div>
+            <div class="user-header-actions">
+              <button class="btn btn-primary btn-md" data-sheet-trigger="upload-document">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload Document
+              </button>
+              <button class="btn btn-secondary btn-md" data-sheet-trigger="share-document">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                Share Document
+              </button>
+            </div>
+          </div>
+
+          <!-- Vault Stats Row -->
+          <div class="vault-stats-row">
+            <div class="vault-stat-item">
+              <div class="vault-stat-value">24</div>
+              <div class="vault-stat-label">Documents</div>
+            </div>
+            <div class="vault-stat-item">
+              <div class="vault-stat-value">8</div>
+              <div class="vault-stat-label">Shared</div>
+            </div>
+            <div class="vault-stat-item">
+              <div class="vault-stat-value">342 MB</div>
+              <div class="vault-stat-label">Storage</div>
+            </div>
+            <div class="vault-stat-item">
+              <div class="vault-stat-value">2h ago</div>
+              <div class="vault-stat-label">Last Activity</div>
+            </div>
+          </div>
+
+          <!-- Tab Bar -->
+          <div class="tab-container">
+            <div class="tab-bar" data-tab-group>
+              <button class="tab-item tab-item--active" data-tab="all-docs">All Documents <span style="font-size:11px;color:var(--text-muted);font-weight:400;margin-left:4px;">(24)</span></button>
+              <button class="tab-item" data-tab="shared-admin">Shared by Admin <span style="font-size:11px;color:var(--text-muted);font-weight:400;margin-left:4px;">(8)</span></button>
+              <button class="tab-item" data-tab="uploaded-user">Uploaded by User <span style="font-size:11px;color:var(--text-muted);font-weight:400;margin-left:4px;">(16)</span></button>
+              <button class="tab-item" data-tab="access-log">Access Log</button>
+            </div>
+
+            <!-- All Documents Tab -->
+            <div class="tab-content active" data-tab-content="all-docs">
+
+              <!-- Bulk Action Bar -->
+              <div class="bulk-action-bar" id="bulkActionBar">
+                <span class="bulk-count"><span id="selectedCount">0</span> selected</span>
+                <div class="bulk-actions">
+                  <button class="btn btn-secondary btn-sm">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download
+                  </button>
+                  <button class="btn btn-secondary btn-sm" style="color:var(--danger);border-color:var(--danger);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                    Delete
+                  </button>
+                </div>
+              </div>
+
+              <div class="card" style="padding:0;overflow-x:auto;">
+                <table class="vault-doc-table">
+                  <thead>
+                    <tr>
+                      <th style="width:36px;"><input type="checkbox" class="doc-checkbox" id="selectAll"></th>
+                      <th>Document</th>
+                      <th>Category</th>
+                      <th>Size</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Row 1 -->
+                    <tr class="vault-doc-row">
+                      <td><input type="checkbox" class="doc-checkbox"></td>
+                      <td>
+                        <div class="doc-name-cell">
+                          <div class="doc-type-icon pdf">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                          </div>
+                          <div>
+                            <div style="font-weight:600;font-size:var(--text-sm);">Investment Agreement — Capital Growth.pdf</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="category-badge legal">Legal</span></td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">1.5 MB</td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">Mar 15</td>
+                      <td><span class="shared-status admin">Shared by Admin</span></td>
+                      <td>
+                        <div class="doc-actions-cell">
+                          <button class="doc-action-btn" title="View">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn" title="Download">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn danger" title="Revoke Access">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- Row 2 -->
+                    <tr class="vault-doc-row">
+                      <td><input type="checkbox" class="doc-checkbox"></td>
+                      <td>
+                        <div class="doc-name-cell">
+                          <div class="doc-type-icon pdf">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                          </div>
+                          <div>
+                            <div style="font-weight:600;font-size:var(--text-sm);">Q4 2025 Financial Report.pdf</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="category-badge financial">Financial</span></td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">4.2 MB</td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">Mar 14</td>
+                      <td><span class="shared-status admin">Shared by Admin</span></td>
+                      <td>
+                        <div class="doc-actions-cell">
+                          <button class="doc-action-btn" title="View">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn" title="Download">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn danger" title="Revoke Access">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- Row 3 -->
+                    <tr class="vault-doc-row">
+                      <td><input type="checkbox" class="doc-checkbox"></td>
+                      <td>
+                        <div class="doc-name-cell">
+                          <div class="doc-type-icon pdf">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                          </div>
+                          <div>
+                            <div style="font-weight:600;font-size:var(--text-sm);">passport_scan.pdf</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="category-badge identity">Identity</span></td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">2.4 MB</td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">Mar 14</td>
+                      <td><span class="shared-status user">User Upload</span></td>
+                      <td>
+                        <div class="doc-actions-cell">
+                          <button class="doc-action-btn" title="View">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn" title="Download">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn danger" title="Revoke Access">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- Row 4 -->
+                    <tr class="vault-doc-row">
+                      <td><input type="checkbox" class="doc-checkbox"></td>
+                      <td>
+                        <div class="doc-name-cell">
+                          <div class="doc-type-icon img">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                          </div>
+                          <div>
+                            <div style="font-weight:600;font-size:var(--text-sm);">national_id_front.jpg</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="category-badge identity">Identity</span></td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">1.8 MB</td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">Mar 14</td>
+                      <td><span class="shared-status user">User Upload</span></td>
+                      <td>
+                        <div class="doc-actions-cell">
+                          <button class="doc-action-btn" title="View">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn" title="Download">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn danger" title="Revoke Access">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- Row 5 -->
+                    <tr class="vault-doc-row">
+                      <td><input type="checkbox" class="doc-checkbox"></td>
+                      <td>
+                        <div class="doc-name-cell">
+                          <div class="doc-type-icon pdf">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                          </div>
+                          <div>
+                            <div style="font-weight:600;font-size:var(--text-sm);">Fund Prospectus 2026.pdf</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="category-badge investment">Investment</span></td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">3.8 MB</td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">Mar 12</td>
+                      <td><span class="shared-status admin">Shared by Admin</span></td>
+                      <td>
+                        <div class="doc-actions-cell">
+                          <button class="doc-action-btn" title="View">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn" title="Download">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn danger" title="Revoke Access">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- Row 6 -->
+                    <tr class="vault-doc-row">
+                      <td><input type="checkbox" class="doc-checkbox"></td>
+                      <td>
+                        <div class="doc-name-cell">
+                          <div class="doc-type-icon pdf">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                          </div>
+                          <div>
+                            <div style="font-weight:600;font-size:var(--text-sm);">Tax Assessment 2025.pdf</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="category-badge tax">Tax</span></td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">2.1 MB</td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">Mar 10</td>
+                      <td><span class="shared-status user">User Upload</span></td>
+                      <td>
+                        <div class="doc-actions-cell">
+                          <button class="doc-action-btn" title="View">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn" title="Download">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn danger" title="Revoke Access">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- Row 7 -->
+                    <tr class="vault-doc-row">
+                      <td><input type="checkbox" class="doc-checkbox"></td>
+                      <td>
+                        <div class="doc-name-cell">
+                          <div class="doc-type-icon pdf">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                          </div>
+                          <div>
+                            <div style="font-weight:600;font-size:var(--text-sm);">proof_of_residence.pdf</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="category-badge identity">Identity</span></td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">3.1 MB</td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">Mar 10</td>
+                      <td><span class="shared-status user">User Upload</span></td>
+                      <td>
+                        <div class="doc-actions-cell">
+                          <button class="doc-action-btn" title="View">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn" title="Download">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn danger" title="Revoke Access">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- Row 8 -->
+                    <tr class="vault-doc-row">
+                      <td><input type="checkbox" class="doc-checkbox"></td>
+                      <td>
+                        <div class="doc-name-cell">
+                          <div class="doc-type-icon pdf">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                          </div>
+                          <div>
+                            <div style="font-weight:600;font-size:var(--text-sm);">Portfolio Performance Summary.pdf</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="category-badge financial">Financial</span></td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">1.2 MB</td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">Mar 8</td>
+                      <td><span class="shared-status admin">Shared by Admin</span></td>
+                      <td>
+                        <div class="doc-actions-cell">
+                          <button class="doc-action-btn" title="View">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn" title="Download">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn danger" title="Revoke Access">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- Row 9 -->
+                    <tr class="vault-doc-row">
+                      <td><input type="checkbox" class="doc-checkbox"></td>
+                      <td>
+                        <div class="doc-name-cell">
+                          <div class="doc-type-icon pdf">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                          </div>
+                          <div>
+                            <div style="font-weight:600;font-size:var(--text-sm);">bank_statement_q4.pdf</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="category-badge financial">Financial</span></td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">890 KB</td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">Mar 5</td>
+                      <td><span class="shared-status user">User Upload</span></td>
+                      <td>
+                        <div class="doc-actions-cell">
+                          <button class="doc-action-btn" title="View">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn" title="Download">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn danger" title="Revoke Access">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- Row 10 -->
+                    <tr class="vault-doc-row">
+                      <td><input type="checkbox" class="doc-checkbox"></td>
+                      <td>
+                        <div class="doc-name-cell">
+                          <div class="doc-type-icon pdf">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                          </div>
+                          <div>
+                            <div style="font-weight:600;font-size:var(--text-sm);">Risk Disclosure Agreement.pdf</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td><span class="category-badge legal">Legal</span></td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">1.1 MB</td>
+                      <td style="color:var(--text-muted);font-size:var(--text-xs);">Mar 1</td>
+                      <td><span class="shared-status admin">Shared by Admin</span></td>
+                      <td>
+                        <div class="doc-actions-cell">
+                          <button class="doc-action-btn" title="View">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn" title="Download">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                          </button>
+                          <button class="doc-action-btn danger" title="Revoke Access">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Shared by Admin Tab -->
+            <div class="tab-content" data-tab-content="shared-admin">
+              <div style="margin-bottom:16px;">
+                <div style="font-size:var(--text-sm);color:var(--text-muted);">Documents shared with this user by admin. Manage access levels and revoke as needed.</div>
+              </div>
+
+              <div class="shared-doc-card">
+                <div class="doc-type-icon pdf">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                </div>
+                <div class="shared-doc-info">
+                  <div class="shared-doc-name">Investment Agreement — Capital Growth.pdf</div>
+                  <div class="shared-doc-meta">
+                    <span>Shared: Mar 15, 2026</span>
+                    <span class="access-badge view-only">View Only</span>
+                    <span>No Expiry</span>
+                  </div>
+                </div>
+                <div class="shared-doc-actions">
+                  <button class="btn btn-secondary btn-sm">Edit Access</button>
+                  <button class="btn btn-secondary btn-sm" style="color:var(--danger);border-color:var(--danger);">Revoke</button>
+                </div>
+              </div>
+
+              <div class="shared-doc-card">
+                <div class="doc-type-icon pdf">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                </div>
+                <div class="shared-doc-info">
+                  <div class="shared-doc-name">Q4 2025 Financial Report.pdf</div>
+                  <div class="shared-doc-meta">
+                    <span>Shared: Mar 14, 2026</span>
+                    <span class="access-badge download-allowed">Download Allowed</span>
+                    <span>No Expiry</span>
+                  </div>
+                </div>
+                <div class="shared-doc-actions">
+                  <button class="btn btn-secondary btn-sm">Edit Access</button>
+                  <button class="btn btn-secondary btn-sm" style="color:var(--danger);border-color:var(--danger);">Revoke</button>
+                </div>
+              </div>
+
+              <div class="shared-doc-card">
+                <div class="doc-type-icon pdf">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                </div>
+                <div class="shared-doc-info">
+                  <div class="shared-doc-name">Fund Prospectus 2026.pdf</div>
+                  <div class="shared-doc-meta">
+                    <span>Shared: Mar 12, 2026</span>
+                    <span class="access-badge download-allowed">Download Allowed</span>
+                    <span>Expires: Jun 12, 2026</span>
+                  </div>
+                </div>
+                <div class="shared-doc-actions">
+                  <button class="btn btn-secondary btn-sm">Edit Access</button>
+                  <button class="btn btn-secondary btn-sm" style="color:var(--danger);border-color:var(--danger);">Revoke</button>
+                </div>
+              </div>
+
+              <div class="shared-doc-card">
+                <div class="doc-type-icon pdf">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                </div>
+                <div class="shared-doc-info">
+                  <div class="shared-doc-name">Portfolio Performance Summary.pdf</div>
+                  <div class="shared-doc-meta">
+                    <span>Shared: Mar 8, 2026</span>
+                    <span class="access-badge view-only">View Only</span>
+                    <span>No Expiry</span>
+                  </div>
+                </div>
+                <div class="shared-doc-actions">
+                  <button class="btn btn-secondary btn-sm">Edit Access</button>
+                  <button class="btn btn-secondary btn-sm" style="color:var(--danger);border-color:var(--danger);">Revoke</button>
+                </div>
+              </div>
+
+              <div class="shared-doc-card">
+                <div class="doc-type-icon pdf">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                </div>
+                <div class="shared-doc-info">
+                  <div class="shared-doc-name">Risk Disclosure Agreement.pdf</div>
+                  <div class="shared-doc-meta">
+                    <span>Shared: Mar 1, 2026</span>
+                    <span class="access-badge full-access">Full Access</span>
+                    <span>No Expiry</span>
+                  </div>
+                </div>
+                <div class="shared-doc-actions">
+                  <button class="btn btn-secondary btn-sm">Edit Access</button>
+                  <button class="btn btn-secondary btn-sm" style="color:var(--danger);border-color:var(--danger);">Revoke</button>
+                </div>
+              </div>
+
+              <div class="shared-doc-card">
+                <div class="doc-type-icon pdf">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                </div>
+                <div class="shared-doc-info">
+                  <div class="shared-doc-name">Quarterly Dividend Statement.pdf</div>
+                  <div class="shared-doc-meta">
+                    <span>Shared: Feb 28, 2026</span>
+                    <span class="access-badge download-allowed">Download Allowed</span>
+                    <span>No Expiry</span>
+                  </div>
+                </div>
+                <div class="shared-doc-actions">
+                  <button class="btn btn-secondary btn-sm">Edit Access</button>
+                  <button class="btn btn-secondary btn-sm" style="color:var(--danger);border-color:var(--danger);">Revoke</button>
+                </div>
+              </div>
+
+              <div class="shared-doc-card">
+                <div class="doc-type-icon pdf">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                </div>
+                <div class="shared-doc-info">
+                  <div class="shared-doc-name">Fee Schedule 2026.pdf</div>
+                  <div class="shared-doc-meta">
+                    <span>Shared: Feb 20, 2026</span>
+                    <span class="access-badge view-only">View Only</span>
+                    <span>Expires: Aug 20, 2026</span>
+                  </div>
+                </div>
+                <div class="shared-doc-actions">
+                  <button class="btn btn-secondary btn-sm">Edit Access</button>
+                  <button class="btn btn-secondary btn-sm" style="color:var(--danger);border-color:var(--danger);">Revoke</button>
+                </div>
+              </div>
+
+              <div class="shared-doc-card">
+                <div class="doc-type-icon pdf">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                </div>
+                <div class="shared-doc-info">
+                  <div class="shared-doc-name">AML Compliance Notice.pdf</div>
+                  <div class="shared-doc-meta">
+                    <span>Shared: Feb 15, 2026</span>
+                    <span class="access-badge view-only">View Only</span>
+                    <span>No Expiry</span>
+                  </div>
+                </div>
+                <div class="shared-doc-actions">
+                  <button class="btn btn-secondary btn-sm">Edit Access</button>
+                  <button class="btn btn-secondary btn-sm" style="color:var(--danger);border-color:var(--danger);">Revoke</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Uploaded by User Tab -->
+            <div class="tab-content" data-tab-content="uploaded-user">
+              <div style="margin-bottom:16px;">
+                <div style="font-size:var(--text-sm);color:var(--text-muted);">Documents uploaded directly by the user, including KYC submissions and personal files.</div>
+              </div>
+
+              <div class="shared-doc-card">
+                <div class="doc-type-icon pdf">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                </div>
+                <div class="shared-doc-info">
+                  <div class="shared-doc-name">passport_scan.pdf</div>
+                  <div class="shared-doc-meta">
+                    <span>Uploaded: Mar 14, 2026</span>
+                    <span class="category-badge identity">Identity</span>
+                    <span>2.4 MB</span>
+                  </div>
+                </div>
+                <div class="shared-doc-actions">
+                  <button class="doc-action-btn" title="View">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                  <button class="doc-action-btn" title="Download">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="shared-doc-card">
+                <div class="doc-type-icon img">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </div>
+                <div class="shared-doc-info">
+                  <div class="shared-doc-name">national_id_front.jpg</div>
+                  <div class="shared-doc-meta">
+                    <span>Uploaded: Mar 14, 2026</span>
+                    <span class="category-badge identity">Identity</span>
+                    <span>1.8 MB</span>
+                  </div>
+                </div>
+                <div class="shared-doc-actions">
+                  <button class="doc-action-btn" title="View">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                  <button class="doc-action-btn" title="Download">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="shared-doc-card">
+                <div class="doc-type-icon pdf">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                </div>
+                <div class="shared-doc-info">
+                  <div class="shared-doc-name">Tax Assessment 2025.pdf</div>
+                  <div class="shared-doc-meta">
+                    <span>Uploaded: Mar 10, 2026</span>
+                    <span class="category-badge tax">Tax</span>
+                    <span>2.1 MB</span>
+                  </div>
+                </div>
+                <div class="shared-doc-actions">
+                  <button class="doc-action-btn" title="View">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                  <button class="doc-action-btn" title="Download">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="shared-doc-card">
+                <div class="doc-type-icon pdf">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                </div>
+                <div class="shared-doc-info">
+                  <div class="shared-doc-name">proof_of_residence.pdf</div>
+                  <div class="shared-doc-meta">
+                    <span>Uploaded: Mar 10, 2026</span>
+                    <span class="category-badge identity">Identity</span>
+                    <span>3.1 MB</span>
+                  </div>
+                </div>
+                <div class="shared-doc-actions">
+                  <button class="doc-action-btn" title="View">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                  <button class="doc-action-btn" title="Download">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="shared-doc-card">
+                <div class="doc-type-icon pdf">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                </div>
+                <div class="shared-doc-info">
+                  <div class="shared-doc-name">bank_statement_q4.pdf</div>
+                  <div class="shared-doc-meta">
+                    <span>Uploaded: Mar 5, 2026</span>
+                    <span class="category-badge financial">Financial</span>
+                    <span>890 KB</span>
+                  </div>
+                </div>
+                <div class="shared-doc-actions">
+                  <button class="doc-action-btn" title="View">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                  <button class="doc-action-btn" title="Download">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Access Log Tab -->
+            <div class="tab-content" data-tab-content="access-log">
+              <div style="margin-bottom:16px;">
+                <div style="font-size:var(--text-sm);color:var(--text-muted);">Complete activity trail for this user's vault documents.</div>
+              </div>
+
+              <div class="card" style="padding:24px;">
+                <div class="access-log">
+                  <div class="access-log-item view">
+                    <div class="access-log-text"><strong>Bileonaire</strong> viewed <strong>Investment Agreement.pdf</strong></div>
+                    <div class="access-log-time">Today, 2:34 PM</div>
+                  </div>
+                  <div class="access-log-item download">
+                    <div class="access-log-text"><strong>Bileonaire</strong> downloaded <strong>Q4 Financial Report.pdf</strong></div>
+                    <div class="access-log-time">Today, 11:15 AM</div>
+                  </div>
+                  <div class="access-log-item share">
+                    <div class="access-log-text"><strong>Admin</strong> shared <strong>Fund Prospectus 2026.pdf</strong></div>
+                    <div class="access-log-time">Yesterday, 4:20 PM</div>
+                  </div>
+                  <div class="access-log-item upload">
+                    <div class="access-log-text"><strong>Bileonaire</strong> uploaded <strong>passport_scan.pdf</strong></div>
+                    <div class="access-log-time">Mar 15, 9:00 AM</div>
+                  </div>
+                  <div class="access-log-item revoke">
+                    <div class="access-log-text"><strong>Admin</strong> revoked access to <strong>Draft Terms.pdf</strong></div>
+                    <div class="access-log-time">Mar 14, 3:45 PM</div>
+                  </div>
+                  <div class="access-log-item view">
+                    <div class="access-log-text"><strong>Bileonaire</strong> viewed <strong>Portfolio Performance.pdf</strong></div>
+                    <div class="access-log-time">Mar 14, 10:30 AM</div>
+                  </div>
+                  <div class="access-log-item share">
+                    <div class="access-log-text"><strong>Admin</strong> shared <strong>Risk Disclosure Agreement.pdf</strong></div>
+                    <div class="access-log-time">Mar 1, 2:00 PM</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MOBILE VIEW ==================== -->
+  <div class="panel-mobile">
+    <div class="panel-label">Mobile View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div style="padding: 16px 16px 90px;">
+
+          <!-- Mobile Back + Header -->
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+            <a href="vault.html" style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--bg-secondary);text-decoration:none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </a>
+            <span style="font-family:var(--font-serif);font-size:16px;font-weight:600;color:var(--text-primary);">Bileonaire's Vault</span>
+          </div>
+
+          <!-- Mobile User Info Card -->
+          <div class="card" style="padding:16px;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#4A90D9,#357ABD);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:18px;font-weight:600;flex-shrink:0;">B</div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:600;font-size:14px;color:var(--text-primary);">Bileonaire</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">kiokoleon@gmail.com</div>
+                <div style="display:flex;gap:6px;align-items:center;margin-top:6px;">
+                  <span class="badge badge-active" style="font-size:9px;padding:2px 6px;">Active</span>
+                  <span class="badge badge-approved" style="font-size:9px;padding:2px 6px;">Verified</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Stats Row (2 col) -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+            <div class="card" style="padding:12px;text-align:center;">
+              <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--text-primary);">24</div>
+              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-top:2px;">Documents</div>
+            </div>
+            <div class="card" style="padding:12px;text-align:center;">
+              <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--text-primary);">8</div>
+              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-top:2px;">Shared</div>
+            </div>
+            <div class="card" style="padding:12px;text-align:center;">
+              <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--text-primary);">342 MB</div>
+              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-top:2px;">Storage</div>
+            </div>
+            <div class="card" style="padding:12px;text-align:center;">
+              <div style="font-family:var(--font-serif);font-size:18px;font-weight:700;color:var(--text-primary);">2h ago</div>
+              <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;margin-top:2px;">Last Active</div>
+            </div>
+          </div>
+
+          <!-- Mobile Tabs (scrollable) -->
+          <div style="display:flex;gap:0;margin-bottom:14px;overflow-x:auto;border-bottom:1px solid var(--border);padding-bottom:0;">
+            <div style="padding:10px 14px;font-size:11px;font-weight:600;color:var(--accent);border-bottom:2px solid var(--accent);white-space:nowrap;flex-shrink:0;">All (24)</div>
+            <div style="padding:10px 14px;font-size:11px;font-weight:500;color:var(--text-muted);white-space:nowrap;flex-shrink:0;">Admin (8)</div>
+            <div style="padding:10px 14px;font-size:11px;font-weight:500;color:var(--text-muted);white-space:nowrap;flex-shrink:0;">User (16)</div>
+            <div style="padding:10px 14px;font-size:11px;font-weight:500;color:var(--text-muted);white-space:nowrap;flex-shrink:0;">Log</div>
+          </div>
+
+          <!-- Mobile Document List -->
+          <div class="mobile-doc-row">
+            <div class="mobile-doc-icon" style="background:var(--danger-light);color:var(--danger);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+            </div>
+            <div class="mobile-doc-info">
+              <div class="mobile-doc-name">Investment Agreement.pdf</div>
+              <div class="mobile-doc-meta"><span class="category-badge legal" style="font-size:8px;padding:1px 5px;">Legal</span> 1.5 MB · Mar 15</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div class="mobile-doc-row">
+            <div class="mobile-doc-icon" style="background:var(--danger-light);color:var(--danger);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+            </div>
+            <div class="mobile-doc-info">
+              <div class="mobile-doc-name">Q4 2025 Financial Report.pdf</div>
+              <div class="mobile-doc-meta"><span class="category-badge financial" style="font-size:8px;padding:1px 5px;">Financial</span> 4.2 MB · Mar 14</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div class="mobile-doc-row">
+            <div class="mobile-doc-icon" style="background:var(--danger-light);color:var(--danger);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+            </div>
+            <div class="mobile-doc-info">
+              <div class="mobile-doc-name">passport_scan.pdf</div>
+              <div class="mobile-doc-meta"><span class="category-badge identity" style="font-size:8px;padding:1px 5px;">Identity</span> 2.4 MB · Mar 14</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div class="mobile-doc-row">
+            <div class="mobile-doc-icon" style="background:var(--info-light);color:var(--info);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+            <div class="mobile-doc-info">
+              <div class="mobile-doc-name">national_id_front.jpg</div>
+              <div class="mobile-doc-meta"><span class="category-badge identity" style="font-size:8px;padding:1px 5px;">Identity</span> 1.8 MB · Mar 14</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div class="mobile-doc-row">
+            <div class="mobile-doc-icon" style="background:var(--danger-light);color:var(--danger);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+            </div>
+            <div class="mobile-doc-info">
+              <div class="mobile-doc-name">Fund Prospectus 2026.pdf</div>
+              <div class="mobile-doc-meta"><span class="category-badge investment" style="font-size:8px;padding:1px 5px;">Investment</span> 3.8 MB · Mar 12</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div class="mobile-doc-row">
+            <div class="mobile-doc-icon" style="background:var(--danger-light);color:var(--danger);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+            </div>
+            <div class="mobile-doc-info">
+              <div class="mobile-doc-name">Tax Assessment 2025.pdf</div>
+              <div class="mobile-doc-meta"><span class="category-badge tax" style="font-size:8px;padding:1px 5px;">Tax</span> 2.1 MB · Mar 10</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div class="mobile-doc-row">
+            <div class="mobile-doc-icon" style="background:var(--danger-light);color:var(--danger);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+            </div>
+            <div class="mobile-doc-info">
+              <div class="mobile-doc-name">Risk Disclosure Agreement.pdf</div>
+              <div class="mobile-doc-meta"><span class="category-badge legal" style="font-size:8px;padding:1px 5px;">Legal</span> 1.1 MB · Mar 1</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <!-- Mobile FABs -->
+          <div style="position:absolute;bottom:90px;right:16px;display:flex;flex-direction:column;align-items:center;gap:10px;">
+            <button class="fab-btn secondary" data-sheet-trigger="share-document">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </button>
+            <button class="fab-btn primary" data-sheet-trigger="upload-document">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Bottom Tabs -->
+        <div class="bottom-tabs">
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Home
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Users
+          </button>
+          <button class="bottom-tab bottom-tab--active">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Vault
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            More
+          </button>
+        </div>
+
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Share Document Sheet Overlay -->
+<div class="sheet-overlay" data-sheet="share-document">
+  <div class="sheet-panel">
+    <div class="sheet-header">
+      <div class="sheet-title">Share Document</div>
+      <button class="sheet-close" data-sheet-close>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Select Document</label>
+      <select class="form-select">
+        <option value="">Choose a document...</option>
+        <option>Investment Agreement — Capital Growth.pdf</option>
+        <option>Q4 2025 Financial Report.pdf</option>
+        <option>Fund Prospectus 2026.pdf</option>
+        <option>Portfolio Performance Summary.pdf</option>
+        <option>Risk Disclosure Agreement.pdf</option>
+        <option>Quarterly Dividend Statement.pdf</option>
+        <option>Fee Schedule 2026.pdf</option>
+        <option>AML Compliance Notice.pdf</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Access Level</label>
+      <div class="radio-group">
+        <label class="radio-option">
+          <input type="radio" name="access-level" value="view-only" checked>
+          <div>
+            <div class="radio-option-label">View Only</div>
+            <div class="radio-option-desc">User can view but not download the document</div>
+          </div>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="access-level" value="download">
+          <div>
+            <div class="radio-option-label">Download Allowed</div>
+            <div class="radio-option-desc">User can view and download the document</div>
+          </div>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="access-level" value="full">
+          <div>
+            <div class="radio-option-label">Full Access</div>
+            <div class="radio-option-desc">User can view, download, and re-share the document</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Expiry Date <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+      <input type="date" class="form-input">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Notes <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+      <textarea class="form-textarea" placeholder="Add a note for this share..."></textarea>
+    </div>
+
+    <button class="btn btn-primary btn-lg" style="width:100%;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      Share Document
+    </button>
+  </div>
+</div>
+
+<!-- Upload Document Sheet Overlay -->
+<div class="sheet-overlay" data-sheet="upload-document">
+  <div class="sheet-panel">
+    <div class="sheet-header">
+      <div class="sheet-title">Upload Document</div>
+      <button class="sheet-close" data-sheet-close>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Document Category</label>
+      <select class="form-select">
+        <option value="">Select category...</option>
+        <option>Legal</option>
+        <option>Financial</option>
+        <option>Identity</option>
+        <option>Investment</option>
+        <option>Tax</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <div style="border:2px dashed var(--border);border-radius:var(--radius-md);padding:40px 20px;text-align:center;cursor:pointer;transition:all var(--transition-fast);" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin:0 auto 12px;display:block;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div style="font-size:var(--text-sm);font-weight:600;color:var(--text-primary);">Click to upload or drag and drop</div>
+        <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;">PDF, JPG, PNG up to 10 MB</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Notes <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+      <textarea class="form-textarea" placeholder="Add a note about this document..."></textarea>
+    </div>
+
+    <button class="btn btn-primary btn-lg" style="width:100%;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Upload Document
+    </button>
+  </div>
+</div>
+
+<script src="../../system/interactions.js"></script>
+
+<!-- All Screens Card -->
+<div style="max-width:580px;margin:40px auto;padding:0 24px;">
+  <a href="../../index.html" style="display:flex;align-items:center;gap:16px;padding:20px 24px;background:var(--bg-card,#fff);border:1px solid var(--border,#e5e5e5);border-radius:16px;text-decoration:none;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:all 0.2s;" onmouseover="this.style.borderColor='#d4952a';this.style.boxShadow='0 6px 24px rgba(212,149,42,0.12)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#e5e5e5';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.06)';this.style.transform=''">
+    <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#fdf4e6,#faf0d8);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </div>
+    <div style="flex:1;">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:16px;font-weight:600;color:#1a1a1a;">All Screens</div>
+      <div style="font-size:12px;color:#9c9590;margin-top:2px;">Browse all 64 screens in the Eltrich Prime prototype</div>
+    </div>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+</div>
+</body>
+</html>

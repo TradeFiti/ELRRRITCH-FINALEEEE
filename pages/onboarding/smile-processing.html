@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eltrich Prime — SmileID Processing</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    .onboarding-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 900px;
+    }
+    .onboarding-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px 32px;
+    }
+    .processing-container {
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+    }
+
+    /* SmileID Badge */
+    .smileid-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin: 0 auto 40px;
+      width: fit-content;
+    }
+    .smileid-badge svg { color: var(--accent); }
+
+    /* Spinner */
+    .processing-spinner {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 32px;
+    }
+    .spinner-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid var(--border-light);
+    }
+    .spinner-ring-active {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: var(--accent);
+      animation: spin 1.2s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .spinner-ring-secondary {
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-top-color: var(--accent);
+      opacity: 0.4;
+      animation: spin 2s linear infinite reverse;
+    }
+    .spinner-icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+    }
+
+    .processing-title {
+      font-family: var(--font-serif);
+      font-size: var(--text-3xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .processing-subtitle {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      line-height: 1.5;
+    }
+
+    /* Steps */
+    .processing-steps {
+      text-align: left;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    .processing-step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .processing-step:last-child { border-bottom: none; }
+    .step-indicator {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-indicator--done {
+      background: var(--success);
+      color: #fff;
+    }
+    .step-indicator--active {
+      background: var(--accent-light);
+      color: var(--accent);
+      position: relative;
+    }
+    .step-indicator--active::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      animation: pulse-step 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-step {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.1); }
+    }
+    .step-indicator--pending {
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+    }
+    .step-info { flex: 1; }
+    .step-label {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .step-desc {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .step-indicator--done + .step-info .step-label { color: var(--success); }
+    .step-status {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .step-status--done { color: var(--success); }
+    .step-status--active { color: var(--accent); }
+    .step-status--pending { color: var(--text-muted); }
+
+    /* Timing info */
+    .timing-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 32px;
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    /* Mobile overrides */
+    .mobile .processing-title { font-size: var(--text-xl); }
+    .mobile .processing-subtitle { font-size: var(--text-sm); margin-bottom: 28px; }
+    .mobile .processing-spinner { width: 90px; height: 90px; margin-bottom: 24px; }
+    .mobile .processing-step { padding: 12px 0; gap: 10px; }
+    .mobile .step-indicator { width: 28px; height: 28px; }
+  </style>
+</head>
+<body>
+<a href="../../index.html" style="position:fixed;bottom:24px;left:24px;z-index:9999;display:flex;align-items:center;gap:8px;padding:10px 20px;background:var(--bg-card,#fff);border:1px solid var(--border,#e5e5e5);border-radius:999px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.1);transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:600;color:#d4952a;" onmouseover="this.style.borderColor='#d4952a';this.style.boxShadow='0 6px 24px rgba(212,149,42,0.2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)';this.style.transform=''">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+  All Screens
+</a>
+
+<div class="dual-panel">
+
+  <!-- ==================== DESKTOP VIEW ==================== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop View</div>
+    <div class="panel-desktop-inner">
+      <div class="onboarding-wrapper">
+
+        <!-- Top Bar -->
+        <div class="top-bar">
+          <div class="top-bar-logo">Eltrich Prime</div>
+        </div>
+
+        <!-- Progress Stepper -->
+        <div class="stepper">
+          <div class="stepper-step stepper-step--completed">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="stepper-line stepper-line--completed"></div>
+          <div class="stepper-step stepper-step--completed">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="stepper-line stepper-line--completed"></div>
+          <div class="stepper-step stepper-step--active">3</div>
+          <div class="stepper-line"></div>
+          <div class="stepper-step">4</div>
+        </div>
+
+        <!-- Body -->
+        <div class="onboarding-body">
+          <div class="processing-container">
+
+            <!-- SmileID Badge -->
+            <div class="smileid-badge">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Powered by SmileID
+            </div>
+
+            <!-- Spinner -->
+            <div class="processing-spinner">
+              <div class="spinner-ring"></div>
+              <div class="spinner-ring-active"></div>
+              <div class="spinner-ring-secondary"></div>
+              <div class="spinner-icon">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="M9 12l2 2 4-4"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="processing-title">Verifying Your Identity</div>
+            <div class="processing-subtitle">SmileID is processing your documents. This usually takes under 30 seconds.</div>
+
+            <!-- Processing Steps -->
+            <div class="processing-steps">
+              <div class="processing-step">
+                <div class="step-indicator step-indicator--done">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="step-info">
+                  <div class="step-label">Uploading Documents</div>
+                  <div class="step-desc">Selfie and ID document uploaded</div>
+                </div>
+                <div class="step-status step-status--done">Done</div>
+              </div>
+
+              <div class="processing-step">
+                <div class="step-indicator step-indicator--done">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="step-info">
+                  <div class="step-label">Liveness Confirmed</div>
+                  <div class="step-desc">Anti-spoofing check passed</div>
+                </div>
+                <div class="step-status step-status--done">Done</div>
+              </div>
+
+              <div class="processing-step">
+                <div class="step-indicator step-indicator--active">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 012-2h6a2 2 0 012 2v1.662"/></svg>
+                </div>
+                <div class="step-info">
+                  <div class="step-label">Matching Face to Document</div>
+                  <div class="step-desc">Comparing selfie with ID photo</div>
+                </div>
+                <div class="step-status step-status--active">In progress...</div>
+              </div>
+
+              <div class="processing-step">
+                <div class="step-indicator step-indicator--pending">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div class="step-info">
+                  <div class="step-label">Identity Verification</div>
+                  <div class="step-desc">Final approval and data extraction</div>
+                </div>
+                <div class="step-status step-status--pending">Waiting</div>
+              </div>
+            </div>
+
+            <div class="timing-note">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Estimated time: ~15 seconds remaining
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MOBILE VIEW ==================== -->
+  <div class="panel-mobile">
+    <div class="panel-label" style="text-align:center;">Mobile View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="mobile onboarding-wrapper" style="min-height:auto;">
+
+          <!-- Top Bar -->
+          <div class="top-bar" style="padding:14px 16px;">
+            <div class="top-bar-logo" style="font-size:var(--text-lg);">Eltrich Prime</div>
+          </div>
+
+          <!-- Progress Stepper -->
+          <div class="stepper" style="padding:12px 8px;">
+            <div class="stepper-step stepper-step--completed" style="width:26px;height:26px;font-size:11px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="stepper-line stepper-line--completed" style="width:28px;"></div>
+            <div class="stepper-step stepper-step--completed" style="width:26px;height:26px;font-size:11px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="stepper-line stepper-line--completed" style="width:28px;"></div>
+            <div class="stepper-step stepper-step--active" style="width:26px;height:26px;font-size:11px;">3</div>
+            <div class="stepper-line" style="width:28px;"></div>
+            <div class="stepper-step" style="width:26px;height:26px;font-size:11px;">4</div>
+          </div>
+
+          <!-- Body -->
+          <div style="padding:32px 16px 24px;text-align:center;">
+
+            <!-- SmileID Badge -->
+            <div class="smileid-badge" style="margin-bottom:28px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Powered by SmileID
+            </div>
+
+            <!-- Spinner -->
+            <div class="processing-spinner" style="width:90px;height:90px;margin-bottom:24px;">
+              <div class="spinner-ring"></div>
+              <div class="spinner-ring-active"></div>
+              <div class="spinner-ring-secondary"></div>
+              <div class="spinner-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="M9 12l2 2 4-4"/>
+                </svg>
+              </div>
+            </div>
+
+            <div style="font-family:var(--font-serif);font-size:var(--text-xl);font-weight:600;color:var(--text-primary);margin-bottom:6px;line-height:1.2;">Verifying Identity</div>
+            <div style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:28px;line-height:1.5;">Processing your documents...</div>
+
+            <!-- Steps -->
+            <div style="text-align:left;">
+              <div class="processing-step" style="padding:10px 0;gap:10px;">
+                <div class="step-indicator step-indicator--done" style="width:28px;height:28px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="step-info">
+                  <div class="step-label" style="font-size:var(--text-xs);">Documents Uploaded</div>
+                </div>
+                <div class="step-status step-status--done" style="font-size:10px;">Done</div>
+              </div>
+              <div class="processing-step" style="padding:10px 0;gap:10px;">
+                <div class="step-indicator step-indicator--done" style="width:28px;height:28px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="step-info">
+                  <div class="step-label" style="font-size:var(--text-xs);">Liveness Confirmed</div>
+                </div>
+                <div class="step-status step-status--done" style="font-size:10px;">Done</div>
+              </div>
+              <div class="processing-step" style="padding:10px 0;gap:10px;">
+                <div class="step-indicator step-indicator--active" style="width:28px;height:28px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <div class="step-info">
+                  <div class="step-label" style="font-size:var(--text-xs);">Face Matching</div>
+                </div>
+                <div class="step-status step-status--active" style="font-size:10px;">Processing...</div>
+              </div>
+              <div class="processing-step" style="padding:10px 0;gap:10px;border-bottom:none;">
+                <div class="step-indicator step-indicator--pending" style="width:28px;height:28px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/></svg>
+                </div>
+                <div class="step-info">
+                  <div class="step-label" style="font-size:var(--text-xs);">Final Verification</div>
+                </div>
+                <div class="step-status step-status--pending" style="font-size:10px;">Waiting</div>
+              </div>
+            </div>
+
+            <div class="timing-note" style="margin-top:20px;font-size:10px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              ~15 seconds remaining
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../system/interactions.js"></script>
+<script>
+  // Auto-redirect to result page after 4 seconds (simulates processing)
+  setTimeout(function() {
+    window.location.href = 'smile-result.html';
+  }, 4000);
+</script>
+
+<!-- All Screens Card -->
+<div style="max-width:580px;margin:40px auto;padding:0 24px;">
+  <a href="../../index.html" style="display:flex;align-items:center;gap:16px;padding:20px 24px;background:var(--bg-card,#fff);border:1px solid var(--border,#e5e5e5);border-radius:16px;text-decoration:none;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:all 0.2s;" onmouseover="this.style.borderColor='#d4952a';this.style.boxShadow='0 6px 24px rgba(212,149,42,0.12)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#e5e5e5';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.06)';this.style.transform=''">
+    <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#fdf4e6,#faf0d8);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </div>
+    <div style="flex:1;">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:16px;font-weight:600;color:#1a1a1a;">All Screens</div>
+      <div style="font-size:12px;color:#9c9590;margin-top:2px;">Browse all 64 screens in the Eltrich Prime prototype</div>
+    </div>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+</div>
+</body>
+</html>

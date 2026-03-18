@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eltrich Prime — Vault Management</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    .admin-stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: box-shadow var(--transition-normal);
+    }
+    .admin-stat-card:hover { box-shadow: var(--shadow-md); }
+    .admin-stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .admin-stat-icon.blue { background: var(--info-light); color: var(--info); }
+    .admin-stat-icon.amber { background: var(--warning-light); color: #8a6a10; }
+    .admin-stat-icon.green { background: var(--success-light); color: var(--success); }
+    .admin-stat-icon.red { background: var(--danger-light); color: var(--danger); }
+    .admin-stat-icon.purple { background: #f3e8ff; color: #7c3aed; }
+    .admin-stat-icon.accent { background: var(--accent-light); color: var(--accent); }
+    .admin-stat-value {
+      font-family: var(--font-serif);
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+    .admin-stat-label {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .switch-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      margin: 8px 16px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .switch-link:hover { background: var(--accent-light); color: var(--accent); }
+
+    /* Vault-specific styles */
+    .vault-search-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 20px;
+      transition: border-color var(--transition-fast);
+    }
+    .vault-search-bar:focus-within { border-color: var(--accent); }
+    .vault-search-bar input {
+      flex: 1;
+      border: none;
+      background: none;
+      outline: none;
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+    .vault-search-bar input::placeholder { color: var(--text-muted); }
+
+    .user-vault-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 10px;
+      transition: all var(--transition-fast);
+    }
+    .user-vault-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent);
+    }
+    .vault-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .vault-avatar.blue { background: var(--info); }
+    .vault-avatar.green { background: var(--success); }
+    .vault-avatar.purple { background: #7c3aed; }
+    .vault-avatar.amber { background: #d4952a; }
+    .vault-avatar.red { background: var(--danger); }
+    .vault-card-info { flex: 1; min-width: 0; }
+    .vault-card-name {
+      font-weight: 600;
+      font-size: var(--text-base);
+      color: var(--text-primary);
+    }
+    .vault-card-email {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .vault-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .vault-card-stat {
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .vault-card-time {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    .vault-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .pending-share-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 10px;
+      transition: all var(--transition-fast);
+    }
+    .pending-share-card:hover { box-shadow: var(--shadow-md); }
+    .share-doc-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background: var(--danger-light);
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .share-info { flex: 1; min-width: 0; }
+    .share-doc-name {
+      font-weight: 600;
+      font-size: var(--text-base);
+      color: var(--text-primary);
+    }
+    .share-target {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .share-meta {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .share-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-light, var(--border));
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .activity-text {
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    .activity-time {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .storage-bar-inline {
+      height: 6px;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    .storage-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      background: var(--success);
+      transition: width var(--transition-normal);
+    }
+  </style>
+</head>
+<body>
+<a href="../../index.html" style="position:fixed;bottom:24px;left:24px;z-index:9999;display:flex;align-items:center;gap:8px;padding:10px 20px;background:var(--bg-card,#fff);border:1px solid var(--border,#e5e5e5);border-radius:999px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.1);transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:600;color:#d4952a;" onmouseover="this.style.borderColor='#d4952a';this.style.boxShadow='0 6px 24px rgba(212,149,42,0.2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)';this.style.transform=''">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+  All Screens
+</a>
+
+
+<div class="dual-panel">
+
+  <!-- ==================== DESKTOP VIEW ==================== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop View</div>
+    <div class="panel-desktop-inner">
+      <div class="desktop-content">
+
+        <!-- Admin Sidebar -->
+        <div class="desktop-sidebar">
+          <div class="nav-logo">
+            <div>
+              <div class="nav-logo-text">Eltrich Prime</div>
+              <div class="nav-logo-subtitle">Private Family Office</div>
+            </div>
+          </div>
+
+          <div class="nav-section-label">Admin Panel</div>
+          <a class="nav-item" href="dashboard.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+          <a class="nav-item" href="users.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            Users
+          </a>
+          <a class="nav-item" href="kyc-review.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            KYC Review
+          </a>
+          <a class="nav-item" href="transactions.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Transactions
+          </a>
+          <a class="nav-item" href="investments.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Investments
+          </a>
+          <a class="nav-item" href="products.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            Products
+          </a>
+          <a class="nav-item" href="bank-accounts.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+            Bank Accounts
+          </a>
+          <a class="nav-item" href="conversions.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+            Conversions
+          </a>
+          <a class="nav-item nav-item--active" href="vault.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Vault
+          </a>
+          <a class="nav-item" href="consultations.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Consultations
+          </a>
+          <a class="nav-item" href="notifications.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            Notifications
+          </a>
+          <a class="nav-item" href="support.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Support
+          </a>
+
+          <a class="switch-link" href="../investor/dashboard.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><path d="M21 3l-7 7"/><polyline points="9 21 3 21 3 15"/><path d="M3 21l7-7"/></svg>
+            Switch to User View
+          </a>
+
+          <div class="nav-user">
+            <div class="avatar avatar-initials" style="width:36px;height:36px;font-size:14px;">B</div>
+            <div>
+              <div class="nav-user-name">Bileonaire</div>
+              <div class="nav-user-email">kiokoleon@gmail.c...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="desktop-main">
+
+          <!-- Page Header -->
+          <div class="page-header" style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div class="page-title">Vault Management</div>
+              <div class="page-subtitle">Manage user document vaults and shared files</div>
+            </div>
+            <button class="btn btn-md btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Upload to Vault
+            </button>
+          </div>
+
+          <!-- Stat Cards Grid -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+            <div class="admin-stat-card">
+              <div class="admin-stat-icon blue">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              </div>
+              <div>
+                <div class="admin-stat-value">47</div>
+                <div class="admin-stat-label">Total Vaults</div>
+              </div>
+            </div>
+            <div class="admin-stat-card">
+              <div class="admin-stat-icon accent">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div>
+                <div class="admin-stat-value">312</div>
+                <div class="admin-stat-label">Total Documents</div>
+              </div>
+            </div>
+            <div class="admin-stat-card">
+              <div class="admin-stat-icon amber">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              </div>
+              <div>
+                <div class="admin-stat-value">5</div>
+                <div class="admin-stat-label">Pending Shares</div>
+              </div>
+            </div>
+            <div class="admin-stat-card">
+              <div class="admin-stat-icon green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/></svg>
+              </div>
+              <div>
+                <div class="admin-stat-value" style="font-size: var(--text-xl);">4.2 GB</div>
+                <div class="admin-stat-label">Storage Used</div>
+                <div class="storage-bar-inline" style="width: 120px;">
+                  <div class="storage-bar-fill" style="width: 8.4%;"></div>
+                </div>
+                <div style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">of 50 GB</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Bar -->
+          <div class="tab-container">
+            <div class="tab-bar" data-tab-group>
+              <button class="tab-item tab-item--active" data-tab="all-users">All Users (47)</button>
+              <button class="tab-item" data-tab="pending-shares">Pending Shares (5)</button>
+              <button class="tab-item" data-tab="recent-activity">Recent Activity</button>
+            </div>
+
+            <!-- All Users Tab -->
+            <div class="tab-content active" data-tab-content="all-users">
+
+              <!-- Search Bar -->
+              <div class="vault-search-bar" style="margin-top: 16px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" placeholder="Search users or documents...">
+              </div>
+
+              <!-- User Vault Cards -->
+              <div>
+                <!-- Bileonaire -->
+                <div class="user-vault-card">
+                  <div class="vault-avatar blue">B</div>
+                  <div class="vault-card-info">
+                    <div class="vault-card-name">Bileonaire</div>
+                    <div class="vault-card-email">kiokoleon@gmail.com</div>
+                    <div class="vault-card-meta">
+                      <span class="vault-card-stat">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px;"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                        24 docs
+                      </span>
+                      <span class="vault-card-stat">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px;"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/></svg>
+                        342 MB
+                      </span>
+                      <span class="vault-card-time">Last active: 2 hours ago</span>
+                    </div>
+                  </div>
+                  <div class="vault-card-actions">
+                    <span class="badge badge-active">Active</span>
+                    <a href="vault-user.html" class="btn btn-sm btn-outline" style="font-size: 12px; text-decoration: none;">Manage Vault</a>
+                  </div>
+                </div>
+
+                <!-- Sarah Wanjiku -->
+                <div class="user-vault-card">
+                  <div class="vault-avatar green">S</div>
+                  <div class="vault-card-info">
+                    <div class="vault-card-name">Sarah Wanjiku</div>
+                    <div class="vault-card-email">sarah.w@email.com</div>
+                    <div class="vault-card-meta">
+                      <span class="vault-card-stat">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px;"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                        18 docs
+                      </span>
+                      <span class="vault-card-stat">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px;"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/></svg>
+                        256 MB
+                      </span>
+                      <span class="vault-card-time">Last active: Yesterday</span>
+                    </div>
+                  </div>
+                  <div class="vault-card-actions">
+                    <span class="badge badge-active">Active</span>
+                    <a href="vault-user.html" class="btn btn-sm btn-outline" style="font-size: 12px; text-decoration: none;">Manage Vault</a>
+                  </div>
+                </div>
+
+                <!-- James Ochieng -->
+                <div class="user-vault-card">
+                  <div class="vault-avatar purple">J</div>
+                  <div class="vault-card-info">
+                    <div class="vault-card-name">James Ochieng</div>
+                    <div class="vault-card-email">james.o@email.com</div>
+                    <div class="vault-card-meta">
+                      <span class="vault-card-stat">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px;"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                        31 docs
+                      </span>
+                      <span class="vault-card-stat">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px;"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/></svg>
+                        512 MB
+                      </span>
+                      <span class="vault-card-time">Last active: Mar 15</span>
+                    </div>
+                  </div>
+                  <div class="vault-card-actions">
+                    <span class="badge badge-active">Active</span>
+                    <a href="vault-user.html" class="btn btn-sm btn-outline" style="font-size: 12px; text-decoration: none;">Manage Vault</a>
+                  </div>
+                </div>
+
+                <!-- Grace Akinyi -->
+                <div class="user-vault-card">
+                  <div class="vault-avatar amber">G</div>
+                  <div class="vault-card-info">
+                    <div class="vault-card-name">Grace Akinyi</div>
+                    <div class="vault-card-email">grace.a@email.com</div>
+                    <div class="vault-card-meta">
+                      <span class="vault-card-stat">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px;"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                        7 docs
+                      </span>
+                      <span class="vault-card-stat">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px;"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/></svg>
+                        89 MB
+                      </span>
+                      <span class="vault-card-time">Last active: Mar 12</span>
+                    </div>
+                  </div>
+                  <div class="vault-card-actions">
+                    <span class="badge badge-pending">Pending KYC</span>
+                    <a href="vault-user.html" class="btn btn-sm btn-outline" style="font-size: 12px; text-decoration: none;">Manage Vault</a>
+                  </div>
+                </div>
+
+                <!-- Peter Mwangi -->
+                <div class="user-vault-card">
+                  <div class="vault-avatar red">P</div>
+                  <div class="vault-card-info">
+                    <div class="vault-card-name">Peter Mwangi</div>
+                    <div class="vault-card-email">peter.m@email.com</div>
+                    <div class="vault-card-meta">
+                      <span class="vault-card-stat">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px;"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                        15 docs
+                      </span>
+                      <span class="vault-card-stat">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px;"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/></svg>
+                        198 MB
+                      </span>
+                      <span class="vault-card-time">Last active: Mar 10</span>
+                    </div>
+                  </div>
+                  <div class="vault-card-actions">
+                    <span class="badge badge-active">Active</span>
+                    <a href="vault-user.html" class="btn btn-sm btn-outline" style="font-size: 12px; text-decoration: none;">Manage Vault</a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Pending Shares Tab -->
+            <div class="tab-content" data-tab-content="pending-shares">
+
+              <div style="padding-top: 16px;">
+                <!-- Share 1 -->
+                <div class="pending-share-card">
+                  <div class="share-doc-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                  </div>
+                  <div class="share-info">
+                    <div class="share-doc-name">Q1 2026 Report.pdf</div>
+                    <div class="share-target">To: Bileonaire</div>
+                    <div class="share-meta">Requested by Portfolio Team &middot; Mar 18</div>
+                  </div>
+                  <div class="share-actions">
+                    <button class="btn btn-sm" style="background: var(--success); color: #fff; font-size: 12px;">Approve</button>
+                    <button class="btn btn-sm btn-danger" style="font-size: 12px;">Reject</button>
+                  </div>
+                </div>
+
+                <!-- Share 2 -->
+                <div class="pending-share-card">
+                  <div class="share-doc-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                  </div>
+                  <div class="share-info">
+                    <div class="share-doc-name">Updated Fund Terms.pdf</div>
+                    <div class="share-target">To: All Investors</div>
+                    <div class="share-meta">Requested by Legal &middot; Mar 17</div>
+                  </div>
+                  <div class="share-actions">
+                    <button class="btn btn-sm" style="background: var(--success); color: #fff; font-size: 12px;">Approve</button>
+                    <button class="btn btn-sm btn-danger" style="font-size: 12px;">Reject</button>
+                  </div>
+                </div>
+
+                <!-- Share 3 -->
+                <div class="pending-share-card">
+                  <div class="share-doc-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                  </div>
+                  <div class="share-info">
+                    <div class="share-doc-name">Tax Statement 2025.pdf</div>
+                    <div class="share-target">To: Sarah Wanjiku</div>
+                    <div class="share-meta">Requested by Accounts &middot; Mar 16</div>
+                  </div>
+                  <div class="share-actions">
+                    <button class="btn btn-sm" style="background: var(--success); color: #fff; font-size: 12px;">Approve</button>
+                    <button class="btn btn-sm btn-danger" style="font-size: 12px;">Reject</button>
+                  </div>
+                </div>
+
+                <!-- Share 4 -->
+                <div class="pending-share-card">
+                  <div class="share-doc-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                  </div>
+                  <div class="share-info">
+                    <div class="share-doc-name">Compliance Update.pdf</div>
+                    <div class="share-target">To: James Ochieng</div>
+                    <div class="share-meta">Requested by Legal &middot; Mar 15</div>
+                  </div>
+                  <div class="share-actions">
+                    <button class="btn btn-sm" style="background: var(--success); color: #fff; font-size: 12px;">Approve</button>
+                    <button class="btn btn-sm btn-danger" style="font-size: 12px;">Reject</button>
+                  </div>
+                </div>
+
+                <!-- Share 5 -->
+                <div class="pending-share-card">
+                  <div class="share-doc-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                  </div>
+                  <div class="share-info">
+                    <div class="share-doc-name">Distribution Notice.pdf</div>
+                    <div class="share-target">To: All Investors</div>
+                    <div class="share-meta">Requested by Admin &middot; Mar 14</div>
+                  </div>
+                  <div class="share-actions">
+                    <button class="btn btn-sm" style="background: var(--success); color: #fff; font-size: 12px;">Approve</button>
+                    <button class="btn btn-sm btn-danger" style="font-size: 12px;">Reject</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Recent Activity Tab -->
+            <div class="tab-content" data-tab-content="recent-activity">
+
+              <div style="padding: 16px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-top: 16px;">
+                <div class="activity-item">
+                  <div class="activity-dot"></div>
+                  <div>
+                    <div class="activity-text">Admin uploaded <strong>'Q4 Report.pdf'</strong> to <strong>Bileonaire's</strong> vault</div>
+                    <div class="activity-time">2 hours ago</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-dot" style="background: var(--info);"></div>
+                  <div>
+                    <div class="activity-text">Sarah Wanjiku downloaded <strong>'Investment Agreement.pdf'</strong></div>
+                    <div class="activity-time">4 hours ago</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-dot" style="background: var(--success);"></div>
+                  <div>
+                    <div class="activity-text">Admin shared <strong>'Fund Prospectus'</strong> with <strong>12 investors</strong></div>
+                    <div class="activity-time">Yesterday</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-dot" style="background: #7c3aed;"></div>
+                  <div>
+                    <div class="activity-text">James Ochieng uploaded <strong>'Bank Statement Q4.pdf'</strong></div>
+                    <div class="activity-time">Mar 15</div>
+                  </div>
+                </div>
+                <div class="activity-item">
+                  <div class="activity-dot" style="background: var(--danger);"></div>
+                  <div>
+                    <div class="activity-text">Admin revoked access to <strong>'Draft Terms.pdf'</strong> from <strong>Grace Akinyi</strong></div>
+                    <div class="activity-time">Mar 14</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MOBILE VIEW ==================== -->
+  <div class="panel-mobile">
+    <div class="panel-label">Mobile View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div style="padding: 16px 16px 90px;">
+
+          <!-- Mobile Header -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+            <div>
+              <div style="font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--text-primary); line-height: 1.2;">Vault Management</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Manage user document vaults</div>
+            </div>
+            <button class="btn btn-sm btn-primary" style="font-size: 11px; padding: 6px 12px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Upload
+            </button>
+          </div>
+
+          <!-- Mobile Stat Cards (2-col grid) -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+            <div class="admin-stat-card" style="padding: 14px; gap: 10px;">
+              <div class="admin-stat-icon blue" style="width: 36px; height: 36px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              </div>
+              <div>
+                <div class="admin-stat-value" style="font-size: var(--text-xl);">47</div>
+                <div class="admin-stat-label" style="font-size: 9px;">Total Vaults</div>
+              </div>
+            </div>
+            <div class="admin-stat-card" style="padding: 14px; gap: 10px;">
+              <div class="admin-stat-icon accent" style="width: 36px; height: 36px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div>
+                <div class="admin-stat-value" style="font-size: var(--text-xl);">312</div>
+                <div class="admin-stat-label" style="font-size: 9px;">Documents</div>
+              </div>
+            </div>
+            <div class="admin-stat-card" style="padding: 14px; gap: 10px;">
+              <div class="admin-stat-icon amber" style="width: 36px; height: 36px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              </div>
+              <div>
+                <div class="admin-stat-value" style="font-size: var(--text-xl);">5</div>
+                <div class="admin-stat-label" style="font-size: 9px;">Pending Shares</div>
+              </div>
+            </div>
+            <div class="admin-stat-card" style="padding: 14px; gap: 10px;">
+              <div class="admin-stat-icon green" style="width: 36px; height: 36px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/></svg>
+              </div>
+              <div>
+                <div class="admin-stat-value" style="font-size: var(--text-xl);">4.2 GB</div>
+                <div class="admin-stat-label" style="font-size: 9px;">Storage</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Tab Bar (scrollable) -->
+          <div style="display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 16px; overflow-x: auto;">
+            <div style="padding: 10px 14px; font-size: 12px; font-weight: 600; color: var(--accent); border-bottom: 2px solid var(--accent); white-space: nowrap; flex-shrink: 0;">All Users (47)</div>
+            <div style="padding: 10px 14px; font-size: 12px; font-weight: 500; color: var(--text-muted); white-space: nowrap; flex-shrink: 0;">Pending (5)</div>
+            <div style="padding: 10px 14px; font-size: 12px; font-weight: 500; color: var(--text-muted); white-space: nowrap; flex-shrink: 0;">Activity</div>
+          </div>
+
+          <!-- Mobile Search -->
+          <div style="display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 14px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search users..." style="border: none; background: none; outline: none; font-size: 13px; color: var(--text-primary); width: 100%; font-family: var(--font-sans);">
+          </div>
+
+          <!-- Mobile User Vault Cards -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+
+            <!-- Bileonaire -->
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md);">
+              <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--info); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">B</div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--text-primary);">Bileonaire</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 1px;">24 docs &middot; 342 MB</div>
+                <div style="display: flex; gap: 6px; align-items: center; margin-top: 4px;">
+                  <span class="badge badge-active" style="font-size: 9px; padding: 2px 6px;">Active</span>
+                  <span style="font-size: 10px; color: var(--text-muted);">2h ago</span>
+                </div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+
+            <!-- Sarah Wanjiku -->
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md);">
+              <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--success); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">S</div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--text-primary);">Sarah Wanjiku</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 1px;">18 docs &middot; 256 MB</div>
+                <div style="display: flex; gap: 6px; align-items: center; margin-top: 4px;">
+                  <span class="badge badge-active" style="font-size: 9px; padding: 2px 6px;">Active</span>
+                  <span style="font-size: 10px; color: var(--text-muted);">Yesterday</span>
+                </div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+
+            <!-- James Ochieng -->
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md);">
+              <div style="width: 38px; height: 38px; border-radius: 50%; background: #7c3aed; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">J</div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--text-primary);">James Ochieng</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 1px;">31 docs &middot; 512 MB</div>
+                <div style="display: flex; gap: 6px; align-items: center; margin-top: 4px;">
+                  <span class="badge badge-active" style="font-size: 9px; padding: 2px 6px;">Active</span>
+                  <span style="font-size: 10px; color: var(--text-muted);">Mar 15</span>
+                </div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+
+            <!-- Grace Akinyi -->
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md);">
+              <div style="width: 38px; height: 38px; border-radius: 50%; background: #d4952a; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">G</div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--text-primary);">Grace Akinyi</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 1px;">7 docs &middot; 89 MB</div>
+                <div style="display: flex; gap: 6px; align-items: center; margin-top: 4px;">
+                  <span class="badge badge-pending" style="font-size: 9px; padding: 2px 6px;">Pending KYC</span>
+                  <span style="font-size: 10px; color: var(--text-muted);">Mar 12</span>
+                </div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+
+            <!-- Peter Mwangi -->
+            <div style="display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md);">
+              <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--danger); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">P</div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 600; font-size: 13px; color: var(--text-primary);">Peter Mwangi</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 1px;">15 docs &middot; 198 MB</div>
+                <div style="display: flex; gap: 6px; align-items: center; margin-top: 4px;">
+                  <span class="badge badge-active" style="font-size: 9px; padding: 2px 6px;">Active</span>
+                  <span style="font-size: 10px; color: var(--text-muted);">Mar 10</span>
+                </div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Bottom Tabs -->
+        <div class="bottom-tabs">
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Users
+          </button>
+          <button class="bottom-tab bottom-tab--active">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Vault
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            More
+          </button>
+        </div>
+
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../system/interactions.js"></script>
+
+<!-- All Screens Card -->
+<div style="max-width:580px;margin:40px auto;padding:0 24px;">
+  <a href="../../index.html" style="display:flex;align-items:center;gap:16px;padding:20px 24px;background:var(--bg-card,#fff);border:1px solid var(--border,#e5e5e5);border-radius:16px;text-decoration:none;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:all 0.2s;" onmouseover="this.style.borderColor='#d4952a';this.style.boxShadow='0 6px 24px rgba(212,149,42,0.12)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#e5e5e5';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.06)';this.style.transform=''">
+    <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#fdf4e6,#faf0d8);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </div>
+    <div style="flex:1;">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:16px;font-weight:600;color:#1a1a1a;">All Screens</div>
+      <div style="font-size:12px;color:#9c9590;margin-top:2px;">Browse all 64 screens in the Eltrich Prime prototype</div>
+    </div>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+</div>
+</body>
+</html>

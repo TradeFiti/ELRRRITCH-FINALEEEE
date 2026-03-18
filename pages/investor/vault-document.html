@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eltrich Prime — Document Preview</title>
+  <link rel="stylesheet" href="../../system/tokens.css">
+  <link rel="stylesheet" href="../../system/components.css">
+  <link rel="stylesheet" href="../../system/layout.css">
+  <style>
+    .doc-two-col { display: grid; grid-template-columns: 1fr 340px; gap: 28px; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: var(--text-sm); color: var(--text-muted); margin-bottom: 20px; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--accent); text-decoration: none; font-weight: 500; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb-sep { color: var(--text-muted); opacity: 0.5; }
+    .doc-preview {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 40px 60px;
+    }
+    .doc-preview-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-size: 64px;
+      font-weight: 800;
+      color: var(--text-muted);
+      opacity: 0.07;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .doc-preview-content { width: 100%; max-width: 480px; position: relative; z-index: 1; }
+    .doc-preview-header {
+      height: 28px;
+      background: var(--text-muted);
+      opacity: 0.12;
+      border-radius: 4px;
+      margin-bottom: 24px;
+      width: 60%;
+    }
+    .doc-preview-subheader {
+      height: 16px;
+      background: var(--text-muted);
+      opacity: 0.08;
+      border-radius: 3px;
+      margin-bottom: 20px;
+      width: 40%;
+    }
+    .doc-preview-line {
+      height: 10px;
+      background: var(--text-muted);
+      opacity: 0.06;
+      border-radius: 3px;
+      margin-bottom: 10px;
+    }
+    .doc-preview-line.short { width: 75%; }
+    .doc-preview-line.medium { width: 90%; }
+    .doc-preview-line.long { width: 100%; }
+    .doc-preview-line.xs { width: 55%; }
+    .doc-preview-gap { height: 18px; }
+    .page-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 14px 0 0;
+      border-top: 1px solid var(--border-light);
+      margin-top: 20px;
+    }
+    .page-nav-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      color: var(--text-muted);
+    }
+    .page-nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .page-nav-text { font-size: var(--text-sm); color: var(--text-secondary); font-weight: 500; }
+    .zoom-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 12px;
+    }
+    .zoom-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      color: var(--text-muted);
+    }
+    .zoom-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .doc-action-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .doc-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .doc-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .doc-action-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .doc-action-btn.primary:hover { opacity: 0.9; }
+    .doc-info-panel { display: flex; flex-direction: column; gap: 20px; }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-light);
+      font-size: var(--text-sm);
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: var(--text-muted); font-weight: 500; }
+    .detail-value { color: var(--text-primary); font-weight: 600; text-align: right; }
+    .doc-file-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-lg);
+      background: var(--danger-light);
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+    .version-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 0;
+      border-left: 2px solid var(--accent-subtle, var(--border));
+      padding-left: 16px;
+      margin-left: 8px;
+      position: relative;
+    }
+    .version-row::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 18px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg-card);
+    }
+    .version-row:last-child { border-left-color: transparent; }
+    .version-info { flex: 1; min-width: 0; }
+    .version-tag { font-size: var(--text-sm); font-weight: 600; color: var(--text-primary); }
+    .version-date { font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px; }
+    .version-desc { font-size: var(--text-xs); color: var(--text-secondary); margin-top: 2px; }
+    .version-download {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      color: var(--text-muted);
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+    .version-download:hover { border-color: var(--accent); color: var(--accent); }
+    .related-doc {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+    }
+    .related-doc:last-child { border-bottom: none; }
+    .related-doc:hover { color: var(--accent); }
+    .related-doc-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      background: var(--danger-light);
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .related-doc-name { font-size: var(--text-sm); font-weight: 500; color: var(--text-primary); }
+    .related-doc:hover .related-doc-name { color: var(--accent); }
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 600;
+      font-family: var(--font-sans);
+    }
+    .access-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    /* Mobile sticky action bar */
+    .mobile-action-bar {
+      position: fixed;
+      bottom: 60px;
+      left: 0;
+      right: 0;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 10;
+    }
+    .mobile-action-bar .doc-action-btn { flex: 1; justify-content: center; font-size: 11px; padding: 8px 10px; }
+  </style>
+</head>
+<body>
+<a href="../../index.html" style="position:fixed;bottom:24px;left:24px;z-index:9999;display:flex;align-items:center;gap:8px;padding:10px 20px;background:var(--bg-card,#fff);border:1px solid var(--border,#e5e5e5);border-radius:999px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,0.1);transition:all 0.2s;font-family:'Inter',system-ui,sans-serif;font-size:13px;font-weight:600;color:#d4952a;" onmouseover="this.style.borderColor='#d4952a';this.style.boxShadow='0 6px 24px rgba(212,149,42,0.2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.1)';this.style.transform=''">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+  All Screens
+</a>
+
+
+<div class="dual-panel">
+
+  <!-- ==================== DESKTOP VIEW ==================== -->
+  <div class="panel-desktop">
+    <div class="panel-label">Desktop View</div>
+    <div class="panel-desktop-inner">
+      <div class="desktop-content">
+
+        <!-- Sidebar -->
+        <div class="desktop-sidebar">
+          <div class="nav-logo">
+            <div>
+              <div class="nav-logo-text">Eltrich Prime</div>
+              <div class="nav-logo-subtitle">Private Family Office</div>
+            </div>
+          </div>
+
+          <div class="nav-section-label">Platform</div>
+          <a class="nav-item" href="dashboard.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+          <a class="nav-item" href="invest-products.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Investments
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto;opacity:0.4"><polyline points="6 9 12 15 18 9"/></svg>
+          </a>
+          <a class="nav-item" href="wallet.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+            Wallet
+          </a>
+          <a class="nav-item" href="transactions.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            Transactions
+          </a>
+
+          <div class="nav-section-label">Communication</div>
+          <a class="nav-item" href="chat-list.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Support
+            <span class="notification-badge" style="margin-left:auto;">2</span>
+          </a>
+          <a class="nav-item nav-item--active" href="vault.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            Vault
+          </a>
+          <a class="nav-item" href="notifications.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            Notifications
+          </a>
+
+          <div class="nav-section-label">Account</div>
+          <a class="nav-item" href="profile.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Profile
+          </a>
+          <a class="nav-item" href="settings.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09c-.658.003-1.25.396-1.51 1z"/></svg>
+            Settings
+          </a>
+
+          <div style="padding: 12px 24px; margin-top: 8px;">
+            <div style="padding: 12px 16px; background: var(--accent-light); border-radius: var(--radius-md); border: 1px solid var(--accent-subtle);">
+              <div style="font-size: 11px; font-weight: 600; color: var(--accent); display:flex; align-items:center; gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                Super Admin Access
+              </div>
+              <a href="../admin/dashboard.html" style="font-size: 11px; font-weight: 600; color: var(--accent); margin-top: 6px; display: block;">Admin Dashboard &rarr;</a>
+            </div>
+          </div>
+
+          <div class="nav-user">
+            <div class="avatar avatar-initials" style="width:36px;height:36px;font-size:14px;">B</div>
+            <div>
+              <div class="nav-user-name">Bileonaire</div>
+              <div class="nav-user-email">kiokoleon@gmail.c...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="desktop-main">
+
+          <!-- Breadcrumb -->
+          <div class="breadcrumb">
+            <a href="vault.html">My Vault</a>
+            <span class="breadcrumb-sep">/</span>
+            <a href="vault.html">My Documents</a>
+            <span class="breadcrumb-sep">/</span>
+            <span style="color:var(--text-primary);font-weight:500;">Investment Agreement.pdf</span>
+          </div>
+
+          <!-- Two Column Layout -->
+          <div class="doc-two-col">
+
+            <!-- Left Column: Document Preview -->
+            <div>
+              <!-- Preview Card -->
+              <div class="card" style="padding:0;overflow:hidden;">
+                <div class="doc-preview">
+                  <div class="doc-preview-watermark">PREVIEW</div>
+                  <div class="doc-preview-content">
+                    <!-- Mock PDF header area -->
+                    <div style="text-align:center;margin-bottom:32px;">
+                      <div style="height:20px;width:120px;background:var(--text-muted);opacity:0.1;border-radius:3px;margin:0 auto 12px;"></div>
+                      <div style="height:10px;width:180px;background:var(--text-muted);opacity:0.06;border-radius:3px;margin:0 auto;"></div>
+                    </div>
+                    <div class="doc-preview-header"></div>
+                    <div class="doc-preview-subheader"></div>
+                    <div class="doc-preview-line long"></div>
+                    <div class="doc-preview-line long"></div>
+                    <div class="doc-preview-line medium"></div>
+                    <div class="doc-preview-line short"></div>
+                    <div class="doc-preview-gap"></div>
+                    <div class="doc-preview-line long"></div>
+                    <div class="doc-preview-line long"></div>
+                    <div class="doc-preview-line medium"></div>
+                    <div class="doc-preview-line xs"></div>
+                    <div class="doc-preview-gap"></div>
+                    <div class="doc-preview-line long"></div>
+                    <div class="doc-preview-line short"></div>
+                    <div class="doc-preview-line medium"></div>
+                    <div class="doc-preview-line long"></div>
+                    <div class="doc-preview-line xs"></div>
+                    <div class="doc-preview-gap"></div>
+                    <div class="doc-preview-line medium"></div>
+                    <div class="doc-preview-line short"></div>
+                  </div>
+                </div>
+
+                <!-- Page Navigation -->
+                <div class="page-nav">
+                  <button class="page-nav-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                  </button>
+                  <span class="page-nav-text">Page 1 of 12</span>
+                  <button class="page-nav-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                  </button>
+                </div>
+
+                <!-- Zoom Controls -->
+                <div class="zoom-controls" style="padding-bottom:16px;">
+                  <button class="zoom-btn" title="Zoom Out">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                  </button>
+                  <span style="font-size:var(--text-xs);color:var(--text-muted);font-weight:500;">100%</span>
+                  <button class="zoom-btn" title="Zoom In">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                  </button>
+                  <button class="zoom-btn" title="Fit to Width">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Action Bar -->
+              <div class="doc-action-bar">
+                <button class="doc-action-btn primary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download
+                </button>
+                <button class="doc-action-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                  Print
+                </button>
+                <button class="doc-action-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                  Share
+                </button>
+                <button class="doc-action-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                  Bookmark
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Column: Document Info Panel -->
+            <div class="doc-info-panel">
+
+              <!-- Document Info Card -->
+              <div class="card">
+                <div class="doc-file-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                </div>
+                <div style="font-family:var(--font-serif);font-size:var(--text-base);font-weight:600;color:var(--text-primary);margin-bottom:4px;line-height:1.4;">
+                  Investment Agreement &mdash; Capital Growth Fund.pdf
+                </div>
+                <div style="margin-top:16px;">
+                  <div class="detail-row">
+                    <span class="detail-label">File Size</span>
+                    <span class="detail-value">1.5 MB</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Type</span>
+                    <span class="detail-value">PDF Document</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Created</span>
+                    <span class="detail-value">March 10, 2026</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Modified</span>
+                    <span class="detail-value">March 15, 2026</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Owner</span>
+                    <span class="detail-value">Bileonaire</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value"><span class="badge badge-success">Active</span></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Access & Sharing Card -->
+              <div class="card">
+                <div class="section-label" style="margin-bottom:16px;">Shared Access</div>
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                  <div class="access-avatar">AT</div>
+                  <div>
+                    <div style="font-size:var(--text-sm);font-weight:600;color:var(--text-primary);">Shared by: Admin Team</div>
+                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;">Shared on: March 10, 2026</div>
+                  </div>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Access Level</span>
+                  <span class="detail-value"><span class="badge badge-info" style="font-size:11px;">View Only</span></span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Confidentiality</span>
+                  <span class="detail-value"><span class="badge badge-danger" style="font-size:11px;">Confidential</span></span>
+                </div>
+              </div>
+
+              <!-- Version History Card -->
+              <div class="card">
+                <div class="section-label" style="margin-bottom:16px;">Version History</div>
+                <div>
+                  <div class="version-row">
+                    <div class="version-info">
+                      <div class="version-tag">v3.0</div>
+                      <div class="version-date">March 15, 2026 &mdash; by Admin</div>
+                      <div class="version-desc">Updated terms</div>
+                    </div>
+                    <button class="version-download" title="Download v3.0">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </button>
+                  </div>
+                  <div class="version-row">
+                    <div class="version-info">
+                      <div class="version-tag">v2.0</div>
+                      <div class="version-date">March 12, 2026 &mdash; by Admin</div>
+                      <div class="version-desc">Added signatures</div>
+                    </div>
+                    <button class="version-download" title="Download v2.0">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </button>
+                  </div>
+                  <div class="version-row">
+                    <div class="version-info">
+                      <div class="version-tag">v1.0</div>
+                      <div class="version-date">March 10, 2026 &mdash; by Admin</div>
+                      <div class="version-desc">Initial upload</div>
+                    </div>
+                    <button class="version-download" title="Download v1.0">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Related Documents Card -->
+              <div class="card">
+                <div class="section-label" style="margin-bottom:16px;">Related Documents</div>
+                <div>
+                  <a class="related-doc" href="#">
+                    <div class="related-doc-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                    </div>
+                    <div class="related-doc-name">Portfolio Performance Q4.pdf</div>
+                  </a>
+                  <a class="related-doc" href="#">
+                    <div class="related-doc-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                    </div>
+                    <div class="related-doc-name">Fund Prospectus 2026.pdf</div>
+                  </a>
+                  <a class="related-doc" href="#">
+                    <div class="related-doc-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                    </div>
+                    <div class="related-doc-name">Risk Disclosure Agreement.pdf</div>
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MOBILE VIEW ==================== -->
+  <div class="panel-mobile">
+    <div class="panel-label">Mobile View</div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div style="padding: 16px 16px 140px;">
+
+          <!-- Mobile Header -->
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <a href="vault.html" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg-card);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--text-secondary);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </a>
+            <div style="flex:1;min-width:0;">
+              <div style="font-family:var(--font-serif);font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Investment Agreement.pdf</div>
+              <div style="font-size:10px;color:var(--text-muted);">1.5 MB &middot; PDF Document</div>
+            </div>
+          </div>
+
+          <!-- Mobile Document Preview -->
+          <div class="card" style="padding:0;overflow:hidden;margin-bottom:14px;">
+            <div class="doc-preview" style="min-height:300px;padding:28px 32px;">
+              <div class="doc-preview-watermark" style="font-size:40px;">PREVIEW</div>
+              <div class="doc-preview-content">
+                <div style="text-align:center;margin-bottom:20px;">
+                  <div style="height:14px;width:90px;background:var(--text-muted);opacity:0.1;border-radius:3px;margin:0 auto 8px;"></div>
+                  <div style="height:8px;width:130px;background:var(--text-muted);opacity:0.06;border-radius:3px;margin:0 auto;"></div>
+                </div>
+                <div class="doc-preview-header" style="height:18px;margin-bottom:16px;"></div>
+                <div class="doc-preview-subheader" style="height:12px;margin-bottom:14px;"></div>
+                <div class="doc-preview-line long" style="height:8px;margin-bottom:7px;"></div>
+                <div class="doc-preview-line long" style="height:8px;margin-bottom:7px;"></div>
+                <div class="doc-preview-line medium" style="height:8px;margin-bottom:7px;"></div>
+                <div class="doc-preview-line short" style="height:8px;margin-bottom:7px;"></div>
+                <div class="doc-preview-gap" style="height:12px;"></div>
+                <div class="doc-preview-line long" style="height:8px;margin-bottom:7px;"></div>
+                <div class="doc-preview-line medium" style="height:8px;margin-bottom:7px;"></div>
+                <div class="doc-preview-line xs" style="height:8px;margin-bottom:7px;"></div>
+              </div>
+            </div>
+            <!-- Mobile Page Nav -->
+            <div style="display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 0;">
+              <button class="page-nav-btn" style="width:28px;height:28px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <span style="font-size:11px;color:var(--text-muted);font-weight:500;">Page 1 of 12</span>
+              <button class="page-nav-btn" style="width:28px;height:28px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile Document Info -->
+          <div class="card" style="padding:16px;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+              <div class="doc-file-icon" style="width:44px;height:44px;margin-bottom:0;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:13px;font-weight:600;color:var(--text-primary);line-height:1.3;">Investment Agreement &mdash; Capital Growth Fund.pdf</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">
+                  <span class="badge badge-success" style="font-size:10px;">Active</span>
+                </div>
+              </div>
+            </div>
+            <div class="detail-row" style="padding:8px 0;">
+              <span class="detail-label" style="font-size:12px;">File Size</span>
+              <span class="detail-value" style="font-size:12px;">1.5 MB</span>
+            </div>
+            <div class="detail-row" style="padding:8px 0;">
+              <span class="detail-label" style="font-size:12px;">Type</span>
+              <span class="detail-value" style="font-size:12px;">PDF Document</span>
+            </div>
+            <div class="detail-row" style="padding:8px 0;">
+              <span class="detail-label" style="font-size:12px;">Created</span>
+              <span class="detail-value" style="font-size:12px;">March 10, 2026</span>
+            </div>
+            <div class="detail-row" style="padding:8px 0;">
+              <span class="detail-label" style="font-size:12px;">Modified</span>
+              <span class="detail-value" style="font-size:12px;">March 15, 2026</span>
+            </div>
+            <div class="detail-row" style="padding:8px 0;">
+              <span class="detail-label" style="font-size:12px;">Owner</span>
+              <span class="detail-value" style="font-size:12px;">Bileonaire</span>
+            </div>
+          </div>
+
+          <!-- Mobile Access & Sharing -->
+          <div class="card" style="padding:16px;margin-bottom:14px;">
+            <div class="section-label" style="margin-bottom:12px;">Shared Access</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <div class="access-avatar" style="width:28px;height:28px;font-size:10px;">AT</div>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--text-primary);">Admin Team</div>
+                <div style="font-size:10px;color:var(--text-muted);">Shared March 10, 2026</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <span class="badge badge-info" style="font-size:10px;">View Only</span>
+              <span class="badge badge-danger" style="font-size:10px;">Confidential</span>
+            </div>
+          </div>
+
+          <!-- Mobile Version History -->
+          <div class="card" style="padding:16px;margin-bottom:14px;">
+            <div class="section-label" style="margin-bottom:12px;">Version History</div>
+            <div class="version-row" style="padding:10px 0 10px 14px;margin-left:4px;">
+              <div class="version-info">
+                <div class="version-tag" style="font-size:12px;">v3.0</div>
+                <div class="version-date" style="font-size:10px;">March 15, 2026 &mdash; Updated terms</div>
+              </div>
+              <button class="version-download" style="width:24px;height:24px;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </button>
+            </div>
+            <div class="version-row" style="padding:10px 0 10px 14px;margin-left:4px;">
+              <div class="version-info">
+                <div class="version-tag" style="font-size:12px;">v2.0</div>
+                <div class="version-date" style="font-size:10px;">March 12, 2026 &mdash; Added signatures</div>
+              </div>
+              <button class="version-download" style="width:24px;height:24px;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </button>
+            </div>
+            <div class="version-row" style="padding:10px 0 10px 14px;margin-left:4px;">
+              <div class="version-info">
+                <div class="version-tag" style="font-size:12px;">v1.0</div>
+                <div class="version-date" style="font-size:10px;">March 10, 2026 &mdash; Initial upload</div>
+              </div>
+              <button class="version-download" style="width:24px;height:24px;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile Related Documents -->
+          <div class="card" style="padding:16px;margin-bottom:14px;">
+            <div class="section-label" style="margin-bottom:12px;">Related Documents</div>
+            <a class="related-doc" href="#" style="padding:8px 0;">
+              <div class="related-doc-icon" style="width:30px;height:30px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="related-doc-name" style="font-size:12px;">Portfolio Performance Q4.pdf</div>
+            </a>
+            <a class="related-doc" href="#" style="padding:8px 0;">
+              <div class="related-doc-icon" style="width:30px;height:30px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="related-doc-name" style="font-size:12px;">Fund Prospectus 2026.pdf</div>
+            </a>
+            <a class="related-doc" href="#" style="padding:8px 0;">
+              <div class="related-doc-icon" style="width:30px;height:30px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+              </div>
+              <div class="related-doc-name" style="font-size:12px;">Risk Disclosure Agreement.pdf</div>
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Mobile Sticky Action Bar -->
+        <div class="mobile-action-bar">
+          <button class="doc-action-btn primary" style="flex:1;justify-content:center;font-size:11px;padding:8px 10px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download
+          </button>
+          <button class="doc-action-btn" style="flex:1;justify-content:center;font-size:11px;padding:8px 10px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+          <button class="doc-action-btn" style="flex:1;justify-content:center;font-size:11px;padding:8px 10px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+            Save
+          </button>
+        </div>
+
+        <!-- Bottom Tabs -->
+        <div class="bottom-tabs">
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Home
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Invest
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+            Wallet
+          </button>
+          <button class="bottom-tab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Chat
+          </button>
+          <button class="bottom-tab bottom-tab--active">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            More
+          </button>
+        </div>
+
+      </div>
+      <div class="phone-home-indicator"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../system/interactions.js"></script>
+
+<!-- All Screens Card -->
+<div style="max-width:580px;margin:40px auto;padding:0 24px;">
+  <a href="../../index.html" style="display:flex;align-items:center;gap:16px;padding:20px 24px;background:var(--bg-card,#fff);border:1px solid var(--border,#e5e5e5);border-radius:16px;text-decoration:none;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:all 0.2s;" onmouseover="this.style.borderColor='#d4952a';this.style.boxShadow='0 6px 24px rgba(212,149,42,0.12)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#e5e5e5';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.06)';this.style.transform=''">
+    <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#fdf4e6,#faf0d8);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </div>
+    <div style="flex:1;">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:16px;font-weight:600;color:#1a1a1a;">All Screens</div>
+      <div style="font-size:12px;color:#9c9590;margin-top:2px;">Browse all 64 screens in the Eltrich Prime prototype</div>
+    </div>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4952a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </a>
+</div>
+</body>
+</html>

@@ -56,8 +56,8 @@
     <div class="hub-subtitle">Private Family Office</div>
     <div class="hub-desc">Complete UI prototype — all screens for the Eltrich Prime investment platform, showing both desktop and mobile views.</div>
     <div class="hub-stats">
-      <div style="text-align:center;"><div class="hub-stat-num">42</div><div class="hub-stat-label">Total Screens</div></div>
-      <div style="text-align:center;"><div class="hub-stat-num">5</div><div class="hub-stat-label">User Flows</div></div>
+      <div style="text-align:center;"><div class="hub-stat-num">64</div><div class="hub-stat-label">Total Screens</div></div>
+      <div style="text-align:center;"><div class="hub-stat-num">7</div><div class="hub-stat-label">User Flows</div></div>
       <div style="text-align:center;"><div class="hub-stat-num">2</div><div class="hub-stat-label">Viewports</div></div>
     </div>
   </div>
@@ -136,10 +136,38 @@
     </div>
   </div>
 
+  <!-- SmileID KYC -->
+  <div class="flow-group">
+    <div class="flow-label">SmileID Integration</div>
+    <div class="flow-title">KYC Verification Flow (4 Screens)</div>
+    <div class="page-grid">
+      <a href="pages/onboarding/smile-selfie.html" class="page-link">
+        <div class="page-link-name">Selfie Capture</div>
+        <div class="page-link-desc">Camera viewfinder with face oval frame and liveness detection</div>
+        <span class="page-link-badge badge-auth-tag">SmileID</span>
+      </a>
+      <a href="pages/onboarding/smile-document.html" class="page-link">
+        <div class="page-link-name">Document Capture</div>
+        <div class="page-link-desc">ID type selection with front &amp; back photo capture</div>
+        <span class="page-link-badge badge-auth-tag">SmileID</span>
+      </a>
+      <a href="pages/onboarding/smile-processing.html" class="page-link">
+        <div class="page-link-name">Verification Processing</div>
+        <div class="page-link-desc">Real-time progress while SmileID verifies identity</div>
+        <span class="page-link-badge badge-auth-tag">SmileID</span>
+      </a>
+      <a href="pages/onboarding/smile-result.html" class="page-link">
+        <div class="page-link-name">Verification Result</div>
+        <div class="page-link-desc">Success screen with confidence score and verified details</div>
+        <span class="page-link-badge badge-auth-tag">SmileID</span>
+      </a>
+    </div>
+  </div>
+
   <!-- Investor -->
   <div class="flow-group">
     <div class="flow-label">Investor Experience</div>
-    <div class="flow-title">Authenticated App (19 Screens)</div>
+    <div class="flow-title">Authenticated App (21 Screens)</div>
     <div class="page-grid">
       <a href="pages/investor/dashboard.html" class="page-link">
         <div class="page-link-name">Dashboard</div>
@@ -206,9 +234,19 @@
         <div class="page-link-desc">Message thread with support</div>
         <span class="page-link-badge badge-investor">Investor</span>
       </a>
-      <a href="pages/investor/files.html" class="page-link">
-        <div class="page-link-name">Files</div>
-        <div class="page-link-desc">Document upload and management</div>
+      <a href="pages/investor/vault.html" class="page-link">
+        <div class="page-link-name">Vault</div>
+        <div class="page-link-desc">SharePoint-like document vault with folders, sharing, and access control</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/vault-folder.html" class="page-link">
+        <div class="page-link-name">Vault Folder</div>
+        <div class="page-link-desc">Folder detail with file management, bulk actions, and sorting</div>
+        <span class="page-link-badge badge-investor">Investor</span>
+      </a>
+      <a href="pages/investor/vault-document.html" class="page-link">
+        <div class="page-link-name">Document Preview</div>
+        <div class="page-link-desc">Document viewer with version history, sharing, and metadata</div>
         <span class="page-link-badge badge-investor">Investor</span>
       </a>
       <a href="pages/investor/notifications.html" class="page-link">
@@ -242,7 +280,7 @@
   <!-- Admin -->
   <div class="flow-group">
     <div class="flow-label">Admin Experience</div>
-    <div class="flow-title">Platform Management (13 Screens)</div>
+    <div class="flow-title">Platform Management (15 Screens)</div>
     <div class="page-grid">
       <a href="pages/admin/dashboard.html" class="page-link">
         <div class="page-link-name">Admin Dashboard</div>
@@ -289,6 +327,16 @@
         <div class="page-link-desc">Create, edit, and manage investment products</div>
         <span class="page-link-badge badge-admin-tag">Admin</span>
       </a>
+      <a href="pages/admin/vault.html" class="page-link">
+        <div class="page-link-name">Vault Management</div>
+        <div class="page-link-desc">Manage all investor document vaults, share documents, control access</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
+      <a href="pages/admin/vault-user.html" class="page-link">
+        <div class="page-link-name">User Vault Detail</div>
+        <div class="page-link-desc">Manage individual investor vault, upload docs, control permissions</div>
+        <span class="page-link-badge badge-admin-tag">Admin</span>
+      </a>
       <a href="pages/admin/consultations.html" class="page-link">
         <div class="page-link-name">Consultations</div>
         <div class="page-link-desc">Manage consultation requests from prospects</div>
@@ -312,10 +360,83 @@
     </div>
   </div>
 
+  <!-- Email Templates -->
+  <div class="flow-group">
+    <div class="flow-label">Email Templates</div>
+    <div class="flow-title">Transactional Emails (13 Templates)</div>
+    <div class="page-grid">
+      <a href="pages/emails/welcome.html" class="page-link">
+        <div class="page-link-name">Welcome Email</div>
+        <div class="page-link-desc">Account created — onboarding checklist and getting started CTA</div>
+        <span class="page-link-badge badge-public-tag">Email</span>
+      </a>
+      <a href="pages/emails/verify-code.html" class="page-link">
+        <div class="page-link-name">Verification Code</div>
+        <div class="page-link-desc">6-digit email verification code with expiry and security note</div>
+        <span class="page-link-badge badge-public-tag">Email</span>
+      </a>
+      <a href="pages/emails/password-reset.html" class="page-link">
+        <div class="page-link-name">Password Reset</div>
+        <div class="page-link-desc">Reset link with request details, expiry, and IP address</div>
+        <span class="page-link-badge badge-public-tag">Email</span>
+      </a>
+      <a href="pages/emails/login-alert.html" class="page-link">
+        <div class="page-link-name">Login Alert</div>
+        <div class="page-link-desc">New device sign-in notification with device and location info</div>
+        <span class="page-link-badge badge-public-tag">Email</span>
+      </a>
+      <a href="pages/emails/kyc-submitted.html" class="page-link">
+        <div class="page-link-name">KYC Submitted</div>
+        <div class="page-link-desc">Documents received — under review with SmileID liveness status</div>
+        <span class="page-link-badge badge-public-tag">Email</span>
+      </a>
+      <a href="pages/emails/kyc-approved.html" class="page-link">
+        <div class="page-link-name">KYC Approved</div>
+        <div class="page-link-desc">Identity verified — full access granted with tier details</div>
+        <span class="page-link-badge badge-public-tag">Email</span>
+      </a>
+      <a href="pages/emails/kyc-rejected.html" class="page-link">
+        <div class="page-link-name">KYC Action Required</div>
+        <div class="page-link-desc">Verification failed — specific issues listed with resubmit CTA</div>
+        <span class="page-link-badge badge-public-tag">Email</span>
+      </a>
+      <a href="pages/emails/deposit-confirmed.html" class="page-link">
+        <div class="page-link-name">Deposit Confirmed</div>
+        <div class="page-link-desc">Deposit receipt with amount, method, and updated wallet balance</div>
+        <span class="page-link-badge badge-public-tag">Email</span>
+      </a>
+      <a href="pages/emails/withdrawal-complete.html" class="page-link">
+        <div class="page-link-name">Withdrawal Complete</div>
+        <div class="page-link-desc">Funds sent with destination bank, fee, and remaining balance</div>
+        <span class="page-link-badge badge-public-tag">Email</span>
+      </a>
+      <a href="pages/emails/investment-confirmed.html" class="page-link">
+        <div class="page-link-name">Investment Confirmed</div>
+        <div class="page-link-desc">New investment with product, return rate, and maturity date</div>
+        <span class="page-link-badge badge-public-tag">Email</span>
+      </a>
+      <a href="pages/emails/return-credited.html" class="page-link">
+        <div class="page-link-name">Return Credited</div>
+        <div class="page-link-desc">Quarterly distribution paid with return breakdown</div>
+        <span class="page-link-badge badge-public-tag">Email</span>
+      </a>
+      <a href="pages/emails/new-message.html" class="page-link">
+        <div class="page-link-name">New Message</div>
+        <div class="page-link-desc">Support team reply with message preview and reply CTA</div>
+        <span class="page-link-badge badge-public-tag">Email</span>
+      </a>
+      <a href="pages/emails/monthly-statement.html" class="page-link">
+        <div class="page-link-name">Monthly Statement</div>
+        <div class="page-link-desc">Portfolio summary, wallet balances, and recent activity table</div>
+        <span class="page-link-badge badge-public-tag">Email</span>
+      </a>
+    </div>
+  </div>
+
   <!-- Footer -->
   <div style="text-align:center;padding:40px 0;border-top:1px solid var(--border);margin-top:24px;">
     <div style="font-family:var(--font-serif);font-size:18px;font-weight:600;color:var(--accent);">Eltrich Prime</div>
-    <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">UI Prototype · 42 Screens · Desktop + Mobile</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">UI Prototype · 64 Screens · Desktop + Mobile</div>
     <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">© 2026 Eltrich Prime. All rights reserved.</div>
   </div>
 </div>
